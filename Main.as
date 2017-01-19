@@ -14,10 +14,10 @@ import flash.text.TextField;
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
                 graphics.clear();
                 graphics.lineStyle(1);
-                getRoute(new Circle(mouseX, mouseY, 80, 1, 0), new Circle(200, 80, 30, 1, Math.PI));
+                getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
             });
         }
-        private function getRoute(c1:Circle, c2:Circle){
+        private function getRoute(c1:Circle, c2:Circle, res:Number){
             var dx:Number = c2.pos.x - c1.pos.x;
             var dy:Number = c2.pos.y - c1.pos.y;
             var l:Number = dx * dx + dy * dy;
@@ -130,7 +130,9 @@ import flash.text.TextField;
                 }
             }
             this.graphics.lineStyle(3, 0xff0000);
-            for(var _r:Number = 0; _r < Math.abs(c1dr); _r+=0.1){
+            var c1rres:Number = res / (c1.r*2) * (Math.PI*2);
+            var c2rres:Number = res / (c2.r*2) * (Math.PI*2);
+            for(var _r:Number = 0; _r < Math.abs(c1dr); _r+=c1rres){
                 var _x:Number = Math.cos(c1.tr+_r*c1.d) * c1.r + c1.pos.x;
                 var _y:Number = Math.sin(c1.tr+_r*c1.d) * c1.r + c1.pos.y;
                 if(_r == 0){
@@ -139,7 +141,7 @@ import flash.text.TextField;
                     this.graphics.lineTo(_x, _y);
                 }
             }
-            for(_r = 0; _r < Math.abs(c2dr); _r+=0.1){
+            for(_r = 0; _r < Math.abs(c2dr); _r+=c2rres){
                 var _x:Number = Math.cos(c2r+_r*c2.d) * c2.r + c2.pos.x;
                 var _y:Number = Math.sin(c2r+_r*c2.d) * c2.r + c2.pos.y;
                 this.graphics.lineTo(_x, _y);
