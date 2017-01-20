@@ -13,16 +13,35 @@ package {
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
                 graphics.clear();
                 graphics.lineStyle(1);
-                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, -1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
-                if(!route) return;
-
-                //graphics.lineStyle(3, 0xff0000);
-                var rl:uint = route.length;
-                var r:Vector.<Pos> = route.generateRoute(1);
-                for(var i:Number = 0; i < r.length; i++){
-                    graphics.drawCircle(r[i].x, r[i].y, 1);
+                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
+                if(route) {
+                    graphics.lineStyle(1, 0xff0000, 0.2);
+                    var rl:uint = route.length;
+                    var r:Vector.<Pos> = route.generateRoute(1);
+                    for (var i:Number = 0; i < r.length; i++) {
+                        graphics.drawCircle(r[i].x, r[i].y, 2);
+                    }
                 }
-                graphics.lineStyle(1, 0);
+                graphics.lineStyle(1);
+                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth / 2 + 100, stage.stageHeight / 2 + 100, 30, -1, 0), 1);
+                if(route) {
+                    graphics.lineStyle(1, 0x00ff00, 0.2);
+                    var rl:uint = route.length;
+                    var r:Vector.<Pos> = route.generateRoute(1);
+                    for (var i:Number = 0; i < r.length; i++) {
+                        graphics.drawCircle(r[i].x, r[i].y, 2);
+                    }
+                }
+                graphics.lineStyle(1);
+                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth / 2 - 100, stage.stageHeight / 2 + -100, 30, -1, Math.PI*0.5), 1);
+                if(route) {
+                    graphics.lineStyle(1, 0x0000ff, 0.2);
+                    var rl:uint = route.length;
+                    var r:Vector.<Pos> = route.generateRoute(1);
+                    for (var i:Number = 0; i < r.length; i++) {
+                        graphics.drawCircle(r[i].x, r[i].y, 2);
+                    }
+                }
             });
         }
         private function getRoute(c1:Circle, c2:Circle, res:Number):Route{
