@@ -15,24 +15,12 @@ package {
                 graphics.lineStyle(1);
                 var route:Route = getRoute(new Circle(mouseX, mouseY, 40, -1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
                 if(!route) return;
-                route.length;
-                var res:Number = 1;
-                graphics.lineStyle(3, 0xff0000);
-                var c1rres:Number = res / (route.c1.r*2) * (Math.PI*2);
-                var c2rres:Number = res / (route.c2.r*2) * (Math.PI*2);
-                for(var _r:Number = 0; _r < Math.abs(route.c1rl); _r+=c1rres){
-                    var _x:Number = Math.cos(route.c1rb+_r*route.c1.d) * route.c1.r + route.c1.pos.x;
-                    var _y:Number = Math.sin(route.c1rb+_r*route.c1.d) * route.c1.r + route.c1.pos.y;
-                    if(_r == 0){
-                        graphics.moveTo(_x, _y);
-                    }else{
-                        graphics.lineTo(_x, _y);
-                    }
-                }
-                for(_r = 0; _r < Math.abs(route.c2rl); _r+=c2rres){
-                    var _x:Number = Math.cos(route.c2rb+_r*route.c2.d) * route.c2.r + route.c2.pos.x;
-                    var _y:Number = Math.sin(route.c2rb+_r*route.c2.d) * route.c2.r + route.c2.pos.y;
-                    graphics.lineTo(_x, _y);
+
+                //graphics.lineStyle(3, 0xff0000);
+                var rl:uint = route.length;
+                var r:Vector.<Pos> = route.generateRoute(1);
+                for(var i:Number = 0; i < r.length; i++){
+                    graphics.drawCircle(r[i].x, r[i].y, 1);
                 }
                 graphics.lineStyle(1, 0);
             });
@@ -202,6 +190,42 @@ class Route{
         this.c1rl = c1rl;
         this.c2rl = c2rl;
     }
+    public function generateRoute(res:Number, route:Vector.<Pos> = null):Vector.<Pos>{
+        var _route:Vector.<Pos>;
+        if(route){
+            _route = route;
+        }else{
+            _route = new Vector.<Pos>();
+        }
+        var c1rres:Number = res / (c1.r*2 * Math.PI) * Math.PI*2;
+        var c2rres:Number = res / (c2.r*2 * Math.PI) * Math.PI*2;
+        for(var _r:Number = 0; _r < Math.abs(c1rl); _r+=c1rres){
+            var _x:Number = Math.cos(c1rb+_r*c1.d) * c1.r + c1.pos.x;
+            var _y:Number = Math.sin(c1rb+_r*c1.d) * c1.r + c1.pos.y;
+            _route.push(new Pos(_x, _y));
+        }
+        getLineRoot(
+                new Pos(_x, _y),
+                new Pos(
+                        Math.cos(c2rb) * c2.r + c2.pos.x,
+                        Math.sin(c2rb) * c2.r + c2.pos.y
+                ),
+                res,
+                _route
+        );
+        for(_r = 0; _r < Math.abs(c2rl) - c2rres; _r+=c2rres){
+            var _x:Number = Math.cos(c2rb+_r*c2.d) * c2.r + c2.pos.x;
+            var _y:Number = Math.sin(c2rb+_r*c2.d) * c2.r + c2.pos.y;
+            _route.push(new Pos(_x, _y));
+        }
+        _route.push(
+                new Pos(
+                        Math.cos(c2rb+c2rl*c2.d) * c2.r + c2.pos.x,
+                        Math.sin(c2rb+c2rl*c2.d) * c2.r + c2.pos.y
+                )
+        );
+        return _route;
+    }
     public function get length():uint{
         var t1x:Number, t1y:Number;
         var t2x:Number, t2y:Number;
@@ -216,7 +240,19 @@ class Route{
         dx = t1x-t2x;
         dy = t1y-t2y;
         l += Math.sqrt(dx*dx + dy*dy);
-        trace(l);
         return l;
+    }
+    private function getLineRoot(bp:Pos, ep:Pos, res:Number, vector:Vector.<Pos>):void{
+        var tx:Number = ep.x - bp.x;
+        var ty:Number = ep.y - bp.y;
+        var r:Number = Math.atan2(ty, tx);
+        var dx:Number = Math.cos(r) * res;
+        var dy:Number = Math.sin(r) * res;
+        var l:Number = Math.sqrt(tx*tx+ty*ty) - res;
+        for(var i:int = 1; i < l/res; i ++){
+            var x:Number = dx * i + bp.x;
+            var y:Number = dy * i + bp.y;
+            vector.push(new Pos(x, y));
+        }
     }
 }
