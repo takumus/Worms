@@ -1,23 +1,43 @@
 package {
 
     import flash.display.Sprite;
-import flash.events.MouseEvent;
-import flash.text.TextField;
+    import flash.events.MouseEvent;
+    import flash.text.TextField;
 
     public class Main extends Sprite {
         public function Main() {
             var textField:TextField = new TextField();
             textField.text = "Hello, World";
             addChild(textField);
-            //getRoute(new Circle(50, 200, 80, -1, Math.PI), new Circle(200, 80, 30, -1, Math.PI));
-            //getRoute(new Circle(50, 200, 80, -1, Math.PI), new Circle(200, 80, 30, 1, Math.PI));
+
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
                 graphics.clear();
                 graphics.lineStyle(1);
-                getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
+                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, -1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
+                if(!route) return;
+                route.length;
+                var res:Number = 1;
+                graphics.lineStyle(3, 0xff0000);
+                var c1rres:Number = res / (route.c1.r*2) * (Math.PI*2);
+                var c2rres:Number = res / (route.c2.r*2) * (Math.PI*2);
+                for(var _r:Number = 0; _r < Math.abs(route.c1rl); _r+=c1rres){
+                    var _x:Number = Math.cos(route.c1rb+_r*route.c1.d) * route.c1.r + route.c1.pos.x;
+                    var _y:Number = Math.sin(route.c1rb+_r*route.c1.d) * route.c1.r + route.c1.pos.y;
+                    if(_r == 0){
+                        graphics.moveTo(_x, _y);
+                    }else{
+                        graphics.lineTo(_x, _y);
+                    }
+                }
+                for(_r = 0; _r < Math.abs(route.c2rl); _r+=c2rres){
+                    var _x:Number = Math.cos(route.c2rb+_r*route.c2.d) * route.c2.r + route.c2.pos.x;
+                    var _y:Number = Math.sin(route.c2rb+_r*route.c2.d) * route.c2.r + route.c2.pos.y;
+                    graphics.lineTo(_x, _y);
+                }
+                graphics.lineStyle(1, 0);
             });
         }
-        private function getRoute(c1:Circle, c2:Circle, res:Number){
+        private function getRoute(c1:Circle, c2:Circle, res:Number):Route{
             var dx:Number = c2.pos.x - c1.pos.x;
             var dy:Number = c2.pos.y - c1.pos.y;
             var l:Number = dx * dx + dy * dy;
@@ -36,7 +56,7 @@ import flash.text.TextField;
 
             if(c1.d == c2.d){
                 D = l - (c2.r - c1.r) * (c2.r - c1.r);
-                if (D < 0) return;
+                if (D < 0) return null;
                 D = Math.sqrt(D);
                 a1.x = c1.r * ((c1.r - c2.r) * dx + D * dy) / l + c1.pos.x;
                 a1.y = c1.r * ((c1.r - c2.r) * dy - D * dx) / l + c1.pos.y;
@@ -69,7 +89,7 @@ import flash.text.TextField;
                 );
             }else if(c1.d != c2.d){
                 D = l - (c2.r + c1.r) * (c2.r + c1.r);
-                if(D < 0) return;
+                if(D < 0) return null;
                 D = Math.sqrt(D);
                 a1.x = c1.r * ((c2.r + c1.r) * dx + D * dy) / l + c1.pos.x;
                 a1.y = c1.r * ((c2.r + c1.r) * dy - D * dx) / l + c1.pos.y;
@@ -129,28 +149,12 @@ import flash.text.TextField;
                     c2dr =  c2r - c2.tr;
                 }
             }
-            this.graphics.lineStyle(3, 0xff0000);
-            var c1rres:Number = res / (c1.r*2) * (Math.PI*2);
-            var c2rres:Number = res / (c2.r*2) * (Math.PI*2);
-            for(var _r:Number = 0; _r < Math.abs(c1dr); _r+=c1rres){
-                var _x:Number = Math.cos(c1.tr+_r*c1.d) * c1.r + c1.pos.x;
-                var _y:Number = Math.sin(c1.tr+_r*c1.d) * c1.r + c1.pos.y;
-                if(_r == 0){
-                    this.graphics.moveTo(_x, _y);
-                }else{
-                    this.graphics.lineTo(_x, _y);
-                }
-            }
-            for(_r = 0; _r < Math.abs(c2dr); _r+=c2rres){
-                var _x:Number = Math.cos(c2r+_r*c2.d) * c2.r + c2.pos.x;
-                var _y:Number = Math.sin(c2r+_r*c2.d) * c2.r + c2.pos.y;
-                this.graphics.lineTo(_x, _y);
-            }
-            this.graphics.lineStyle(1, 0);
+
             circle(c1.pos.x, c1.pos.y, 2);
             circle(c2.pos.x, c2.pos.y, 2);
             circle(c1.pos.x, c1.pos.y, c1.r);
             circle(c2.pos.x, c2.pos.y, c2.r);
+            return new Route(c1, c2, c1.tr, c2r, c1dr*c1.d, c2dr*c2.d);
         }
         function line(x1:Number, y1:Number, x2:Number, y2:Number) {
             this.graphics.moveTo(x1, y1);
@@ -181,5 +185,38 @@ class Pos{
     public function Pos(x:Number = 0, y:Number = 0){
         this.x = x;
         this.y = y;
+    }
+}
+class Route{
+    public var c1:Circle;
+    public var c2:Circle;
+    public var c1rb:Number;
+    public var c2rb:Number;
+    public var c1rl:Number;
+    public var c2rl:Number;
+    public function Route(c1:Circle, c2:Circle, c1rb:Number, c2rb:Number, c1rl:Number, c2rl:Number){
+        this.c1 = c1;
+        this.c2 = c2;
+        this.c1rb = c1rb;
+        this.c2rb = c2rb;
+        this.c1rl = c1rl;
+        this.c2rl = c2rl;
+    }
+    public function get length():uint{
+        var t1x:Number, t1y:Number;
+        var t2x:Number, t2y:Number;
+        var dx:Number, dy:Number;
+        var l:Number = 0;
+        l += c1.r*2*Math.PI*(Math.abs(c1rl)/(Math.PI*2));
+        l += c2.r*2*Math.PI*(Math.abs(c2rl)/(Math.PI*2));
+        t1x = Math.cos(c1rb + c1rl)*c1.r + c1.pos.x;
+        t1y = Math.sin(c1rb + c1rl)*c1.r + c1.pos.y;
+        t2x = Math.cos(c2rb)*c2.r + c2.pos.x;
+        t2y = Math.sin(c2rb)*c2.r + c2.pos.y;
+        dx = t1x-t2x;
+        dy = t1y-t2y;
+        l += Math.sqrt(dx*dx + dy*dy);
+        trace(l);
+        return l;
     }
 }
