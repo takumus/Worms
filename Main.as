@@ -13,36 +13,39 @@ package {
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
                 graphics.clear();
                 graphics.lineStyle(1);
-                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth/2,stage.stageHeight/2, 30, 1, Math.PI), 1);
-                if(route) {
-                    graphics.lineStyle(1, 0xff0000, 0.2);
-                    var rl:uint = route.length;
-                    var r:Vector.<Pos> = route.generateRoute(1);
-                    for (var i:Number = 0; i < r.length; i++) {
-                        graphics.drawCircle(r[i].x, r[i].y, 2);
-                    }
-                }
-                graphics.lineStyle(1);
-                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth / 2 + 100, stage.stageHeight / 2 + 100, 30, -1, 0), 1);
-                if(route) {
-                    graphics.lineStyle(1, 0x00ff00, 0.2);
-                    var rl:uint = route.length;
-                    var r:Vector.<Pos> = route.generateRoute(1);
-                    for (var i:Number = 0; i < r.length; i++) {
-                        graphics.drawCircle(r[i].x, r[i].y, 2);
-                    }
-                }
-                graphics.lineStyle(1);
-                var route:Route = getRoute(new Circle(mouseX, mouseY, 40, 1, 0), new Circle(stage.stageWidth / 2 - 100, stage.stageHeight / 2 + -100, 30, -1, Math.PI*0.5), 1);
-                if(route) {
-                    graphics.lineStyle(1, 0x0000ff, 0.2);
-                    var rl:uint = route.length;
-                    var r:Vector.<Pos> = route.generateRoute(1);
-                    for (var i:Number = 0; i < r.length; i++) {
-                        graphics.drawCircle(r[i].x, r[i].y, 2);
-                    }
-                }
+
+                getAllRoute(new VecPos(100, 100, 0), new VecPos(200, 150, Math.PI), 20, 20, 10);
             });
+        }
+        private function getAllRoute(vposB:VecPos, vposE:VecPos, rB:Number, rE:Number, res:Number):Vector.<Route>{
+            var cB1:Circle;
+            var cB2:Circle;
+            var cE1:Circle;
+            var cE2:Circle;
+
+            var tx:Number;
+            var ty:Number;
+            var tr:Number;
+            this.graphics.lineStyle(1, 0xff0000);
+            tx = Math.cos(vposB.r + Math.PI/2) * rB + vposB.x;
+            ty = Math.sin(vposB.r + Math.PI/2) * rB + vposB.y;
+            cB1 = new Circle(tx, ty, rB, 1, vposB.r - Math.PI/2);
+            tx = Math.cos(vposB.r - Math.PI/2) * rB + vposB.x;
+            ty = Math.sin(vposB.r - Math.PI/2) * rB + vposB.y;
+            cB2 = new Circle(tx, ty, rB, -1, vposB.r + Math.PI/2);
+
+            tx = Math.cos(vposE.r + Math.PI/2) * rE + vposE.x;
+            ty = Math.sin(vposE.r + Math.PI/2) * rE + vposE.y;
+            cE1 = new Circle(tx, ty, rE, 1, vposE.r - Math.PI/2);
+            tx = Math.cos(vposE.r - Math.PI/2) * rE + vposE.x;
+            ty = Math.sin(vposE.r - Math.PI/2) * rE + vposE.y;
+            cE2 = new Circle(tx, ty, rE, -1, vposE.r + Math.PI/2);
+
+            getRoute(cB1, cE1, res);
+            getRoute(cB1, cE2, res);
+            getRoute(cB2, cE1, res);
+            getRoute(cB2, cE2, res);
+            return null;
         }
         private function getRoute(c1:Circle, c2:Circle, res:Number):Route{
             var dx:Number = c2.pos.x - c1.pos.x;
@@ -192,6 +195,16 @@ class Pos{
     public function Pos(x:Number = 0, y:Number = 0){
         this.x = x;
         this.y = y;
+    }
+}
+class VecPos{
+    public var x = 0;
+    public var y = 0;
+    public var r = 0;
+    public function VecPos(x:Number = 0, y:Number = 0, r:Number = 0){
+        this.x = x;
+        this.y = y;
+        this.r = r;
     }
 }
 class Route{
