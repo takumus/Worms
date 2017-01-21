@@ -40,12 +40,12 @@ package {
             tx = Math.cos(vposE.r - Math.PI/2) * rE + vposE.x;
             ty = Math.sin(vposE.r - Math.PI/2) * rE + vposE.y;
             cE2 = new Circle(tx, ty, rE, -1, vposE.r + Math.PI/2);
-
-            getRoute(cB1, cE1, res);
-            getRoute(cB1, cE2, res);
-            getRoute(cB2, cE1, res);
-            getRoute(cB2, cE2, res);
-            return null;
+            var routes:Vector.<Route> = new Vector.<Route>();
+            routes.push(getRoute(cB1, cE1, res));
+            routes.push(getRoute(cB1, cE2, res));
+            routes.push(getRoute(cB2, cE1, res));
+            routes.push(getRoute(cB2, cE2, res));
+            return routes;
         }
         private function getRoute(c1:Circle, c2:Circle, res:Number):Route{
             var dx:Number = c2.pos.x - c1.pos.x;
