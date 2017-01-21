@@ -9,12 +9,20 @@ package {
             var textField:TextField = new TextField();
             textField.text = "Hello, World";
             addChild(textField);
-
+            var px:Number = 0;
+            var py:Number = 0;
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
+                if(Math.abs(px-mouseX) + Math.abs(py-mouseY) < 10) return;
                 graphics.clear();
                 graphics.lineStyle(1);
-
-                getAllRoute(new VecPos(100, 100, 0), new VecPos(200, 150, Math.PI), 20, 20, 10);
+                var r:Number = Math.atan2(mouseY - py, mouseX - px);
+                px = mouseX;
+                py = mouseY;
+                var routes:Vector.<Route> = getAllRoute(new VecPos(mouseX, mouseY, r), new VecPos(200, 150, Math.PI), 50, 50, 10);
+                for(var i:int = 0; i < routes.length; i ++){
+                    var route:Route = routes[i];
+                    
+                }
             });
         }
         private function getAllRoute(vposB:VecPos, vposE:VecPos, rB:Number, rE:Number, res:Number):Vector.<Route>{
