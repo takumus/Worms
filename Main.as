@@ -1,31 +1,48 @@
 package {
 
     import flash.display.Sprite;
-    import flash.events.MouseEvent;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
+import flash.events.MouseEvent;
     import flash.text.TextField;
-
+[SWF(backgroundColor=0)]
     public class Main extends Sprite {
         public function Main() {
+            stage.align = StageAlign.TOP_LEFT;
+            stage.scaleMode = StageScaleMode.NO_SCALE;
             var textField:TextField = new TextField();
             textField.text = "Hello, World";
             addChild(textField);
             var px:Number = 0;
             var py:Number = 0;
             this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
-                if(Math.abs(px-mouseX) + Math.abs(py-mouseY) < 10) return;
+                if(Matthew.abs(px-mouseX) + Matthew.abs(py-mouseY) < 3) return;
                 graphics.clear();
-                graphics.lineStyle(1);
-                var r:Number = Math.atan2(mouseY - py, mouseX - px);
+                graphics.lineStyle(1,0x666666);
+                var tr:Number = Math.atan2(mouseY - py, mouseX - px);
                 px = mouseX;
                 py = mouseY;
-                var routes:Vector.<Route> = getAllRoute(new VecPos(mouseX, mouseY, r), new VecPos(200, 150, Math.PI), 50, 50, 10);
+                var routes:Vector.<Route> = getAllRoute(new VecPos(mouseX, mouseY, tr), new VecPos(400, 150, 0), 40, 30);
+                graphics.lineStyle();
+                var colors:Array =[
+                        0xff0000,
+                        0x00ff00,
+                        0x00ffff,
+                        0xffff00
+                ];
                 for(var i:int = 0; i < routes.length; i ++){
                     var route:Route = routes[i];
-                    
+                    var r:Vector.<Pos> = route.generateRoute(2);
+                    for(var ii:int = 0; ii < r.length; ii++){
+                        var pos:Pos = r[ii];
+                        graphics.beginFill(colors[i], 1);
+                        graphics.drawCircle(pos.x + i*2, pos.y + i*2, 2);
+                        graphics.endFill();
+                    }
                 }
             });
         }
-        private function getAllRoute(vposB:VecPos, vposE:VecPos, rB:Number, rE:Number, res:Number):Vector.<Route>{
+        private function getAllRoute(vposB:VecPos, vposE:VecPos, rB:Number, rE:Number):Vector.<Route>{
             var cB1:Circle;
             var cB2:Circle;
             var cE1:Circle;
@@ -34,28 +51,32 @@ package {
             var tx:Number;
             var ty:Number;
             var tr:Number;
-            this.graphics.lineStyle(1, 0xff0000);
-            tx = Math.cos(vposB.r + Math.PI/2) * rB + vposB.x;
-            ty = Math.sin(vposB.r + Math.PI/2) * rB + vposB.y;
-            cB1 = new Circle(tx, ty, rB, 1, vposB.r - Math.PI/2);
-            tx = Math.cos(vposB.r - Math.PI/2) * rB + vposB.x;
-            ty = Math.sin(vposB.r - Math.PI/2) * rB + vposB.y;
-            cB2 = new Circle(tx, ty, rB, -1, vposB.r + Math.PI/2);
+            tx = Math.cos(vposB.r + Matthew.HPI) * rB + vposB.pos.x;
+            ty = Math.sin(vposB.r + Matthew.HPI) * rB + vposB.pos.y;
+            cB1 = new Circle(tx, ty, rB, 1, vposB.r - Matthew.HPI);
+            tx = Math.cos(vposB.r - Matthew.HPI) * rB + vposB.pos.x;
+            ty = Math.sin(vposB.r - Matthew.HPI) * rB + vposB.pos.y;
+            cB2 = new Circle(tx, ty, rB, -1, vposB.r + Matthew.HPI);
 
-            tx = Math.cos(vposE.r + Math.PI/2) * rE + vposE.x;
-            ty = Math.sin(vposE.r + Math.PI/2) * rE + vposE.y;
-            cE1 = new Circle(tx, ty, rE, 1, vposE.r - Math.PI/2);
-            tx = Math.cos(vposE.r - Math.PI/2) * rE + vposE.x;
-            ty = Math.sin(vposE.r - Math.PI/2) * rE + vposE.y;
-            cE2 = new Circle(tx, ty, rE, -1, vposE.r + Math.PI/2);
+            tx = Math.cos(vposE.r + Matthew.HPI) * rE + vposE.pos.x;
+            ty = Math.sin(vposE.r + Matthew.HPI) * rE + vposE.pos.y;
+            cE1 = new Circle(tx, ty, rE, 1, vposE.r - Matthew.HPI);
+            tx = Math.cos(vposE.r - Matthew.HPI) * rE + vposE.pos.x;
+            ty = Math.sin(vposE.r - Matthew.HPI) * rE + vposE.pos.y;
+            cE2 = new Circle(tx, ty, rE, -1, vposE.r + Matthew.HPI);
             var routes:Vector.<Route> = new Vector.<Route>();
-            routes.push(getRoute(cB1, cE1, res));
-            routes.push(getRoute(cB1, cE2, res));
-            routes.push(getRoute(cB2, cE1, res));
-            routes.push(getRoute(cB2, cE2, res));
+            var route:Route;
+            route = getRoute(cB1, cE1);
+            if(route) routes.push(route);
+            route = getRoute(cB1, cE2);
+            if(route) routes.push(route);
+            route = getRoute(cB2, cE1);
+            if(route) routes.push(route);
+            route = getRoute(cB2, cE2);
+            if(route) routes.push(route);
             return routes;
         }
-        private function getRoute(c1:Circle, c2:Circle, res:Number):Route{
+        private function getRoute(c1:Circle, c2:Circle):Route{
             var dx:Number = c2.pos.x - c1.pos.x;
             var dy:Number = c2.pos.y - c1.pos.y;
             var l:Number = dx * dx + dy * dy;
@@ -87,10 +108,10 @@ package {
 
                 r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
                 if(c1.d > 0){
-                    c2r = c1r = Utils.normalize(r+br);
+                    c2r = c1r = Matthew.normalize(r+br);
                     line(a1.x, a1.y, b1.x, b1.y);
                 }else{
-                    c2r = c1r = Utils.normalize(-r+br);
+                    c2r = c1r = Matthew.normalize(-r+br);
                     line(a2.x, a2.y, b2.x, b2.y);
                 }
                 line(
@@ -120,12 +141,12 @@ package {
 
                 r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
                 if(c1.d > 0) {
-                    c1r = Utils.normalize(r + br);
-                    c2r = Utils.normalize(r + br + Math.PI);
+                    c1r = Matthew.normalize(r + br);
+                    c2r = Matthew.normalize(r + br + Matthew.PI);
                     line(a1.x, a1.y, b1.x, b1.y);
                 }else{
-                    c1r = Utils.normalize(-r+br);
-                    c2r = Utils.normalize(-r+br+Math.PI);
+                    c1r = Matthew.normalize(-r+br);
+                    c2r = Matthew.normalize(-r+br+Matthew.PI);
                     line(a2.x, a2.y, b2.x, b2.y);
                 }
                 line(
@@ -145,11 +166,11 @@ package {
                 if(c1.tr < c1r){
                     c1dr = c1r - c1.tr;
                 }else{
-                    c1dr = Math.PI*2 - (c1.tr - c1r);
+                    c1dr = Matthew.DPI - (c1.tr - c1r);
                 }
             }else{
                 if(c1.tr < c1r){
-                    c1dr = Math.PI*2 - (c1r - c1.tr);
+                    c1dr = Matthew.DPI - (c1r - c1.tr);
                 }else{
                     c1dr = c1.tr - c1r;
                 }
@@ -158,11 +179,11 @@ package {
                 if(c2r < c2.tr){
                     c2dr = c2.tr - c2r;
                 }else{
-                    c2dr = Math.PI*2 - (c2r - c2.tr);
+                    c2dr = Matthew.DPI - (c2r - c2.tr);
                 }
             }else{
                 if(c2r < c2.tr){
-                    c2dr = Math.PI*2 - (c2.tr - c2r);
+                    c2dr = Matthew.DPI - (c2.tr - c2r);
                 }else{
                     c2dr =  c2r - c2.tr;
                 }
@@ -184,7 +205,14 @@ package {
         }
     }
 }
-
+class Pos{
+    public var x = 0;
+    public var y = 0;
+    public function Pos(x:Number = 0, y:Number = 0){
+        this.x = x;
+        this.y = y;
+    }
+}
 class Circle{
     public var pos:Pos;
     public var r:Number;
@@ -194,24 +222,14 @@ class Circle{
         this.pos = new Pos(x, y);
         this.r = r;
         this.d = d;
-        this.tr = Utils.normalize(tr);
-    }
-}
-class Pos{
-    public var x = 0;
-    public var y = 0;
-    public function Pos(x:Number = 0, y:Number = 0){
-        this.x = x;
-        this.y = y;
+        this.tr = Matthew.normalize(tr);
     }
 }
 class VecPos{
-    public var x = 0;
-    public var y = 0;
+    public var pos:Pos;
     public var r = 0;
     public function VecPos(x:Number = 0, y:Number = 0, r:Number = 0){
-        this.x = x;
-        this.y = y;
+        this.pos = new Pos(x, y);
         this.r = r;
     }
 }
@@ -234,12 +252,13 @@ class Route{
         var _route:Vector.<Pos>;
         if(route){
             _route = route;
+            _route.length = 0;
         }else{
             _route = new Vector.<Pos>();
         }
-        var c1rres:Number = res / (c1.r*2 * Math.PI) * Math.PI*2;
-        var c2rres:Number = res / (c2.r*2 * Math.PI) * Math.PI*2;
-        for(var _r:Number = 0; _r < Math.abs(c1rl); _r+=c1rres){
+        var c1rres:Number = res / (c1.r*2 * Matthew.PI) * Matthew.DPI;
+        var c2rres:Number = res / (c2.r*2 * Matthew.PI) * Matthew.DPI;
+        for(var _r:Number = 0; _r < Matthew.abs(c1rl); _r+=c1rres){
             var _x:Number = Math.cos(c1rb+_r*c1.d) * c1.r + c1.pos.x;
             var _y:Number = Math.sin(c1rb+_r*c1.d) * c1.r + c1.pos.y;
             _route.push(new Pos(_x, _y));
@@ -253,15 +272,15 @@ class Route{
                 res,
                 _route
         );
-        for(_r = 0; _r < Math.abs(c2rl) - c2rres; _r+=c2rres){
+        for(_r = 0; _r < Matthew.abs(c2rl) - c2rres; _r+=c2rres){
             var _x:Number = Math.cos(c2rb+_r*c2.d) * c2.r + c2.pos.x;
             var _y:Number = Math.sin(c2rb+_r*c2.d) * c2.r + c2.pos.y;
             _route.push(new Pos(_x, _y));
         }
         _route.push(
                 new Pos(
-                        Math.cos(c2rb+c2rl*c2.d) * c2.r + c2.pos.x,
-                        Math.sin(c2rb+c2rl*c2.d) * c2.r + c2.pos.y
+                        Math.cos(c2rb+(Matthew.abs(c2rl))*c2.d) * c2.r + c2.pos.x,
+                        Math.sin(c2rb+(Matthew.abs(c2rl))*c2.d) * c2.r + c2.pos.y
                 )
         );
         return _route;
@@ -271,8 +290,8 @@ class Route{
         var t2x:Number, t2y:Number;
         var dx:Number, dy:Number;
         var l:Number = 0;
-        l += c1.r*2*Math.PI*(Math.abs(c1rl)/(Math.PI*2));
-        l += c2.r*2*Math.PI*(Math.abs(c2rl)/(Math.PI*2));
+        l += c1.r*2*Matthew.PI*(Matthew.abs(c1rl)/(Matthew.DPI));
+        l += c2.r*2*Matthew.PI*(Matthew.abs(c2rl)/(Matthew.DPI));
         t1x = Math.cos(c1rb + c1rl)*c1.r + c1.pos.x;
         t1y = Math.sin(c1rb + c1rl)*c1.r + c1.pos.y;
         t2x = Math.cos(c2rb)*c2.r + c2.pos.x;
