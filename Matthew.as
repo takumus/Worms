@@ -4,13 +4,13 @@
 package {
     public class Matthew {
         public static const PI:Number = Math.PI;
-        public static const HPI:Number = Math.PI/2;
-        public static const DPI:Number = Math.PI*2;
+        public static const H_PI:Number = Math.PI/2;
+        public static const D_PI:Number = Math.PI*2;
         public function Matthew() {
         }
         public static function normalize(r:Number):Number{
-            r = r%(Math.PI*2);
-            if(r < 0) return Math.PI*2 + r;
+            r = r%(D_PI);
+            if(r < 0) return D_PI + r;
             return r;
         }
         public static function abs(v:Number):Number{

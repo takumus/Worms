@@ -1,11 +1,12 @@
 package {
 
     import flash.display.Sprite;
-import flash.display.StageAlign;
-import flash.display.StageScaleMode;
+    import flash.display.StageAlign;
+    import flash.display.StageScaleMode;
+import flash.events.Event;
 import flash.events.MouseEvent;
     import flash.text.TextField;
-[SWF(backgroundColor=0)]
+    [SWF(backgroundColor="0", frameRate="60")]
     public class Main extends Sprite {
         public function Main() {
             stage.align = StageAlign.TOP_LEFT;
@@ -15,14 +16,27 @@ import flash.events.MouseEvent;
             addChild(textField);
             var px:Number = 0;
             var py:Number = 0;
-            this.stage.addEventListener(MouseEvent.MOUSE_MOVE, function(e:MouseEvent):void{
+            var a1:Arrow = new Arrow(50, 0xffff00);
+            var a2:Arrow = new Arrow(50, 0x00ffff);
+            this.addChild(a1);
+            this.addChild(a2);
+            this.stage.addEventListener(Event.ENTER_FRAME, function(e:Event):void{
+                a2.x = stage.stageWidth/2;
+                a2.y = stage.stageHeight/2;
+                a2.rotation ++;
                 if(Matthew.abs(px-mouseX) + Matthew.abs(py-mouseY) < 3) return;
                 graphics.clear();
                 graphics.lineStyle(1,0x666666);
-                var tr:Number = Math.atan2(mouseY - py, mouseX - px);
-                px = mouseX;
-                py = mouseY;
-                var routes:Vector.<Route> = getAllRoute(new VecPos(mouseX, mouseY, tr), new VecPos(400, 150, 0), 40, 30);
+                var tr:Number = Math.atan2(mouseY - a1.y, mouseX - a1.x);
+                a1.x = mouseX - Math.cos(tr)*a1.length;
+                a1.y = mouseY - Math.sin(tr)*a1.length;
+                a1.rotation = tr/Matthew.PI*180;
+                var routes:Vector.<Route> = getAllRoute(
+                        new VecPos(a1.x, a1.y, tr),
+                        new VecPos(a2.x, a2.y, a2.rotation/180*Math.PI),
+                        60,
+                        80
+                );
                 graphics.lineStyle();
                 var colors:Array =[
                         0xff0000,
@@ -30,14 +44,34 @@ import flash.events.MouseEvent;
                         0x00ffff,
                         0xffff00
                 ];
+                var minLength:uint = int.MAX_VALUE;
+                var route:Route;
                 for(var i:int = 0; i < routes.length; i ++){
-                    var route:Route = routes[i];
-                    var r:Vector.<Pos> = route.generateRoute(2);
+                    if(minLength > routes[i].length){
+                        minLength = routes[i].length;
+                        route = routes[i];
+                    }
+                    var r:Vector.<Pos> = routes[i].generateRoute(1);
+                    //trace(r.length);
+                    graphics.lineStyle(3, 0x0000ff, 0.3);
                     for(var ii:int = 0; ii < r.length; ii++){
                         var pos:Pos = r[ii];
-                        graphics.beginFill(colors[i], 1);
-                        graphics.drawCircle(pos.x + i*2, pos.y + i*2, 2);
-                        graphics.endFill();
+                        if(ii == 0){
+                            graphics.moveTo(pos.x, pos.y);
+                        }else{
+                            graphics.lineTo(pos.x, pos.y);
+                        }
+                    }
+                }
+                var r:Vector.<Pos> = route.generateRoute(1);
+                //trace(r.length);
+                graphics.lineStyle(3, 0xff0000);
+                for(var ii:int = 0; ii < r.length; ii++){
+                    var pos:Pos = r[ii];
+                    if(ii == 0){
+                        graphics.moveTo(pos.x, pos.y);
+                    }else{
+                        graphics.lineTo(pos.x, pos.y);
                     }
                 }
             });
@@ -51,19 +85,19 @@ import flash.events.MouseEvent;
             var tx:Number;
             var ty:Number;
             var tr:Number;
-            tx = Math.cos(vposB.r + Matthew.HPI) * rB + vposB.pos.x;
-            ty = Math.sin(vposB.r + Matthew.HPI) * rB + vposB.pos.y;
-            cB1 = new Circle(tx, ty, rB, 1, vposB.r - Matthew.HPI);
-            tx = Math.cos(vposB.r - Matthew.HPI) * rB + vposB.pos.x;
-            ty = Math.sin(vposB.r - Matthew.HPI) * rB + vposB.pos.y;
-            cB2 = new Circle(tx, ty, rB, -1, vposB.r + Matthew.HPI);
+            tx = Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x;
+            ty = Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y;
+            cB1 = new Circle(tx, ty, rB, 1, vposB.r - Matthew.H_PI);
+            tx = Math.cos(vposB.r - Matthew.H_PI) * rB + vposB.pos.x;
+            ty = Math.sin(vposB.r - Matthew.H_PI) * rB + vposB.pos.y;
+            cB2 = new Circle(tx, ty, rB, -1, vposB.r + Matthew.H_PI);
 
-            tx = Math.cos(vposE.r + Matthew.HPI) * rE + vposE.pos.x;
-            ty = Math.sin(vposE.r + Matthew.HPI) * rE + vposE.pos.y;
-            cE1 = new Circle(tx, ty, rE, 1, vposE.r - Matthew.HPI);
-            tx = Math.cos(vposE.r - Matthew.HPI) * rE + vposE.pos.x;
-            ty = Math.sin(vposE.r - Matthew.HPI) * rE + vposE.pos.y;
-            cE2 = new Circle(tx, ty, rE, -1, vposE.r + Matthew.HPI);
+            tx = Math.cos(vposE.r + Matthew.H_PI) * rE + vposE.pos.x;
+            ty = Math.sin(vposE.r + Matthew.H_PI) * rE + vposE.pos.y;
+            cE1 = new Circle(tx, ty, rE, 1, vposE.r - Matthew.H_PI);
+            tx = Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x;
+            ty = Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y;
+            cE2 = new Circle(tx, ty, rE, -1, vposE.r + Matthew.H_PI);
             var routes:Vector.<Route> = new Vector.<Route>();
             var route:Route;
             route = getRoute(cB1, cE1);
@@ -166,11 +200,11 @@ import flash.events.MouseEvent;
                 if(c1.tr < c1r){
                     c1dr = c1r - c1.tr;
                 }else{
-                    c1dr = Matthew.DPI - (c1.tr - c1r);
+                    c1dr = Matthew.D_PI - (c1.tr - c1r);
                 }
             }else{
                 if(c1.tr < c1r){
-                    c1dr = Matthew.DPI - (c1r - c1.tr);
+                    c1dr = Matthew.D_PI - (c1r - c1.tr);
                 }else{
                     c1dr = c1.tr - c1r;
                 }
@@ -179,11 +213,11 @@ import flash.events.MouseEvent;
                 if(c2r < c2.tr){
                     c2dr = c2.tr - c2r;
                 }else{
-                    c2dr = Matthew.DPI - (c2r - c2.tr);
+                    c2dr = Matthew.D_PI - (c2r - c2.tr);
                 }
             }else{
                 if(c2r < c2.tr){
-                    c2dr = Matthew.DPI - (c2.tr - c2r);
+                    c2dr = Matthew.D_PI - (c2.tr - c2r);
                 }else{
                     c2dr =  c2r - c2.tr;
                 }
@@ -205,6 +239,9 @@ import flash.events.MouseEvent;
         }
     }
 }
+
+import flash.display.Shape;
+
 class Pos{
     public var x = 0;
     public var y = 0;
@@ -256,13 +293,16 @@ class Route{
         }else{
             _route = new Vector.<Pos>();
         }
-        var c1rres:Number = res / (c1.r*2 * Matthew.PI) * Matthew.DPI;
-        var c2rres:Number = res / (c2.r*2 * Matthew.PI) * Matthew.DPI;
+        var c1rres:Number = res / (c1.r*2 * Matthew.PI) * Matthew.D_PI;
+        var c2rres:Number = res / (c2.r*2 * Matthew.PI) * Matthew.D_PI;
+        var _x:Number = Math.cos(c1rb) * c1.r + c1.pos.x;
+        var _y:Number = Math.sin(c1rb) * c1.r + c1.pos.y;
         for(var _r:Number = 0; _r < Matthew.abs(c1rl); _r+=c1rres){
-            var _x:Number = Math.cos(c1rb+_r*c1.d) * c1.r + c1.pos.x;
-            var _y:Number = Math.sin(c1rb+_r*c1.d) * c1.r + c1.pos.y;
+            _x = Math.cos(c1rb+_r*c1.d) * c1.r + c1.pos.x;
+            _y = Math.sin(c1rb+_r*c1.d) * c1.r + c1.pos.y;
             _route.push(new Pos(_x, _y));
         }
+        _route.pop();
         getLineRoot(
                 new Pos(_x, _y),
                 new Pos(
@@ -272,9 +312,10 @@ class Route{
                 res,
                 _route
         );
+        //trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
         for(_r = 0; _r < Matthew.abs(c2rl) - c2rres; _r+=c2rres){
-            var _x:Number = Math.cos(c2rb+_r*c2.d) * c2.r + c2.pos.x;
-            var _y:Number = Math.sin(c2rb+_r*c2.d) * c2.r + c2.pos.y;
+            _x = Math.cos(c2rb+_r*c2.d) * c2.r + c2.pos.x;
+            _y = Math.sin(c2rb+_r*c2.d) * c2.r + c2.pos.y;
             _route.push(new Pos(_x, _y));
         }
         _route.push(
@@ -290,8 +331,8 @@ class Route{
         var t2x:Number, t2y:Number;
         var dx:Number, dy:Number;
         var l:Number = 0;
-        l += c1.r*2*Matthew.PI*(Matthew.abs(c1rl)/(Matthew.DPI));
-        l += c2.r*2*Matthew.PI*(Matthew.abs(c2rl)/(Matthew.DPI));
+        l += c1.r*2*Matthew.PI*(Matthew.abs(c1rl)/(Matthew.D_PI));
+        l += c2.r*2*Matthew.PI*(Matthew.abs(c2rl)/(Matthew.D_PI));
         t1x = Math.cos(c1rb + c1rl)*c1.r + c1.pos.x;
         t1y = Math.sin(c1rb + c1rl)*c1.r + c1.pos.y;
         t2x = Math.cos(c2rb)*c2.r + c2.pos.x;
@@ -308,10 +349,28 @@ class Route{
         var dx:Number = Math.cos(r) * res;
         var dy:Number = Math.sin(r) * res;
         var l:Number = Math.sqrt(tx*tx+ty*ty) - res;
-        for(var i:int = 1; i < l/res; i ++){
+        for(var i:int = 0; i < l/res; i ++){
             var x:Number = dx * i + bp.x;
             var y:Number = dy * i + bp.y;
             vector.push(new Pos(x, y));
         }
+    }
+}
+class Arrow extends Shape{
+    private var _length:Number;
+    public function Arrow(length:Number, color:uint){
+        this.graphics.lineStyle(3, color);
+        this.graphics.drawCircle(0, 0, 3);
+        this.graphics.moveTo(0, 0);
+        this.graphics.lineTo(length, 0);
+        this.graphics.beginFill(color);
+        this.graphics.moveTo(length, 0);
+        this.graphics.lineTo(length-20, 10);
+        this.graphics.lineTo(length-20, -10);
+        this.graphics.lineTo(length, 0);
+        this._length = length;
+    }
+    public function get length():Number{
+        return this._length;
     }
 }
