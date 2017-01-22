@@ -3,8 +3,8 @@ package {
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
-import flash.events.Event;
-import flash.events.MouseEvent;
+    import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.text.TextField;
     [SWF(backgroundColor="0", frameRate="60")]
     public class Main extends Sprite {
