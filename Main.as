@@ -6,6 +6,15 @@ package {
     import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.text.TextField;
+import flash.utils.getTimer;
+
+import routes.Circle;
+
+    import routes.Matthew;
+    import routes.Route;
+    import routes.VecPos;
+    import routes.Pos;
+
     [SWF(backgroundColor="0", frameRate="60")]
     public class Main extends Sprite {
         public function Main() {
@@ -37,12 +46,14 @@ package {
                 a1.x = mouseX - Math.cos(tr)*a1.length;
                 a1.y = mouseY - Math.sin(tr)*a1.length;
                 a1.rotation = tr/Matthew.PI*180;
-                var routes:Vector.<Route> = getAllRoute(
+                var t:uint = getTimer();
+                var allRoute:Vector.<Route> = getAllRoute(
                         new VecPos(a1.x, a1.y, tr),
                         new VecPos(a2.x, a2.y, a2.rotation/180*Math.PI),
                         60,
                         90
                 );
+                //trace(getTimer() - t);
                 graphics.lineStyle();
                 var colors:Array =[
                         0xff0000,
@@ -52,12 +63,13 @@ package {
                 ];
                 var minLength:uint = int.MAX_VALUE;
                 var route:Route;
-                for(var i:int = 0; i < routes.length; i ++){
-                    if(minLength > routes[i].length){
-                        minLength = routes[i].length;
-                        route = routes[i];
+                for(var i:int = 0; i < allRoute.length; i ++){
+                    if(minLength > allRoute[i].length){
+                        minLength = allRoute[i].length;
+                        route = allRoute[i];
                     }
-                    var r:Vector.<VecPos> = routes[i].generateRoute(1);
+                    //continue;
+                    var r:Vector.<VecPos> = allRoute[i].generateRoute(1);
                     //trace(r.length);
                     graphics.lineStyle(3, 0x0000ff, 0.3);
                     for(var ii:int = 0; ii < r.length; ii++){
@@ -69,11 +81,14 @@ package {
                         }
                     }
                 }
+                var t:uint = getTimer();
                 var r:Vector.<VecPos> = route.generateRoute(1);
+                //trace(getTimer() - t);
                 //trace(r.length);
                 graphics.lineStyle(3, 0xff0000);
                 for(var ii:int = 0; ii < r.length; ii++){
                     var vpos:VecPos = r[ii];
+                    //continue;
                     if(ii == 0){
                         graphics.moveTo(vpos.pos.x, vpos.pos.y);
                     }else{
@@ -118,17 +133,17 @@ package {
             tx = Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x;
             ty = Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y;
             cE2 = new Circle(tx, ty, rE, -1, vposE.r + Matthew.H_PI);
-            var routes:Vector.<Route> = new Vector.<Route>();
+            var allRoute:Vector.<Route> = new Vector.<Route>();
             var route:Route;
             route = getRoute(cB1, cE1);
-            if(route) routes.push(route);
+            if(route) allRoute.push(route);
             route = getRoute(cB1, cE2);
-            if(route) routes.push(route);
+            if(route) allRoute.push(route);
             route = getRoute(cB2, cE1);
-            if(route) routes.push(route);
+            if(route) allRoute.push(route);
             route = getRoute(cB2, cE2);
-            if(route) routes.push(route);
-            return routes;
+            if(route) allRoute.push(route);
+            return allRoute;
         }
         private function getRoute(c1:Circle, c2:Circle):Route{
             var dx:Number = c2.pos.x - c1.pos.x;

@@ -1,7 +1,7 @@
 /**
  * Created by takumus on 2017/01/23.
  */
-package {
+package routes {
     public class Circle{
         public var pos:Pos;
         public var r:Number;

@@ -1,7 +1,7 @@
 /**
  * Created by takumus on 2017/01/23.
  */
-package {
+package routes {
     public class Route{
         public var c1:Circle;
         public var c2:Circle;

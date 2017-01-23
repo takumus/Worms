@@ -1,7 +1,7 @@
 /**
  * Created by takumus on 2017/01/23.
  */
-package {
+package routes {
     public class Pos{
         public var x = 0;
         public var y = 0;

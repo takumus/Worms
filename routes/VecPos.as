@@ -1,7 +1,7 @@
 /**
  * Created by takumus on 2017/01/23.
  */
-package {
+package routes {
     public class VecPos{
         public var pos:Pos;
         public var r = 0;

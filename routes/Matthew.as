@@ -1,7 +1,7 @@
 /**
  * Created by takumus on 2017/01/19.
  */
-package {
+package routes {
     public class Matthew {
         public static const PI:Number = Math.PI;
         public static const H_PI:Number = Math.PI/2;
