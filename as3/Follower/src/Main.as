@@ -33,7 +33,7 @@ import routes.Circle;
             this.addChild(a3);
             var n:int = 0;
             this.stage.addEventListener(MouseEvent.CLICK, function(e:MouseEvent):void{
-               n = 0;
+                n = 0;
             });
             this.stage.addEventListener(Event.ENTER_FRAME, function(e:Event):void{
                 a2.x = stage.stageWidth/2;
@@ -56,10 +56,10 @@ import routes.Circle;
                 //trace(getTimer() - t);
                 graphics.lineStyle();
                 var colors:Array =[
-                        0xff0000,
-                        0x00ff00,
-                        0x00ffff,
-                        0xffff00
+                    0xff0000,
+                    0x00ff00,
+                    0x00ffff,
+                    0xffff00
                 ];
                 var minLength:uint = int.MAX_VALUE;
                 var route:Route;
