@@ -47,11 +47,14 @@ package {
 				a1.y = mouseY - Math.sin(tr) * a1.length;
 				a1.rotation = tr / Matthew.PI * 180;
 				var t:uint = getTimer();
+				var tx:Number = a2.x - a1.x;
+				var ty:Number = a2.y - a1.y;
+				var d:Number = Math.sqrt(tx*tx+ty*ty);
 				var allRoute:Vector.<Route> = getAllRoute(
 						new VecPos(a1.x, a1.y, tr),
 						new VecPos(a2.x, a2.y, a2.rotation / 180 * Math.PI),
 						60,
-						90
+						80
 				);
 				//trace(getTimer() - t);
 				graphics.lineStyle();
@@ -86,8 +89,13 @@ package {
 				//trace(getTimer() - t);
 				//trace(r.length);
 				graphics.lineStyle(3, 0xff0000);
+				var ri:Number = 0;
 				for (var ii:int = 0; ii < r.length; ii++) {
+					var rr:Number = Math.sin(ri)*(20*Math.sin(Math.PI*(ii/(r.length))));
+					ri+=0.03;
 					var vpos:VecPos = r[ii];
+					vpos.pos.x = vpos.pos.x + Math.cos(vpos.r+Math.PI/2) * rr;
+					vpos.pos.y = vpos.pos.y + Math.sin(vpos.r+Math.PI/2) * rr;
 					//continue;
 					if (ii == 0) {
 						graphics.moveTo(vpos.pos.x, vpos.pos.y);
