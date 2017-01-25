@@ -30,7 +30,8 @@ class Route {
 		let _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
 		let _y = Math.sin(this.c1rb) * this.c1.r + this.c1.pos.y;
 		let tr:number;
-		for (let r = 0; r < Matthew.abs(this.c1rl); r += c1rres) {
+		const L = Matthew.abs(this.c1rl);
+		for (let r = 0; r < L; r += c1rres) {
 			tr = this.c1rb + r * this.c1.d;
 			_x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 			_y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
@@ -47,7 +48,8 @@ class Route {
 			_route
 		);
 		//trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
-		for (let r = 0; r < Matthew.abs(this.c2rl) - c2rres; r += c2rres) {
+		const LL = Matthew.abs(this.c2rl) - c2rres;
+		for (let r = 0; r < LL; r += c2rres) {
 			tr = this.c2rb + r * this.c2.d;
 			_x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 			_y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
@@ -84,7 +86,8 @@ class Route {
 		const dx = Math.cos(r) * res;
 		const dy = Math.sin(r) * res;
 		const l = Math.sqrt(tx * tx + ty * ty) - res;
-		for (let i = 0; i < l / res; i++) {
+		const L = l / res;
+		for (let i = 0; i < L; i++) {
 			vector.push(new VecPos(
 				dx * i + bp.x,
 				dy * i + bp.y,

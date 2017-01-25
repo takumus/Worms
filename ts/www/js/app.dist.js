@@ -189,7 +189,8 @@
 	        var _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
 	        var _y = Math.sin(this.c1rb) * this.c1.r + this.c1.pos.y;
 	        var tr;
-	        for (var r = 0; r < matthew_1.default.abs(this.c1rl); r += c1rres) {
+	        var L = matthew_1.default.abs(this.c1rl);
+	        for (var r = 0; r < L; r += c1rres) {
 	            tr = this.c1rb + r * this.c1.d;
 	            _x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 	            _y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
@@ -198,7 +199,8 @@
 	        _route.pop();
 	        this.getLineRoot(new utils_1.Pos(_x, _y), new utils_1.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, _route);
 	        //trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
-	        for (var r = 0; r < matthew_1.default.abs(this.c2rl) - c2rres; r += c2rres) {
+	        var LL = matthew_1.default.abs(this.c2rl) - c2rres;
+	        for (var r = 0; r < LL; r += c2rres) {
 	            tr = this.c2rb + r * this.c2.d;
 	            _x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 	            _y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
@@ -227,7 +229,8 @@
 	        var dx = Math.cos(r) * res;
 	        var dy = Math.sin(r) * res;
 	        var l = Math.sqrt(tx * tx + ty * ty) - res;
-	        for (var i = 0; i < l / res; i++) {
+	        var L = l / res;
+	        for (var i = 0; i < L; i++) {
 	            vector.push(new utils_1.VecPos(dx * i + bp.x, dy * i + bp.y, r));
 	        }
 	    };
