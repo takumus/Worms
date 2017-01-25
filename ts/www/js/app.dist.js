@@ -80,13 +80,13 @@
 	var g = new PIXI.Graphics();
 	var rg = new route_1.RouteGenerator(g);
 	var mouse = new utils_1.Pos();
-	var L = 30;
+	var L = 40;
 	var w = new worm_1.FollowWorm(L);
 	var draw = function () {
 	    requestAnimationFrame(draw);
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
-	    var routes = rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.1), new utils_1.VecPos(600, 600, 0), 250, 150);
+	    var routes = rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(800, 600, 0), 250, 350);
 	    var min = Number.MAX_VALUE;
 	    var route;
 	    routes.forEach(function (r) {
@@ -448,7 +448,7 @@
 	            var nbody = this.body[i];
 	            var vx = this.bone[i - 1].x - nbone.x;
 	            var vy = this.bone[i - 1].y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.length - 1) * (Math.PI)))) * 30;
+	            var r = ((Math.sin(i / (this.bone.length - 1) * (Math.PI)))) * 60;
 	            var vl = vx * vx + vy * vy;
 	            var vr = Math.sqrt(vl);
 	            vx = vx / vr * r;
@@ -464,7 +464,7 @@
 	    Worm.prototype.render = function () {
 	        this.clear();
 	        this.lineStyle(2, 0xffffff);
-	        //this.beginFill(0xff0000);
+	        this.beginFill(0xffffff);
 	        this.moveTo(this.body[0].left.x, this.body[0].left.y);
 	        for (var i = 1; i < this.body.length; i++) {
 	            this.lineTo(this.body[i].left.x, this.body[i].left.y);

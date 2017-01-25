@@ -33,7 +33,7 @@ const init = ()=> {
 const g:PIXI.Graphics = new PIXI.Graphics();
 const rg:RouteGenerator = new RouteGenerator(g);
 const mouse:Pos = new Pos();
-const L = 30;
+const L = 40;
 const w:FollowWorm = new FollowWorm(L);
 const draw = ()=> {
 	requestAnimationFrame(draw);
@@ -41,10 +41,10 @@ const draw = ()=> {
 	g.clear();
 	g.lineStyle(2, 0xff0000);
 	const routes = rg.getAllRoute(
-		new VecPos(mouse.x , mouse.y, 0.1),
-		new VecPos(600, 600, 0),
+		new VecPos(mouse.x , mouse.y, 0.5),
+		new VecPos(800, 600, 0),
 		250,
-		150
+		350
 	);
 	let min:number = Number.MAX_VALUE;
 	let route:Route;

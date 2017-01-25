@@ -34,7 +34,7 @@ class Worm extends PIXI.Graphics{
             const nbody = this.body[i];
             let vx = this.bone[i-1].x - nbone.x;
             let vy = this.bone[i-1].y - nbone.y;
-            const r = ((Math.sin(i/(this.bone.length - 1)*(Math.PI))))*30;
+            const r = ((Math.sin(i/(this.bone.length - 1)*(Math.PI))))*60;
             const vl = vx*vx+vy*vy;
             const vr = Math.sqrt(vl);
             vx = vx / vr * r;
@@ -50,7 +50,7 @@ class Worm extends PIXI.Graphics{
     public render(){
         this.clear();
         this.lineStyle(2, 0xffffff);
-        //this.beginFill(0xff0000);
+        this.beginFill(0xffffff);
         this.moveTo(this.body[0].left.x, this.body[0].left.y);
         for(let i = 1; i < this.body.length; i ++){
             this.lineTo(this.body[i].left.x, this.body[i].left.y);
