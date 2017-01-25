@@ -18,20 +18,20 @@ class Route {
 	}
 	
 	public generateRoute(res:number, route:Array<VecPos> = null):Array<VecPos> {
-		var _route:Array<VecPos>;
+		let _route:Array<VecPos>;
 		if (route) {
 			_route = route;
 			_route.length = 0;
 		} else {
 			_route = new Array<VecPos>();
 		}
-		var c1rres:number = res / (this.c1.r * 2 * Matthew.PI) * Matthew.D_PI;
-		var c2rres:number = res / (this.c2.r * 2 * Matthew.PI) * Matthew.D_PI;
-		var _x:number = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
-		var _y:number = Math.sin(this.c1rb) * this.c1.r + this.c1.pos.y;
-		var tr:number;
-		for (var _r:number = 0; _r < Matthew.abs(this.c1rl); _r += c1rres) {
-			tr = this.c1rb + _r * this.c1.d;
+		const c1rres = res / (this.c1.r * 2 * Matthew.PI) * Matthew.D_PI;
+		const c2rres = res / (this.c2.r * 2 * Matthew.PI) * Matthew.D_PI;
+		let _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
+		let _y = Math.sin(this.c1rb) * this.c1.r + this.c1.pos.y;
+		let tr:number;
+		for (let r = 0; r < Matthew.abs(this.c1rl); r += c1rres) {
+			tr = this.c1rb + r * this.c1.d;
 			_x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 			_y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
 			_route.push(new VecPos(_x, _y, tr + Matthew.H_PI * this.c1.d));
@@ -47,8 +47,8 @@ class Route {
 				_route
 		);
 		//trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
-		for (_r = 0; _r < Matthew.abs(this.c2rl) - c2rres; _r += c2rres) {
-			tr = this.c2rb + _r * this.c2.d;
+		for (let r = 0; r < Matthew.abs(this.c2rl) - c2rres; r += c2rres) {
+			tr = this.c2rb + r * this.c2.d;
 			_x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 			_y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
 			_route.push(new VecPos(_x, _y, tr + Matthew.H_PI * this.c2.d));
@@ -64,33 +64,32 @@ class Route {
 	}
 	
 	public getLength():number {
-		var t1x:number, t1y:number;
-		var t2x:number, t2y:number;
-		var dx:number, dy:number;
-		var l:number = 0;
+		let l = 0;
 		l += this.c1.r * 2 * Matthew.PI * (Matthew.abs(this.c1rl) / (Matthew.D_PI));
 		l += this.c2.r * 2 * Matthew.PI * (Matthew.abs(this.c2rl) / (Matthew.D_PI));
-		t1x = Math.cos(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.x;
-		t1y = Math.sin(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.y;
-		t2x = Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x;
-		t2y = Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y;
-		dx = t1x - t2x;
-		dy = t1y - t2y;
+		const t1x = Math.cos(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.x;
+		const t1y = Math.sin(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.y;
+		const t2x = Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x;
+		const t2y = Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y;
+		const dx = t1x - t2x;
+		const dy = t1y - t2y;
 		l += Math.sqrt(dx * dx + dy * dy);
 		return l;
 	}
 	
 	private getLineRoot(bp:Pos, ep:Pos, res:number, vector:Array<VecPos>):void {
-		var tx:number = ep.x - bp.x;
-		var ty:number = ep.y - bp.y;
-		var r:number = Math.atan2(ty, tx);
-		var dx:number = Math.cos(r) * res;
-		var dy:number = Math.sin(r) * res;
-		var l:number = Math.sqrt(tx * tx + ty * ty) - res;
-		for (var i = 0; i < l / res; i++) {
-			var x:number = dx * i + bp.x;
-			var y:number = dy * i + bp.y;
-			vector.push(new VecPos(x, y, r));
+		const tx = ep.x - bp.x;
+		const ty = ep.y - bp.y;
+		const r = Math.atan2(ty, tx);
+		const dx = Math.cos(r) * res;
+		const dy = Math.sin(r) * res;
+		const l = Math.sqrt(tx * tx + ty * ty) - res;
+		for (let i = 0; i < l / res; i++) {
+			vector.push(new VecPos(
+				dx * i + bp.x,
+				dy * i + bp.y,
+				r
+			));
 		}
 	}
 }
@@ -101,29 +100,36 @@ class RouteGenerator{
 		this.graphics = graphics;
 	}
 	public getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
-		var cB1:Circle;
-		var cB2:Circle;
-		var cE1:Circle;
-		var cE2:Circle;
-		
-		var tx:number;
-		var ty:number;
-		var tr:number;
-		tx = Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x;
-		ty = Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y;
-		cB1 = new Circle(tx, ty, rB, 1, vposB.r - Matthew.H_PI);
-		tx = Math.cos(vposB.r - Matthew.H_PI) * rB + vposB.pos.x;
-		ty = Math.sin(vposB.r - Matthew.H_PI) * rB + vposB.pos.y;
-		cB2 = new Circle(tx, ty, rB, -1, vposB.r + Matthew.H_PI);
-		
-		tx = Math.cos(vposE.r + Matthew.H_PI) * rE + vposE.pos.x;
-		ty = Math.sin(vposE.r + Matthew.H_PI) * rE + vposE.pos.y;
-		cE1 = new Circle(tx, ty, rE, 1, vposE.r - Matthew.H_PI);
-		tx = Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x;
-		ty = Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y;
-		cE2 = new Circle(tx, ty, rE, -1, vposE.r + Matthew.H_PI);
-		var allRoute:Array<Route> = [];
-		var route:Route;
+		const cB1:Circle = new Circle(
+			Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x,
+			Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y,
+			rB, 
+			1,
+			vposB.r - Matthew.H_PI
+		);
+		const cB2:Circle = new Circle(
+			Math.cos(vposB.r - Matthew.H_PI) * rB + vposB.pos.x,
+			Math.sin(vposB.r - Matthew.H_PI) * rB + vposB.pos.y, 
+			rB, 
+			-1, 
+			vposB.r + Matthew.H_PI
+		);
+		const cE1:Circle = new Circle(
+			Math.cos(vposE.r + Matthew.H_PI) * rE + vposE.pos.x, 
+			Math.sin(vposE.r + Matthew.H_PI) * rE + vposE.pos.y, 
+			rE, 
+			1, 
+			vposE.r - Matthew.H_PI
+		);
+		const cE2:Circle = new Circle(
+			Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x, 
+			Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y, 
+			rE, 
+			-1, 
+			vposE.r + Matthew.H_PI
+		);
+		const allRoute:Array<Route> = [];
+		let route:Route;
 		route = this.getRoute(cB1, cE1);
 		if (route) allRoute.push(route);
 		route = this.getRoute(cB1, cE2);
@@ -136,36 +142,34 @@ class RouteGenerator{
 	}
 	
 	private getRoute(c1:Circle, c2:Circle):Route {
-		var dx:number = c2.pos.x - c1.pos.x;
-		var dy:number = c2.pos.y - c1.pos.y;
-		var l:number = dx * dx + dy * dy;
-		var a1 = new Pos(), a2 = new Pos(), b1 = new Pos(), b2 = new Pos();
-		var br:number = Math.atan2(c2.pos.y - c1.pos.y, c2.pos.x - c1.pos.x);
-		var r:number;
-		var D:number;
-		var c1tr:number = c1.tr;
-		var c2tr:number = c2.tr;
-		var c1r:number;
-		var c2r:number;
-		var c1dr:number;
-		var c2dr:number;
+		const dx = c2.pos.x - c1.pos.x;
+		const dy = c2.pos.y - c1.pos.y;
+		const l = dx * dx + dy * dy;
+		const a1 = new Pos(), a2 = new Pos(), b1 = new Pos(), b2 = new Pos();
+		const br = Math.atan2(c2.pos.y - c1.pos.y, c2.pos.x - c1.pos.x);
+		let c1tr = c1.tr;
+		let c2tr = c2.tr;
+		let c1r:number;
+		let c2r:number;
+		let c1dr:number;
+		let c2dr:number;
 		this.circle(c1.pos.x + Math.cos(c1tr) * c1.r, c1.pos.y + Math.sin(c1tr) * c1.r, 3);
 		this.circle(c2.pos.x + Math.cos(c2tr) * c2.r, c2.pos.y + Math.sin(c2tr) * c2.r, 3);
 		
 		if (c1.d == c2.d) {
-			D = l - (c2.r - c1.r) * (c2.r - c1.r);
-			if (D < 0) return null;
-			D = Math.sqrt(D);
-			a1.x = c1.r * ((c1.r - c2.r) * dx + D * dy) / l + c1.pos.x;
-			a1.y = c1.r * ((c1.r - c2.r) * dy - D * dx) / l + c1.pos.y;
-			a2.x = c1.r * ((c1.r - c2.r) * dx - D * dy) / l + c1.pos.x;
-			a2.y = c1.r * ((c1.r - c2.r) * dy + D * dx) / l + c1.pos.y;
-			b1.x = c2.r * ((c2.r - c1.r) * -dx - D * -dy) / l + c2.pos.x;
-			b1.y = c2.r * ((c2.r - c1.r) * -dy + D * -dx) / l + c2.pos.y;
-			b2.x = c2.r * ((c2.r - c1.r) * -dx + D * -dy) / l + c2.pos.x;
-			b2.y = c2.r * ((c2.r - c1.r) * -dy - D * -dx) / l + c2.pos.y;
+			let d = l - (c2.r - c1.r) * (c2.r - c1.r);
+			if (d < 0) return null;
+			d = Math.sqrt(d);
+			a1.x = c1.r * ((c1.r - c2.r) * dx + d * dy) / l + c1.pos.x;
+			a1.y = c1.r * ((c1.r - c2.r) * dy - d * dx) / l + c1.pos.y;
+			a2.x = c1.r * ((c1.r - c2.r) * dx - d * dy) / l + c1.pos.x;
+			a2.y = c1.r * ((c1.r - c2.r) * dy + d * dx) / l + c1.pos.y;
+			b1.x = c2.r * ((c2.r - c1.r) * -dx - d * -dy) / l + c2.pos.x;
+			b1.y = c2.r * ((c2.r - c1.r) * -dy + d * -dx) / l + c2.pos.y;
+			b2.x = c2.r * ((c2.r - c1.r) * -dx + d * -dy) / l + c2.pos.x;
+			b2.y = c2.r * ((c2.r - c1.r) * -dy - d * -dx) / l + c2.pos.y;
 			
-			r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
+			const r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
 			if (c1.d > 0) {
 				c2r = c1r = Matthew.normalize(r + br);
 				this.line(a1.x, a1.y, b1.x, b1.y);
@@ -186,19 +190,19 @@ class RouteGenerator{
 					Math.sin(c2r) * c2.r + c2.pos.y
 			);
 		} else if (c1.d != c2.d) {
-			D = l - (c2.r + c1.r) * (c2.r + c1.r);
-			if (D < 0) return null;
-			D = Math.sqrt(D);
-			a1.x = c1.r * ((c2.r + c1.r) * dx + D * dy) / l + c1.pos.x;
-			a1.y = c1.r * ((c2.r + c1.r) * dy - D * dx) / l + c1.pos.y;
-			a2.x = c1.r * ((c2.r + c1.r) * dx - D * dy) / l + c1.pos.x;
-			a2.y = c1.r * ((c2.r + c1.r) * dy + D * dx) / l + c1.pos.y;
-			b1.x = c2.r * ((c1.r + c2.r) * -dx + D * -dy) / l + c2.pos.x;
-			b1.y = c2.r * ((c1.r + c2.r) * -dy - D * -dx) / l + c2.pos.y;
-			b2.x = c2.r * ((c1.r + c2.r) * -dx - D * -dy) / l + c2.pos.x;
-			b2.y = c2.r * ((c1.r + c2.r) * -dy + D * -dx) / l + c2.pos.y;
+			let d = l - (c2.r + c1.r) * (c2.r + c1.r);
+			if (d < 0) return null;
+			d = Math.sqrt(d);
+			a1.x = c1.r * ((c2.r + c1.r) * dx + d * dy) / l + c1.pos.x;
+			a1.y = c1.r * ((c2.r + c1.r) * dy - d * dx) / l + c1.pos.y;
+			a2.x = c1.r * ((c2.r + c1.r) * dx - d * dy) / l + c1.pos.x;
+			a2.y = c1.r * ((c2.r + c1.r) * dy + d * dx) / l + c1.pos.y;
+			b1.x = c2.r * ((c1.r + c2.r) * -dx + d * -dy) / l + c2.pos.x;
+			b1.y = c2.r * ((c1.r + c2.r) * -dy - d * -dx) / l + c2.pos.y;
+			b2.x = c2.r * ((c1.r + c2.r) * -dx - d * -dy) / l + c2.pos.x;
+			b2.y = c2.r * ((c1.r + c2.r) * -dy + d * -dx) / l + c2.pos.y;
 			
-			r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
+			const r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
 			if (c1.d > 0) {
 				c1r = Matthew.normalize(r + br);
 				c2r = Matthew.normalize(r + br + Matthew.PI);

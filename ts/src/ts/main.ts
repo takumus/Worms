@@ -12,7 +12,7 @@ const init = ()=> {
 	renderer.view.style.width = "100%";
 	renderer.view.style.height = "100%";
 	window.addEventListener("resize", resize);
-	var shape:PIXI.Graphics = new PIXI.Graphics();
+	const shape:PIXI.Graphics = new PIXI.Graphics();
 	shape.lineStyle(2, 0xffffff);
 	shape.moveTo(0, 0);
 	shape.lineTo(100, 100);
@@ -23,9 +23,9 @@ const init = ()=> {
 	}
 	draw();
 	resize();
-	var g:PIXI.Graphics = new PIXI.Graphics();
+	const g:PIXI.Graphics = new PIXI.Graphics();
 	stage.addChild(g);
-	var rg:RouteGenerator = new RouteGenerator(g);
+	const rg:RouteGenerator = new RouteGenerator(g);
 	g.lineStyle(2, 0xff0000);
 	rg.getAllRoute(
 		new VecPos(100, 100, 0),

@@ -189,8 +189,8 @@
 	        var _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
 	        var _y = Math.sin(this.c1rb) * this.c1.r + this.c1.pos.y;
 	        var tr;
-	        for (var _r = 0; _r < matthew_1.default.abs(this.c1rl); _r += c1rres) {
-	            tr = this.c1rb + _r * this.c1.d;
+	        for (var r = 0; r < matthew_1.default.abs(this.c1rl); r += c1rres) {
+	            tr = this.c1rb + r * this.c1.d;
 	            _x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 	            _y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
 	            _route.push(new utils_1.VecPos(_x, _y, tr + matthew_1.default.H_PI * this.c1.d));
@@ -198,8 +198,8 @@
 	        _route.pop();
 	        this.getLineRoot(new utils_1.Pos(_x, _y), new utils_1.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, _route);
 	        //trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
-	        for (_r = 0; _r < matthew_1.default.abs(this.c2rl) - c2rres; _r += c2rres) {
-	            tr = this.c2rb + _r * this.c2.d;
+	        for (var r = 0; r < matthew_1.default.abs(this.c2rl) - c2rres; r += c2rres) {
+	            tr = this.c2rb + r * this.c2.d;
 	            _x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 	            _y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
 	            _route.push(new utils_1.VecPos(_x, _y, tr + matthew_1.default.H_PI * this.c2.d));
@@ -208,18 +208,15 @@
 	        return _route;
 	    };
 	    Route.prototype.getLength = function () {
-	        var t1x, t1y;
-	        var t2x, t2y;
-	        var dx, dy;
 	        var l = 0;
 	        l += this.c1.r * 2 * matthew_1.default.PI * (matthew_1.default.abs(this.c1rl) / (matthew_1.default.D_PI));
 	        l += this.c2.r * 2 * matthew_1.default.PI * (matthew_1.default.abs(this.c2rl) / (matthew_1.default.D_PI));
-	        t1x = Math.cos(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.x;
-	        t1y = Math.sin(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.y;
-	        t2x = Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x;
-	        t2y = Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y;
-	        dx = t1x - t2x;
-	        dy = t1y - t2y;
+	        var t1x = Math.cos(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.x;
+	        var t1y = Math.sin(this.c1rb + this.c1rl) * this.c1.r + this.c1.pos.y;
+	        var t2x = Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x;
+	        var t2y = Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y;
+	        var dx = t1x - t2x;
+	        var dy = t1y - t2y;
 	        l += Math.sqrt(dx * dx + dy * dy);
 	        return l;
 	    };
@@ -231,9 +228,7 @@
 	        var dy = Math.sin(r) * res;
 	        var l = Math.sqrt(tx * tx + ty * ty) - res;
 	        for (var i = 0; i < l / res; i++) {
-	            var x = dx * i + bp.x;
-	            var y = dy * i + bp.y;
-	            vector.push(new utils_1.VecPos(x, y, r));
+	            vector.push(new utils_1.VecPos(dx * i + bp.x, dy * i + bp.y, r));
 	        }
 	    };
 	    return Route;
@@ -244,25 +239,10 @@
 	        this.graphics = graphics;
 	    }
 	    RouteGenerator.prototype.getAllRoute = function (vposB, vposE, rB, rE) {
-	        var cB1;
-	        var cB2;
-	        var cE1;
-	        var cE2;
-	        var tx;
-	        var ty;
-	        var tr;
-	        tx = Math.cos(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.x;
-	        ty = Math.sin(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.y;
-	        cB1 = new utils_1.Circle(tx, ty, rB, 1, vposB.r - matthew_1.default.H_PI);
-	        tx = Math.cos(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.x;
-	        ty = Math.sin(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.y;
-	        cB2 = new utils_1.Circle(tx, ty, rB, -1, vposB.r + matthew_1.default.H_PI);
-	        tx = Math.cos(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.x;
-	        ty = Math.sin(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.y;
-	        cE1 = new utils_1.Circle(tx, ty, rE, 1, vposE.r - matthew_1.default.H_PI);
-	        tx = Math.cos(vposE.r - matthew_1.default.H_PI) * rE + vposE.pos.x;
-	        ty = Math.sin(vposE.r - matthew_1.default.H_PI) * rE + vposE.pos.y;
-	        cE2 = new utils_1.Circle(tx, ty, rE, -1, vposE.r + matthew_1.default.H_PI);
+	        var cB1 = new utils_1.Circle(Math.cos(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.y, rB, 1, vposB.r - matthew_1.default.H_PI);
+	        var cB2 = new utils_1.Circle(Math.cos(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.y, rB, -1, vposB.r + matthew_1.default.H_PI);
+	        var cE1 = new utils_1.Circle(Math.cos(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.x, Math.sin(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.y, rE, 1, vposE.r - matthew_1.default.H_PI);
+	        var cE2 = new utils_1.Circle(Math.cos(vposE.r - matthew_1.default.H_PI) * rE + vposE.pos.x, Math.sin(vposE.r - matthew_1.default.H_PI) * rE + vposE.pos.y, rE, -1, vposE.r + matthew_1.default.H_PI);
 	        var allRoute = [];
 	        var route;
 	        route = this.getRoute(cB1, cE1);
@@ -285,8 +265,6 @@
 	        var l = dx * dx + dy * dy;
 	        var a1 = new utils_1.Pos(), a2 = new utils_1.Pos(), b1 = new utils_1.Pos(), b2 = new utils_1.Pos();
 	        var br = Math.atan2(c2.pos.y - c1.pos.y, c2.pos.x - c1.pos.x);
-	        var r;
-	        var D;
 	        var c1tr = c1.tr;
 	        var c2tr = c2.tr;
 	        var c1r;
@@ -296,19 +274,19 @@
 	        this.circle(c1.pos.x + Math.cos(c1tr) * c1.r, c1.pos.y + Math.sin(c1tr) * c1.r, 3);
 	        this.circle(c2.pos.x + Math.cos(c2tr) * c2.r, c2.pos.y + Math.sin(c2tr) * c2.r, 3);
 	        if (c1.d == c2.d) {
-	            D = l - (c2.r - c1.r) * (c2.r - c1.r);
-	            if (D < 0)
+	            var d = l - (c2.r - c1.r) * (c2.r - c1.r);
+	            if (d < 0)
 	                return null;
-	            D = Math.sqrt(D);
-	            a1.x = c1.r * ((c1.r - c2.r) * dx + D * dy) / l + c1.pos.x;
-	            a1.y = c1.r * ((c1.r - c2.r) * dy - D * dx) / l + c1.pos.y;
-	            a2.x = c1.r * ((c1.r - c2.r) * dx - D * dy) / l + c1.pos.x;
-	            a2.y = c1.r * ((c1.r - c2.r) * dy + D * dx) / l + c1.pos.y;
-	            b1.x = c2.r * ((c2.r - c1.r) * -dx - D * -dy) / l + c2.pos.x;
-	            b1.y = c2.r * ((c2.r - c1.r) * -dy + D * -dx) / l + c2.pos.y;
-	            b2.x = c2.r * ((c2.r - c1.r) * -dx + D * -dy) / l + c2.pos.x;
-	            b2.y = c2.r * ((c2.r - c1.r) * -dy - D * -dx) / l + c2.pos.y;
-	            r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
+	            d = Math.sqrt(d);
+	            a1.x = c1.r * ((c1.r - c2.r) * dx + d * dy) / l + c1.pos.x;
+	            a1.y = c1.r * ((c1.r - c2.r) * dy - d * dx) / l + c1.pos.y;
+	            a2.x = c1.r * ((c1.r - c2.r) * dx - d * dy) / l + c1.pos.x;
+	            a2.y = c1.r * ((c1.r - c2.r) * dy + d * dx) / l + c1.pos.y;
+	            b1.x = c2.r * ((c2.r - c1.r) * -dx - d * -dy) / l + c2.pos.x;
+	            b1.y = c2.r * ((c2.r - c1.r) * -dy + d * -dx) / l + c2.pos.y;
+	            b2.x = c2.r * ((c2.r - c1.r) * -dx + d * -dy) / l + c2.pos.x;
+	            b2.y = c2.r * ((c2.r - c1.r) * -dy - d * -dx) / l + c2.pos.y;
+	            var r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
 	            if (c1.d > 0) {
 	                c2r = c1r = matthew_1.default.normalize(r + br);
 	                this.line(a1.x, a1.y, b1.x, b1.y);
@@ -321,19 +299,19 @@
 	            this.line(c2.pos.x, c2.pos.y, Math.cos(c2r) * c2.r + c2.pos.x, Math.sin(c2r) * c2.r + c2.pos.y);
 	        }
 	        else if (c1.d != c2.d) {
-	            D = l - (c2.r + c1.r) * (c2.r + c1.r);
-	            if (D < 0)
+	            var d = l - (c2.r + c1.r) * (c2.r + c1.r);
+	            if (d < 0)
 	                return null;
-	            D = Math.sqrt(D);
-	            a1.x = c1.r * ((c2.r + c1.r) * dx + D * dy) / l + c1.pos.x;
-	            a1.y = c1.r * ((c2.r + c1.r) * dy - D * dx) / l + c1.pos.y;
-	            a2.x = c1.r * ((c2.r + c1.r) * dx - D * dy) / l + c1.pos.x;
-	            a2.y = c1.r * ((c2.r + c1.r) * dy + D * dx) / l + c1.pos.y;
-	            b1.x = c2.r * ((c1.r + c2.r) * -dx + D * -dy) / l + c2.pos.x;
-	            b1.y = c2.r * ((c1.r + c2.r) * -dy - D * -dx) / l + c2.pos.y;
-	            b2.x = c2.r * ((c1.r + c2.r) * -dx - D * -dy) / l + c2.pos.x;
-	            b2.y = c2.r * ((c1.r + c2.r) * -dy + D * -dx) / l + c2.pos.y;
-	            r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
+	            d = Math.sqrt(d);
+	            a1.x = c1.r * ((c2.r + c1.r) * dx + d * dy) / l + c1.pos.x;
+	            a1.y = c1.r * ((c2.r + c1.r) * dy - d * dx) / l + c1.pos.y;
+	            a2.x = c1.r * ((c2.r + c1.r) * dx - d * dy) / l + c1.pos.x;
+	            a2.y = c1.r * ((c2.r + c1.r) * dy + d * dx) / l + c1.pos.y;
+	            b1.x = c2.r * ((c1.r + c2.r) * -dx + d * -dy) / l + c2.pos.x;
+	            b1.y = c2.r * ((c1.r + c2.r) * -dy - d * -dx) / l + c2.pos.y;
+	            b2.x = c2.r * ((c1.r + c2.r) * -dx - d * -dy) / l + c2.pos.x;
+	            b2.y = c2.r * ((c1.r + c2.r) * -dy + d * -dx) / l + c2.pos.y;
+	            var r = Math.atan2(a1.y - c1.pos.y, a1.x - c1.pos.x) - br;
 	            if (c1.d > 0) {
 	                c1r = matthew_1.default.normalize(r + br);
 	                c2r = matthew_1.default.normalize(r + br + matthew_1.default.PI);
