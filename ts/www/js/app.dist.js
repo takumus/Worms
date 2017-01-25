@@ -239,6 +239,7 @@
 	exports.Route = Route;
 	var RouteGenerator = (function () {
 	    function RouteGenerator(graphics) {
+	        if (graphics === void 0) { graphics = null; }
 	        this.graphics = graphics;
 	    }
 	    RouteGenerator.prototype.getAllRoute = function (vposB, vposE, rB, rE) {
@@ -367,10 +368,14 @@
 	        return new Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	    };
 	    RouteGenerator.prototype.line = function (x1, y1, x2, y2) {
+	        if (!this.graphics)
+	            return;
 	        this.graphics.moveTo(x1, y1);
 	        this.graphics.lineTo(x2, y2);
 	    };
 	    RouteGenerator.prototype.circle = function (x, y, r) {
+	        if (!this.graphics)
+	            return;
 	        this.graphics.drawCircle(x, y, r);
 	    };
 	    return RouteGenerator;

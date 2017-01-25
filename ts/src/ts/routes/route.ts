@@ -99,32 +99,32 @@ class Route {
 
 class RouteGenerator{
 	public graphics:PIXI.Graphics;
-	constructor(graphics:PIXI.Graphics){
+	constructor(graphics:PIXI.Graphics = null){
 		this.graphics = graphics;
 	}
 	public getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
-		const cB1:Circle = new Circle(
+		const cB1 = new Circle(
 			Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x,
 			Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y,
 			rB, 
 			1,
 			vposB.r - Matthew.H_PI
 		);
-		const cB2:Circle = new Circle(
+		const cB2 = new Circle(
 			Math.cos(vposB.r - Matthew.H_PI) * rB + vposB.pos.x,
 			Math.sin(vposB.r - Matthew.H_PI) * rB + vposB.pos.y, 
 			rB, 
 			-1, 
 			vposB.r + Matthew.H_PI
 		);
-		const cE1:Circle = new Circle(
+		const cE1 = new Circle(
 			Math.cos(vposE.r + Matthew.H_PI) * rE + vposE.pos.x, 
 			Math.sin(vposE.r + Matthew.H_PI) * rE + vposE.pos.y, 
 			rE, 
 			1, 
 			vposE.r - Matthew.H_PI
 		);
-		const cE2:Circle = new Circle(
+		const cE2 = new Circle(
 			Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x, 
 			Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y, 
 			rE, 
@@ -263,11 +263,13 @@ class RouteGenerator{
 	}
 	
 	private line(x1:number, y1:number, x2:number, y2:number) {
+		if(!this.graphics) return;
 		this.graphics.moveTo(x1, y1);
 		this.graphics.lineTo(x2, y2);
 	}
 	
 	private circle(x:number, y:number, r:number) {
+		if(!this.graphics) return;
 		this.graphics.drawCircle(x, y, r);
 	}
 }
