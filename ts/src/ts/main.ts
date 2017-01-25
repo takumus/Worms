@@ -1,3 +1,6 @@
+import {Pos, VecPos, Circle} from './routes/utils';
+import {Route, RouteGenerator} from './routes/route';
+
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -20,6 +23,16 @@ const init = ()=> {
 	}
 	draw();
 	resize();
+	var g:PIXI.Graphics = new PIXI.Graphics();
+	stage.addChild(g);
+	var rg:RouteGenerator = new RouteGenerator(g);
+	g.lineStyle(2, 0xff0000);
+	rg.getAllRoute(
+		new VecPos(100, 100, 0),
+		new VecPos(250, 300, 0),
+		50,
+		50
+	)
 }
 const draw = ()=> {
 	TWEEN.update();
