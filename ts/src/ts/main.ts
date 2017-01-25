@@ -1,6 +1,6 @@
 import {Pos, VecPos, Circle} from './routes/utils';
 import {Route, RouteGenerator} from './routes/route';
-
+import {FollowWorm} from './worms/worm';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -28,21 +28,36 @@ const init = ()=> {
 		mouse.x = e.clientX*2;
 		mouse.y = e.clientY*2;
 	});
+	stage.addChild(w);
 }
 const g:PIXI.Graphics = new PIXI.Graphics();
 const rg:RouteGenerator = new RouteGenerator(g);
 const mouse:Pos = new Pos();
+const L = 30;
+const w:FollowWorm = new FollowWorm(L);
 const draw = ()=> {
+	requestAnimationFrame(draw);
+
 	g.clear();
 	g.lineStyle(2, 0xff0000);
-	rg.getAllRoute(
-		new VecPos(mouse.x , mouse.y, 0),
-		new VecPos(250, 300, 0),
-		50,
-		50
+	const routes = rg.getAllRoute(
+		new VecPos(mouse.x , mouse.y, 0.1),
+		new VecPos(600, 600, 0),
+		250,
+		150
 	);
+	let min:number = Number.MAX_VALUE;
+	let route:Route;
+	routes.forEach((r)=>{
+		if(r.getLength() < min){
+			min = r.getLength();
+			route = r;
+		}
+	});
+	let vecs = route.generateRoute(20);
+	w.setRoute(vecs);
+	w.step();
 	renderer.render(stage);
-	requestAnimationFrame(draw);
 }
 const resize = ()=> {
 	const width:number = canvas.offsetWidth*2;

@@ -47,6 +47,7 @@
 	"use strict";
 	var utils_1 = __webpack_require__(1);
 	var route_1 = __webpack_require__(3);
+	var worm_1 = __webpack_require__(4);
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
@@ -74,16 +75,30 @@
 	        mouse.x = e.clientX * 2;
 	        mouse.y = e.clientY * 2;
 	    });
+	    stage.addChild(w);
 	};
 	var g = new PIXI.Graphics();
 	var rg = new route_1.RouteGenerator(g);
 	var mouse = new utils_1.Pos();
+	var L = 30;
+	var w = new worm_1.FollowWorm(L);
 	var draw = function () {
+	    requestAnimationFrame(draw);
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
-	    rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0), new utils_1.VecPos(250, 300, 0), 50, 50);
+	    var routes = rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.1), new utils_1.VecPos(600, 600, 0), 250, 150);
+	    var min = Number.MAX_VALUE;
+	    var route;
+	    routes.forEach(function (r) {
+	        if (r.getLength() < min) {
+	            min = r.getLength();
+	            route = r;
+	        }
+	    });
+	    var vecs = route.generateRoute(20);
+	    w.setRoute(vecs);
+	    w.step();
 	    renderer.render(stage);
-	    requestAnimationFrame(draw);
 	};
 	var resize = function () {
 	    var width = canvas.offsetWidth * 2;
@@ -386,6 +401,135 @@
 	    return RouteGenerator;
 	}());
 	exports.RouteGenerator = RouteGenerator;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var utils_1 = __webpack_require__(1);
+	var Worm = (function (_super) {
+	    __extends(Worm, _super);
+	    function Worm(length) {
+	        var _this = _super.call(this) || this;
+	        _this.length = length;
+	        _this.bone = [];
+	        _this.body = [];
+	        for (var i = 0; i < length; i++) {
+	            _this.bone.push(new utils_1.Pos());
+	            _this.body.push(new BodyPos());
+	        }
+	        return _this;
+	    }
+	    Worm.prototype.push = function (x, y) {
+	        //先頭に加えて、１つずつずらす。
+	        var i = this.bone.length - 1;
+	        for (; i >= 1; i--) {
+	            this.bone[i].x = this.bone[i - 1].x;
+	            this.bone[i].y = this.bone[i - 1].y;
+	        }
+	        var bbone = this.bone[0];
+	        bbone.x = x;
+	        bbone.y = y;
+	        //ワームの外殻を生成
+	        var ebone = this.bone[this.bone.length - 1];
+	        var bbody = this.body[0];
+	        var ebody = this.body[this.body.length - 1];
+	        bbody.left.x = bbone.x;
+	        bbody.left.y = bbone.y;
+	        for (i = 1; i < this.bone.length - 1; i++) {
+	            var nbone = this.bone[i];
+	            var nbody = this.body[i];
+	            var vx = this.bone[i - 1].x - nbone.x;
+	            var vy = this.bone[i - 1].y - nbone.y;
+	            var r = ((Math.sin(i / (this.bone.length - 1) * (Math.PI)))) * 30;
+	            var vl = vx * vx + vy * vy;
+	            var vr = Math.sqrt(vl);
+	            vx = vx / vr * r;
+	            vy = vy / vr * r;
+	            nbody.left.x = nbone.x + -vy;
+	            nbody.left.y = nbone.y + vx;
+	            nbody.right.x = nbone.x + vy;
+	            nbody.right.y = nbone.y + -vx;
+	        }
+	        ebody.left.x = ebone.x;
+	        ebody.left.y = ebone.y;
+	    };
+	    Worm.prototype.render = function () {
+	        this.clear();
+	        this.lineStyle(2, 0xffffff);
+	        //this.beginFill(0xff0000);
+	        this.moveTo(this.body[0].left.x, this.body[0].left.y);
+	        for (var i = 1; i < this.body.length; i++) {
+	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
+	        }
+	        for (var i = this.body.length - 2; i >= 2; i--) {
+	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
+	        }
+	        this.lineTo(this.body[0].left.x, this.body[0].left.y);
+	        this.endFill();
+	    };
+	    return Worm;
+	}(PIXI.Graphics));
+	exports.Worm = Worm;
+	var FollowWorm = (function (_super) {
+	    __extends(FollowWorm, _super);
+	    function FollowWorm(length) {
+	        var _this = _super.call(this, length) || this;
+	        _this.routeIndex = 0;
+	        return _this;
+	    }
+	    FollowWorm.prototype.setRoute = function (route) {
+	        if (route.length <= this.length)
+	            return;
+	        this.route = route;
+	        //this.routeIndex = 0;
+	        this.routeLength = this.route.length;
+	        var ri = 0;
+	        for (var ii = 0; ii < route.length; ii++) {
+	            var rr = Math.sin(ri) * (50 * Math.sin(Math.PI * (ii / (this.routeLength))));
+	            ri += 0.2;
+	            var vpos = route[ii];
+	            vpos.pos.x = vpos.pos.x + Math.cos(vpos.r + Math.PI / 2) * rr;
+	            vpos.pos.y = vpos.pos.y + Math.sin(vpos.r + Math.PI / 2) * rr;
+	        }
+	    };
+	    FollowWorm.prototype.gotoHead = function () {
+	        this.routeIndex = 0;
+	        for (var i = 0; i < this.length; i++) {
+	            this.step();
+	        }
+	    };
+	    FollowWorm.prototype.step = function () {
+	        if (!this.route)
+	            return;
+	        if (this.routeIndex >= this.routeLength) {
+	            this.routeIndex = 0;
+	            this.gotoHead();
+	            return;
+	        }
+	        var pos = this.route[this.routeIndex].pos;
+	        this.push(pos.x, pos.y);
+	        this.routeIndex++;
+	        this.render();
+	        return;
+	    };
+	    return FollowWorm;
+	}(Worm));
+	exports.FollowWorm = FollowWorm;
+	var BodyPos = (function () {
+	    function BodyPos() {
+	        this.left = new utils_1.Pos();
+	        this.right = new utils_1.Pos();
+	    }
+	    return BodyPos;
+	}());
 
 
 /***/ }
