@@ -38,13 +38,13 @@ class Route {
 		}
 		_route.pop();
 		this.getLineRoot(
-				new Pos(_x, _y),
-				new Pos(
-						Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x,
-						Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y
-				),
-				res,
-				_route
+			new Pos(_x, _y),
+			new Pos(
+				Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x,
+				Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y
+			),
+			res,
+			_route
 		);
 		//trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
 		for (let r = 0; r < Matthew.abs(this.c2rl) - c2rres; r += c2rres) {
@@ -54,11 +54,11 @@ class Route {
 			_route.push(new VecPos(_x, _y, tr + Matthew.H_PI * this.c2.d));
 		}
 		_route.push(
-				new VecPos(
-						Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x,
-						Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y,
-						this.c2rb + Matthew.abs(this.c2rl) * this.c2.d + Matthew.H_PI * this.c2.d
-				)
+			new VecPos(
+				Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x,
+				Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y,
+				this.c2rb + Matthew.abs(this.c2rl) * this.c2.d + Matthew.H_PI * this.c2.d
+			)
 		);
 		return _route;
 	}
@@ -178,16 +178,16 @@ class RouteGenerator{
 				this.line(a2.x, a2.y, b2.x, b2.y);
 			}
 			this.line(
-					c1.pos.x,
-					c1.pos.y,
-					Math.cos(c1r) * c1.r + c1.pos.x,
-					Math.sin(c1r) * c1.r + c1.pos.y
+				c1.pos.x,
+				c1.pos.y,
+				Math.cos(c1r) * c1.r + c1.pos.x,
+				Math.sin(c1r) * c1.r + c1.pos.y
 			);
 			this.line(
-					c2.pos.x,
-					c2.pos.y,
-					Math.cos(c2r) * c2.r + c2.pos.x,
-					Math.sin(c2r) * c2.r + c2.pos.y
+				c2.pos.x,
+				c2.pos.y,
+				Math.cos(c2r) * c2.r + c2.pos.x,
+				Math.sin(c2r) * c2.r + c2.pos.y
 			);
 		} else if (c1.d != c2.d) {
 			let d = l - (c2.r + c1.r) * (c2.r + c1.r);
@@ -213,16 +213,16 @@ class RouteGenerator{
 				this.line(a2.x, a2.y, b2.x, b2.y);
 			}
 			this.line(
-					c1.pos.x,
-					c1.pos.y,
-					Math.cos(c1r) * c1.r + c1.pos.x,
-					Math.sin(c1r) * c1.r + c1.pos.y
+				c1.pos.x,
+				c1.pos.y,
+				Math.cos(c1r) * c1.r + c1.pos.x,
+				Math.sin(c1r) * c1.r + c1.pos.y
 			);
 			this.line(
-					c2.pos.x,
-					c2.pos.y,
-					Math.cos(c2r) * c2.r + c2.pos.x,
-					Math.sin(c2r) * c2.r + c2.pos.y
+				c2.pos.x,
+				c2.pos.y,
+				Math.cos(c2r) * c2.r + c2.pos.x,
+				Math.sin(c2r) * c2.r + c2.pos.y
 			);
 		}
 		if (c1.d > 0) {
