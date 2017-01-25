@@ -23,19 +23,24 @@ const init = ()=> {
 	}
 	draw();
 	resize();
-	const g:PIXI.Graphics = new PIXI.Graphics();
 	stage.addChild(g);
-	const rg:RouteGenerator = new RouteGenerator(g);
+	window.addEventListener("mousemove", (e)=>{
+		mouse.x = e.clientX*2;
+		mouse.y = e.clientY*2;
+	});
+}
+const g:PIXI.Graphics = new PIXI.Graphics();
+const rg:RouteGenerator = new RouteGenerator(g);
+const mouse:Pos = new Pos();
+const draw = ()=> {
+	g.clear();
 	g.lineStyle(2, 0xff0000);
 	rg.getAllRoute(
-		new VecPos(100, 100, 0),
+		new VecPos(mouse.x , mouse.y, 0),
 		new VecPos(250, 300, 0),
 		50,
 		50
-	)
-}
-const draw = ()=> {
-	TWEEN.update();
+	);
 	renderer.render(stage);
 	requestAnimationFrame(draw);
 }

@@ -69,14 +69,19 @@
 	    };
 	    draw();
 	    resize();
-	    var g = new PIXI.Graphics();
 	    stage.addChild(g);
-	    var rg = new route_1.RouteGenerator(g);
-	    g.lineStyle(2, 0xff0000);
-	    rg.getAllRoute(new utils_1.VecPos(100, 100, 0), new utils_1.VecPos(250, 300, 0), 50, 50);
+	    window.addEventListener("mousemove", function (e) {
+	        mouse.x = e.clientX * 2;
+	        mouse.y = e.clientY * 2;
+	    });
 	};
+	var g = new PIXI.Graphics();
+	var rg = new route_1.RouteGenerator(g);
+	var mouse = new utils_1.Pos();
 	var draw = function () {
-	    TWEEN.update();
+	    g.clear();
+	    g.lineStyle(2, 0xff0000);
+	    rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0), new utils_1.VecPos(250, 300, 0), 50, 50);
 	    renderer.render(stage);
 	    requestAnimationFrame(draw);
 	};
