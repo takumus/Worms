@@ -17,14 +17,7 @@ class Route {
 		this.c2rl = c2rl;
 	}
 	
-	public generateRoute(res:number, route:Array<VecPos> = null):Array<VecPos> {
-		let _route:Array<VecPos>;
-		if (route) {
-			_route = route;
-			_route.length = 0;
-		} else {
-			_route = new Array<VecPos>();
-		}
+	public generateRoute(res:number, line:Line = new Line()):Line {
 		const c1rres = res / (this.c1.r * 2 * Matthew.PI) * Matthew.D_PI;
 		const c2rres = res / (this.c2.r * 2 * Matthew.PI) * Matthew.D_PI;
 		let _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
@@ -35,9 +28,9 @@ class Route {
 			tr = this.c1rb + r * this.c1.d;
 			_x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 			_y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
-			_route.push(new VecPos(_x, _y, tr + Matthew.H_PI * this.c1.d));
+			line.push(new Pos(_x, _y));
 		}
-		_route.pop();
+		line.pop();
 		this.getLineRoot(
 			new Pos(_x, _y),
 			new Pos(
@@ -45,7 +38,7 @@ class Route {
 				Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y
 			),
 			res,
-			_route
+			line
 		);
 		//trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
 		const LL = Matthew.abs(this.c2rl) - c2rres;
@@ -53,16 +46,15 @@ class Route {
 			tr = this.c2rb + r * this.c2.d;
 			_x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 			_y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
-			_route.push(new VecPos(_x, _y, tr + Matthew.H_PI * this.c2.d));
+			line.push(new Pos(_x, _y));
 		}
-		_route.push(
-			new VecPos(
+		line.push(
+			new Pos(
 				Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x,
 				Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y,
-				this.c2rb + Matthew.abs(this.c2rl) * this.c2.d + Matthew.H_PI * this.c2.d
 			)
 		);
-		return _route;
+		return line;
 	}
 	
 	public getLength():number {
@@ -79,7 +71,7 @@ class Route {
 		return l;
 	}
 	
-	private getLineRoot(bp:Pos, ep:Pos, res:number, vector:Array<VecPos>):void {
+	private getLineRoot(bp:Pos, ep:Pos, res:number, line:Line):void {
 		const tx = ep.x - bp.x;
 		const ty = ep.y - bp.y;
 		const r = Math.atan2(ty, tx);
@@ -88,21 +80,54 @@ class Route {
 		const l = Math.sqrt(tx * tx + ty * ty) - res;
 		const L = l / res;
 		for (let i = 0; i < L; i++) {
-			vector.push(new VecPos(
+			line.push(new Pos(
 				dx * i + bp.x,
-				dy * i + bp.y,
-				r
+				dy * i + bp.y
 			));
 		}
 	}
 }
-
-class RouteGenerator{
-	public graphics:PIXI.Graphics;
-	constructor(graphics:PIXI.Graphics = null){
-		this.graphics = graphics;
+class Line{
+	protected data:Array<Pos>;
+	private length:number;
+	constructor(data:Array<Pos> = []){
+		this.data = data;
+		this.length = this.data.length;
 	}
-	public getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
+	public reverse():void{
+		this.data.reverse();
+	}
+	public getHeadRadian():number{
+		if(this.length < 2) console.error("line ga mijikai");
+		const dx = this.data[1].x - this.data[0].x;
+		const dy = this.data[1].y - this.data[0].y;
+		return Math.atan2(dy, dx);
+	}
+	public at(id:number):Pos{
+		return this.data[id];
+	}
+	public push(pos:Pos):void{
+		this.data.push(pos);
+		this.length = this.data.length;
+	}
+	public pop():Pos{
+		return this.data.pop();
+	}
+	public pushLine(line:Line):Line{
+		this.data = this.data.concat(line.data);
+		this.length = this.data.length;
+		return this;
+	}
+	public forEach(f:(p:Pos, id?, data?)=>void):void{
+		this.data.forEach(f);
+	}
+	public getLength():number{
+		return this.length;
+	}
+}
+class RouteGenerator{
+	public static graphics:PIXI.Graphics;
+	public static getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
 		const cB1 = new Circle(
 			Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x,
 			Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y,
@@ -144,7 +169,7 @@ class RouteGenerator{
 		return allRoute;
 	}
 	
-	private getRoute(c1:Circle, c2:Circle):Route {
+	private static getRoute(c1:Circle, c2:Circle):Route {
 		const dx = c2.pos.x - c1.pos.x;
 		const dy = c2.pos.y - c1.pos.y;
 		const l = dx * dx + dy * dy;
@@ -262,13 +287,13 @@ class RouteGenerator{
 		return new Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	}
 	
-	private line(x1:number, y1:number, x2:number, y2:number) {
+	private static line(x1:number, y1:number, x2:number, y2:number) {
 		if(!this.graphics) return;
 		this.graphics.moveTo(x1, y1);
 		this.graphics.lineTo(x2, y2);
 	}
 	
-	private circle(x:number, y:number, r:number) {
+	private static circle(x:number, y:number, r:number) {
 		if(!this.graphics) return;
 		this.graphics.drawCircle(x, y, r);
 	}
@@ -276,5 +301,6 @@ class RouteGenerator{
 
 export{
 	Route,
-	RouteGenerator
+	RouteGenerator,
+	Line
 }

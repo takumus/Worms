@@ -1,4 +1,5 @@
 import {Pos, VecPos, Circle} from '../routes/utils';
+import {Line} from '../routes/route';
 class Worm extends PIXI.Graphics{
     private bone:Array<Pos>;
     private body:Array<BodyPos>;
@@ -63,17 +64,20 @@ class Worm extends PIXI.Graphics{
     }
 }
 class FollowWorm extends Worm{
-    private route:Array<VecPos>;
+    private route:Array<Pos>;
     private routeIndex:number;
     private routeLength:number;
     constructor(length:number){
         super(length);
         this.routeIndex = 0;
     }
-    public setRoute(route:Array<VecPos>){
-        if(route.length <= this.length) return;
+    public setTarget(line:Line){
+        
+    }
+    public setRoute(line:Line){
+        if(line.getLength() <= this.length) return;
         this.route = [];
-        route.forEach((vp)=>{
+        line.forEach((vp)=>{
             this.route.push(vp.clone());
         });
         //this.routeIndex = 0;
@@ -82,9 +86,9 @@ class FollowWorm extends Worm{
         for (let ii = 0; ii < this.route.length; ii++) {
             let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
             ri+=0.2;
-            var vpos:VecPos = this.route[ii];
-            vpos.pos.x = vpos.pos.x + Math.cos(vpos.r+Math.PI/2) * rr;
-            vpos.pos.y = vpos.pos.y + Math.sin(vpos.r+Math.PI/2) * rr;
+            var vpos:Pos = this.route[ii];
+            //vpos.x = vpos.x + Math.cos(vpos.r+Math.PI/2) * rr;
+            //vpos.y = vpos.y + Math.sin(vpos.r+Math.PI/2) * rr;
         }
     }
     public gotoHead(){
@@ -93,17 +97,20 @@ class FollowWorm extends Worm{
             this.step();
         }
     }
-    public step(){
+    public step(n:number = 1):void{
+        this._step();
+        if(n > 1)this.step(n-1);
+    }
+    private _step():void{
         if(!this.route) return;
         if(this.routeIndex >= this.routeLength){
             this.routeIndex = 0;
             this.gotoHead();
             return;
         }
-        const pos = this.route[this.routeIndex].pos;
+        const pos = this.route[this.routeIndex];
         this.push(pos.x, pos.y);
         this.routeIndex++;
-        this.render();
         return;
     }
 }

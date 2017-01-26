@@ -1,5 +1,5 @@
 import {Pos, VecPos, Circle} from './routes/utils';
-import {Route, RouteGenerator} from './routes/route';
+import {Route, RouteGenerator, Line} from './routes/route';
 import {FollowWorm} from './worms/worm';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
@@ -28,34 +28,33 @@ const init = ()=> {
 	});
 	stage.addChild(w);
 	testRoute.lines[0].forEach((p)=>{
-		const vp:VecPos = new VecPos(p.x + 800, p.y + 800, 0);
+		const vp:Pos = new Pos(p.x + 800, p.y + 800);
 		testRouteVecs.push(vp);
 	});
-
+	testRouteVecs.reverse();
+	RouteGenerator.graphics = g;
 	draw();
 	resize();
 }
 const g:PIXI.Graphics = new PIXI.Graphics();
-const rg:RouteGenerator = new RouteGenerator(g);
 const mouse:Pos = new Pos();
-const L = 40;
+const L = 80;
 const w:FollowWorm = new FollowWorm(L);
-const testRouteStr:string = '{"lines":[[{"x":5.67,"y":20.53},{"x":23.37,"y":11.22},{"x":41.72,"y":3.28},{"x":61.45,"y":0},{"x":81.42,"y":1.18},{"x":100.14,"y":8.21},{"x":114.67,"y":21.96},{"x":121.06,"y":40.91},{"x":122.42,"y":60.86},{"x":121.82,"y":80.85},{"x":122.03,"y":100.85},{"x":121.99,"y":120.85},{"x":122.04,"y":140.85},{"x":121.45,"y":158.02}],[{"x":121.53,"y":62.42},{"x":101.55,"y":63.25},{"x":81.61,"y":64.84},{"x":65.45,"y":69.02},{"x":45.62,"y":71.62},{"x":27.95,"y":80.02},{"x":11.22,"y":90.98},{"x":0.73,"y":108.01},{"x":0,"y":127.99},{"x":11.21,"y":144.55},{"x":29.38,"y":152.91},{"x":49.27,"y":154.99},{"x":69.21,"y":153.35},{"x":88.02,"y":146.55},{"x":106,"y":137.8},{"x":120.88,"y":124.44}]],"height":158.02,"width":122.42}';
+const testRouteStr:string = '{"lines":[[{"x":0.35,"y":0},{"x":0.88,"y":4.97},{"x":0.51,"y":9.95},{"x":0.82,"y":14.94},{"x":0.55,"y":19.94},{"x":0.81,"y":24.93},{"x":0.56,"y":29.92},{"x":0.81,"y":34.92},{"x":0.56,"y":39.91},{"x":0.14,"y":44.89},{"x":0.24,"y":49.89},{"x":0.78,"y":54.86},{"x":0.29,"y":59.84},{"x":0.1,"y":64.83},{"x":0.2,"y":69.83},{"x":0.92,"y":74.78},{"x":0.31,"y":79.74},{"x":0.24,"y":84.74},{"x":0.42,"y":89.74},{"x":0.33,"y":94.74},{"x":0.37,"y":99.74},{"x":0.35,"y":104.74},{"x":0.36,"y":109.74},{"x":0.36,"y":114.74},{"x":0.22,"y":119.74},{"x":0.26,"y":124.74},{"x":0.4,"y":129.73},{"x":0.34,"y":134.73},{"x":0.37,"y":139.73},{"x":0.35,"y":144.73},{"x":1.06,"y":149.68},{"x":1.02,"y":154.68},{"x":1.02,"y":159.68},{"x":0,"y":164.58},{"x":0.76,"y":169.52},{"x":0.83,"y":174.52},{"x":2.44,"y":179.25},{"x":3.99,"y":184},{"x":6.78,"y":188.16},{"x":9.86,"y":192.1},{"x":13.05,"y":195.95},{"x":17.05,"y":198.94},{"x":21.15,"y":201.8},{"x":25.83,"y":203.57},{"x":30.53,"y":205.29},{"x":35.43,"y":206.26},{"x":40.34,"y":207.22},{"x":45.24,"y":208.18},{"x":50.19,"y":208.92},{"x":55.19,"y":208.85},{"x":60.19,"y":208.88},{"x":65.04,"y":207.67},{"x":69.91,"y":206.52},{"x":74.71,"y":205.14},{"x":79.26,"y":203.07},{"x":84.24,"y":202.57},{"x":88.65,"y":200.22}]],"height":208.92,"width":88.65}';
 const testRoute = JSON.parse(testRouteStr);
-let testRouteVecs:Array<VecPos> = [];
+let testRouteVecs:Line = new Line();
 const draw = ()=> {
 	requestAnimationFrame(draw);
 
 	g.clear();
 	g.lineStyle(2, 0xff0000);
-	const b:Pos = new Pos(testRouteVecs[0].pos.x, testRouteVecs[0].pos.y);
-	const dx = testRouteVecs[1].pos.x - testRouteVecs[0].pos.x;
-	const dy = testRouteVecs[1].pos.y - testRouteVecs[0].pos.y;
+	const b:Pos = new Pos(testRouteVecs.at(0).x, testRouteVecs.at(0).y);
+	const dx = testRouteVecs.at(1).x - testRouteVecs.at(0).x;
+	const dy = testRouteVecs.at(1).y - testRouteVecs.at(0).y;
 	const br = Math.atan2(dy, dx);
 	b.x -= dx;
 	b.y -= dy;
-	console.log(b.x, b.y);
-	const routes = rg.getAllRoute(
+	const routes = RouteGenerator.getAllRoute(
 		new VecPos(mouse.x , mouse.y, 0.5),
 		new VecPos(b.x, b.y, br),
 		200,
@@ -70,12 +69,13 @@ const draw = ()=> {
 		}
 	});
 	if(!route) return;
-	let vecs = route.generateRoute(20).concat(testRouteVecs);
+	let vecs = route.generateRoute(5).pushLine(testRouteVecs);
 	vecs.forEach((v)=>{
-		g.drawCircle(v.pos.x, v.pos.y, 10);
+		//g.drawCircle(v.x, v.y, 10);
 	});
 	w.setRoute(vecs);
 	w.step();
+	w.render();
 	renderer.render(stage);
 }
 const resize = ()=> {

@@ -75,32 +75,32 @@
 	    });
 	    stage.addChild(w);
 	    testRoute.lines[0].forEach(function (p) {
-	        var vp = new utils_1.VecPos(p.x + 800, p.y + 800, 0);
+	        var vp = new utils_1.Pos(p.x + 800, p.y + 800);
 	        testRouteVecs.push(vp);
 	    });
+	    testRouteVecs.reverse();
+	    route_1.RouteGenerator.graphics = g;
 	    draw();
 	    resize();
 	};
 	var g = new PIXI.Graphics();
-	var rg = new route_1.RouteGenerator(g);
 	var mouse = new utils_1.Pos();
-	var L = 40;
+	var L = 80;
 	var w = new worm_1.FollowWorm(L);
-	var testRouteStr = '{"lines":[[{"x":5.67,"y":20.53},{"x":23.37,"y":11.22},{"x":41.72,"y":3.28},{"x":61.45,"y":0},{"x":81.42,"y":1.18},{"x":100.14,"y":8.21},{"x":114.67,"y":21.96},{"x":121.06,"y":40.91},{"x":122.42,"y":60.86},{"x":121.82,"y":80.85},{"x":122.03,"y":100.85},{"x":121.99,"y":120.85},{"x":122.04,"y":140.85},{"x":121.45,"y":158.02}],[{"x":121.53,"y":62.42},{"x":101.55,"y":63.25},{"x":81.61,"y":64.84},{"x":65.45,"y":69.02},{"x":45.62,"y":71.62},{"x":27.95,"y":80.02},{"x":11.22,"y":90.98},{"x":0.73,"y":108.01},{"x":0,"y":127.99},{"x":11.21,"y":144.55},{"x":29.38,"y":152.91},{"x":49.27,"y":154.99},{"x":69.21,"y":153.35},{"x":88.02,"y":146.55},{"x":106,"y":137.8},{"x":120.88,"y":124.44}]],"height":158.02,"width":122.42}';
+	var testRouteStr = '{"lines":[[{"x":0.35,"y":0},{"x":0.88,"y":4.97},{"x":0.51,"y":9.95},{"x":0.82,"y":14.94},{"x":0.55,"y":19.94},{"x":0.81,"y":24.93},{"x":0.56,"y":29.92},{"x":0.81,"y":34.92},{"x":0.56,"y":39.91},{"x":0.14,"y":44.89},{"x":0.24,"y":49.89},{"x":0.78,"y":54.86},{"x":0.29,"y":59.84},{"x":0.1,"y":64.83},{"x":0.2,"y":69.83},{"x":0.92,"y":74.78},{"x":0.31,"y":79.74},{"x":0.24,"y":84.74},{"x":0.42,"y":89.74},{"x":0.33,"y":94.74},{"x":0.37,"y":99.74},{"x":0.35,"y":104.74},{"x":0.36,"y":109.74},{"x":0.36,"y":114.74},{"x":0.22,"y":119.74},{"x":0.26,"y":124.74},{"x":0.4,"y":129.73},{"x":0.34,"y":134.73},{"x":0.37,"y":139.73},{"x":0.35,"y":144.73},{"x":1.06,"y":149.68},{"x":1.02,"y":154.68},{"x":1.02,"y":159.68},{"x":0,"y":164.58},{"x":0.76,"y":169.52},{"x":0.83,"y":174.52},{"x":2.44,"y":179.25},{"x":3.99,"y":184},{"x":6.78,"y":188.16},{"x":9.86,"y":192.1},{"x":13.05,"y":195.95},{"x":17.05,"y":198.94},{"x":21.15,"y":201.8},{"x":25.83,"y":203.57},{"x":30.53,"y":205.29},{"x":35.43,"y":206.26},{"x":40.34,"y":207.22},{"x":45.24,"y":208.18},{"x":50.19,"y":208.92},{"x":55.19,"y":208.85},{"x":60.19,"y":208.88},{"x":65.04,"y":207.67},{"x":69.91,"y":206.52},{"x":74.71,"y":205.14},{"x":79.26,"y":203.07},{"x":84.24,"y":202.57},{"x":88.65,"y":200.22}]],"height":208.92,"width":88.65}';
 	var testRoute = JSON.parse(testRouteStr);
-	var testRouteVecs = [];
+	var testRouteVecs = new route_1.Line();
 	var draw = function () {
 	    requestAnimationFrame(draw);
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
-	    var b = new utils_1.Pos(testRouteVecs[0].pos.x, testRouteVecs[0].pos.y);
-	    var dx = testRouteVecs[1].pos.x - testRouteVecs[0].pos.x;
-	    var dy = testRouteVecs[1].pos.y - testRouteVecs[0].pos.y;
+	    var b = new utils_1.Pos(testRouteVecs.at(0).x, testRouteVecs.at(0).y);
+	    var dx = testRouteVecs.at(1).x - testRouteVecs.at(0).x;
+	    var dy = testRouteVecs.at(1).y - testRouteVecs.at(0).y;
 	    var br = Math.atan2(dy, dx);
 	    b.x -= dx;
 	    b.y -= dy;
-	    console.log(b.x, b.y);
-	    var routes = rg.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 200, 200);
+	    var routes = route_1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 200, 200);
 	    var min = Number.MAX_VALUE;
 	    var route;
 	    routes.forEach(function (r) {
@@ -111,12 +111,13 @@
 	    });
 	    if (!route)
 	        return;
-	    var vecs = route.generateRoute(20).concat(testRouteVecs);
+	    var vecs = route.generateRoute(5).pushLine(testRouteVecs);
 	    vecs.forEach(function (v) {
-	        g.drawCircle(v.pos.x, v.pos.y, 10);
+	        //g.drawCircle(v.x, v.y, 10);
 	    });
 	    w.setRoute(vecs);
 	    w.step();
+	    w.render();
 	    renderer.render(stage);
 	};
 	var resize = function () {
@@ -219,16 +220,8 @@
 	        this.c1rl = c1rl;
 	        this.c2rl = c2rl;
 	    }
-	    Route.prototype.generateRoute = function (res, route) {
-	        if (route === void 0) { route = null; }
-	        var _route;
-	        if (route) {
-	            _route = route;
-	            _route.length = 0;
-	        }
-	        else {
-	            _route = new Array();
-	        }
+	    Route.prototype.generateRoute = function (res, line) {
+	        if (line === void 0) { line = new Line(); }
 	        var c1rres = res / (this.c1.r * 2 * matthew_1.default.PI) * matthew_1.default.D_PI;
 	        var c2rres = res / (this.c2.r * 2 * matthew_1.default.PI) * matthew_1.default.D_PI;
 	        var _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
@@ -239,20 +232,20 @@
 	            tr = this.c1rb + r * this.c1.d;
 	            _x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 	            _y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
-	            _route.push(new utils_1.VecPos(_x, _y, tr + matthew_1.default.H_PI * this.c1.d));
+	            line.push(new utils_1.Pos(_x, _y));
 	        }
-	        _route.pop();
-	        this.getLineRoot(new utils_1.Pos(_x, _y), new utils_1.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, _route);
+	        line.pop();
+	        this.getLineRoot(new utils_1.Pos(_x, _y), new utils_1.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, line);
 	        //trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
 	        var LL = matthew_1.default.abs(this.c2rl) - c2rres;
 	        for (var r = 0; r < LL; r += c2rres) {
 	            tr = this.c2rb + r * this.c2.d;
 	            _x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 	            _y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
-	            _route.push(new utils_1.VecPos(_x, _y, tr + matthew_1.default.H_PI * this.c2.d));
+	            line.push(new utils_1.Pos(_x, _y));
 	        }
-	        _route.push(new utils_1.VecPos(Math.cos(this.c2rb + (matthew_1.default.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb + (matthew_1.default.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y, this.c2rb + matthew_1.default.abs(this.c2rl) * this.c2.d + matthew_1.default.H_PI * this.c2.d));
-	        return _route;
+	        line.push(new utils_1.Pos(Math.cos(this.c2rb + (matthew_1.default.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb + (matthew_1.default.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y));
+	        return line;
 	    };
 	    Route.prototype.getLength = function () {
 	        var l = 0;
@@ -267,7 +260,7 @@
 	        l += Math.sqrt(dx * dx + dy * dy);
 	        return l;
 	    };
-	    Route.prototype.getLineRoot = function (bp, ep, res, vector) {
+	    Route.prototype.getLineRoot = function (bp, ep, res, line) {
 	        var tx = ep.x - bp.x;
 	        var ty = ep.y - bp.y;
 	        var r = Math.atan2(ty, tx);
@@ -276,18 +269,56 @@
 	        var l = Math.sqrt(tx * tx + ty * ty) - res;
 	        var L = l / res;
 	        for (var i = 0; i < L; i++) {
-	            vector.push(new utils_1.VecPos(dx * i + bp.x, dy * i + bp.y, r));
+	            line.push(new utils_1.Pos(dx * i + bp.x, dy * i + bp.y));
 	        }
 	    };
 	    return Route;
 	}());
 	exports.Route = Route;
-	var RouteGenerator = (function () {
-	    function RouteGenerator(graphics) {
-	        if (graphics === void 0) { graphics = null; }
-	        this.graphics = graphics;
+	var Line = (function () {
+	    function Line(data) {
+	        if (data === void 0) { data = []; }
+	        this.data = data;
+	        this.length = this.data.length;
 	    }
-	    RouteGenerator.prototype.getAllRoute = function (vposB, vposE, rB, rE) {
+	    Line.prototype.reverse = function () {
+	        this.data.reverse();
+	    };
+	    Line.prototype.getHeadRadian = function () {
+	        if (this.length < 2)
+	            console.error("line ga mijikai");
+	        var dx = this.data[1].x - this.data[0].x;
+	        var dy = this.data[1].y - this.data[0].y;
+	        return Math.atan2(dy, dx);
+	    };
+	    Line.prototype.at = function (id) {
+	        return this.data[id];
+	    };
+	    Line.prototype.push = function (pos) {
+	        this.data.push(pos);
+	        this.length = this.data.length;
+	    };
+	    Line.prototype.pop = function () {
+	        return this.data.pop();
+	    };
+	    Line.prototype.pushLine = function (line) {
+	        this.data = this.data.concat(line.data);
+	        this.length = this.data.length;
+	        return this;
+	    };
+	    Line.prototype.forEach = function (f) {
+	        this.data.forEach(f);
+	    };
+	    Line.prototype.getLength = function () {
+	        return this.length;
+	    };
+	    return Line;
+	}());
+	exports.Line = Line;
+	var RouteGenerator = (function () {
+	    function RouteGenerator() {
+	    }
+	    RouteGenerator.getAllRoute = function (vposB, vposE, rB, rE) {
 	        var cB1 = new utils_1.Circle(Math.cos(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.y, rB, 1, vposB.r - matthew_1.default.H_PI);
 	        var cB2 = new utils_1.Circle(Math.cos(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.y, rB, -1, vposB.r + matthew_1.default.H_PI);
 	        var cE1 = new utils_1.Circle(Math.cos(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.x, Math.sin(vposE.r + matthew_1.default.H_PI) * rE + vposE.pos.y, rE, 1, vposE.r - matthew_1.default.H_PI);
@@ -308,7 +339,7 @@
 	            allRoute.push(route);
 	        return allRoute;
 	    };
-	    RouteGenerator.prototype.getRoute = function (c1, c2) {
+	    RouteGenerator.getRoute = function (c1, c2) {
 	        var dx = c2.pos.x - c1.pos.x;
 	        var dy = c2.pos.y - c1.pos.y;
 	        var l = dx * dx + dy * dy;
@@ -412,13 +443,13 @@
 	        this.circle(c2.pos.x, c2.pos.y, c2.r);
 	        return new Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	    };
-	    RouteGenerator.prototype.line = function (x1, y1, x2, y2) {
+	    RouteGenerator.line = function (x1, y1, x2, y2) {
 	        if (!this.graphics)
 	            return;
 	        this.graphics.moveTo(x1, y1);
 	        this.graphics.lineTo(x2, y2);
 	    };
-	    RouteGenerator.prototype.circle = function (x, y, r) {
+	    RouteGenerator.circle = function (x, y, r) {
 	        if (!this.graphics)
 	            return;
 	        this.graphics.drawCircle(x, y, r);
@@ -510,12 +541,14 @@
 	        _this.routeIndex = 0;
 	        return _this;
 	    }
-	    FollowWorm.prototype.setRoute = function (route) {
+	    FollowWorm.prototype.setTarget = function (line) {
+	    };
+	    FollowWorm.prototype.setRoute = function (line) {
 	        var _this = this;
-	        if (route.length <= this.length)
+	        if (line.getLength() <= this.length)
 	            return;
 	        this.route = [];
-	        route.forEach(function (vp) {
+	        line.forEach(function (vp) {
 	            _this.route.push(vp.clone());
 	        });
 	        //this.routeIndex = 0;
@@ -525,8 +558,6 @@
 	            var rr = Math.sin(ri) * (30 * Math.sin(Math.PI * (ii / (this.routeLength))));
 	            ri += 0.2;
 	            var vpos = this.route[ii];
-	            vpos.pos.x = vpos.pos.x + Math.cos(vpos.r + Math.PI / 2) * rr;
-	            vpos.pos.y = vpos.pos.y + Math.sin(vpos.r + Math.PI / 2) * rr;
 	        }
 	    };
 	    FollowWorm.prototype.gotoHead = function () {
@@ -535,7 +566,13 @@
 	            this.step();
 	        }
 	    };
-	    FollowWorm.prototype.step = function () {
+	    FollowWorm.prototype.step = function (n) {
+	        if (n === void 0) { n = 1; }
+	        this._step();
+	        if (n > 1)
+	            this.step(n - 1);
+	    };
+	    FollowWorm.prototype._step = function () {
 	        if (!this.route)
 	            return;
 	        if (this.routeIndex >= this.routeLength) {
@@ -543,10 +580,9 @@
 	            this.gotoHead();
 	            return;
 	        }
-	        var pos = this.route[this.routeIndex].pos;
+	        var pos = this.route[this.routeIndex];
 	        this.push(pos.x, pos.y);
 	        this.routeIndex++;
-	        this.render();
 	        return;
 	    };
 	    return FollowWorm;
