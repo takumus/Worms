@@ -3,6 +3,19 @@ import Matthew from '../matthew';
 import Route from './route';
 export default class RouteGenerator{
 	public static graphics:PIXI.Graphics;
+	public static getMinimumRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Route{
+		const routes = this.getAllRoute(vposB, vposE, rB, rE);
+		let min:number = Number.MAX_VALUE;
+		let route:Route = null;
+		for(let i = 0; i < routes.length; i ++){
+			const r = routes[i];
+			if(r.getLength() < min){
+				min = r.getLength();
+				route = r;
+			}
+		};
+		return route;
+	}
 	public static getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
 		const cB1 = new Circle(
 			Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x,

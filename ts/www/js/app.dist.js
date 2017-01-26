@@ -101,15 +101,7 @@
 	    var br = Math.atan2(dy, dx);
 	    b.x -= dx;
 	    b.y -= dy;
-	    var routes = _1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
-	    var min = Number.MAX_VALUE;
-	    var route;
-	    routes.forEach(function (r) {
-	        if (r.getLength() < min) {
-	            min = r.getLength();
-	            route = r;
-	        }
-	    });
+	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
 	    if (!route)
 	        return;
 	    var vecs = route.generateRoute(5); //.pushLine(testRouteVecs);
@@ -357,6 +349,20 @@
 	var RouteGenerator = (function () {
 	    function RouteGenerator() {
 	    }
+	    RouteGenerator.getMinimumRoute = function (vposB, vposE, rB, rE) {
+	        var routes = this.getAllRoute(vposB, vposE, rB, rE);
+	        var min = Number.MAX_VALUE;
+	        var route = null;
+	        for (var i = 0; i < routes.length; i++) {
+	            var r = routes[i];
+	            if (r.getLength() < min) {
+	                min = r.getLength();
+	                route = r;
+	            }
+	        }
+	        ;
+	        return route;
+	    };
 	    RouteGenerator.getAllRoute = function (vposB, vposE, rB, rE) {
 	        var cB1 = new utils_1.Circle(Math.cos(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.y, rB, 1, vposB.r - matthew_1.default.H_PI);
 	        var cB2 = new utils_1.Circle(Math.cos(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r - matthew_1.default.H_PI) * rB + vposB.pos.y, rB, -1, vposB.r + matthew_1.default.H_PI);

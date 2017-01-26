@@ -55,20 +55,12 @@ const draw = ()=> {
 	const br = Math.atan2(dy, dx);
 	b.x -= dx;
 	b.y -= dy;
-	const routes = RouteGenerator.getAllRoute(
+	const route = RouteGenerator.getMinimumRoute(
 		new VecPos(mouse.x , mouse.y, 0.5),
 		new VecPos(b.x, b.y, br),
 		400,
 		400
 	);
-	let min:number = Number.MAX_VALUE;
-	let route:Route;
-	routes.forEach((r)=>{
-		if(r.getLength() < min){
-			min = r.getLength();
-			route = r;
-		}
-	});
 	if(!route) return;
 	let vecs = route.generateRoute(5);//.pushLine(testRouteVecs);
 	//vecs.forEach((v)=>{
