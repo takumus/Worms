@@ -51,20 +51,20 @@ export default class Line{
 	}
 	public wave(amp:number, freq:number):Line{
 		const newData:Array<Pos> = [];
-		let n = 0;
+		let rad = 0;
 		newData.push(this.at(0).clone());
 		for(let i = 1; i < this.length  - 1; i ++){
-			const all = Math.sin(i/(this.length-1)*Math.PI);
-			const r = all*all*Math.sin(n)*amp;
-			n += freq;
 			const p = this.at(i);
-			const np = new Pos();
 			let vx = this.at(i-1).x - p.x;
 			let vy = this.at(i-1).y - p.y;
-			const vl = vx*vx+vy*vy;
-			const vr = Math.sqrt(vl);
-			vx = vx / vr * r;
-			vy = vy / vr * r;
+			const np = new Pos();
+			const all = Math.sin(i　/　(this.length　-　1)　*　Math.PI);
+			//all * allで開始、終了を極端にする。(先端への影響を少なく)
+			const offset = all　*　all　*　Math.sin(rad)　*　amp;
+			const vr = Math.sqrt(vx　*　vx　+　vy　*　vy);
+			rad += freq;
+			vx = vx / vr * offset;
+			vy = vy / vr * offset;
 			np.x = p.x + -vy;
 			np.y = p.y + vx;
 			newData.push(np);

@@ -344,20 +344,20 @@
 	    };
 	    Line.prototype.wave = function (amp, freq) {
 	        var newData = [];
-	        var n = 0;
+	        var rad = 0;
 	        newData.push(this.at(0).clone());
 	        for (var i = 1; i < this.length - 1; i++) {
-	            var all = Math.sin(i / (this.length - 1) * Math.PI);
-	            var r = all * all * Math.sin(n) * amp;
-	            n += freq;
 	            var p = this.at(i);
-	            var np = new utils_1.Pos();
 	            var vx = this.at(i - 1).x - p.x;
 	            var vy = this.at(i - 1).y - p.y;
-	            var vl = vx * vx + vy * vy;
-	            var vr = Math.sqrt(vl);
-	            vx = vx / vr * r;
-	            vy = vy / vr * r;
+	            var np = new utils_1.Pos();
+	            var all = Math.sin(i / (this.length - 1) * Math.PI);
+	            //all * allで開始、終了を極端にする。(先端への影響を少なく)
+	            var offset = all * all * Math.sin(rad) * amp;
+	            var vr = Math.sqrt(vx * vx + vy * vy);
+	            rad += freq;
+	            vx = vx / vr * offset;
+	            vy = vy / vr * offset;
 	            np.x = p.x + -vy;
 	            np.y = p.y + vx;
 	            newData.push(np);
