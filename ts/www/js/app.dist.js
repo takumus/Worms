@@ -46,8 +46,8 @@
 
 	"use strict";
 	var utils_1 = __webpack_require__(1);
-	var route_1 = __webpack_require__(3);
-	var worm_1 = __webpack_require__(4);
+	var _1 = __webpack_require__(3);
+	var worm_1 = __webpack_require__(7);
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
@@ -79,7 +79,7 @@
 	        testRouteVecs.push(vp);
 	    });
 	    testRouteVecs.reverse();
-	    route_1.RouteGenerator.graphics = g;
+	    _1.RouteGenerator.graphics = g;
 	    draw();
 	    resize();
 	};
@@ -89,7 +89,7 @@
 	var w = new worm_1.FollowWorm(L);
 	var testRouteStr = '{"lines":[[{"x":0.35,"y":0},{"x":0.88,"y":4.97},{"x":0.51,"y":9.95},{"x":0.82,"y":14.94},{"x":0.55,"y":19.94},{"x":0.81,"y":24.93},{"x":0.56,"y":29.92},{"x":0.81,"y":34.92},{"x":0.56,"y":39.91},{"x":0.14,"y":44.89},{"x":0.24,"y":49.89},{"x":0.78,"y":54.86},{"x":0.29,"y":59.84},{"x":0.1,"y":64.83},{"x":0.2,"y":69.83},{"x":0.92,"y":74.78},{"x":0.31,"y":79.74},{"x":0.24,"y":84.74},{"x":0.42,"y":89.74},{"x":0.33,"y":94.74},{"x":0.37,"y":99.74},{"x":0.35,"y":104.74},{"x":0.36,"y":109.74},{"x":0.36,"y":114.74},{"x":0.22,"y":119.74},{"x":0.26,"y":124.74},{"x":0.4,"y":129.73},{"x":0.34,"y":134.73},{"x":0.37,"y":139.73},{"x":0.35,"y":144.73},{"x":1.06,"y":149.68},{"x":1.02,"y":154.68},{"x":1.02,"y":159.68},{"x":0,"y":164.58},{"x":0.76,"y":169.52},{"x":0.83,"y":174.52},{"x":2.44,"y":179.25},{"x":3.99,"y":184},{"x":6.78,"y":188.16},{"x":9.86,"y":192.1},{"x":13.05,"y":195.95},{"x":17.05,"y":198.94},{"x":21.15,"y":201.8},{"x":25.83,"y":203.57},{"x":30.53,"y":205.29},{"x":35.43,"y":206.26},{"x":40.34,"y":207.22},{"x":45.24,"y":208.18},{"x":50.19,"y":208.92},{"x":55.19,"y":208.85},{"x":60.19,"y":208.88},{"x":65.04,"y":207.67},{"x":69.91,"y":206.52},{"x":74.71,"y":205.14},{"x":79.26,"y":203.07},{"x":84.24,"y":202.57},{"x":88.65,"y":200.22}]],"height":208.92,"width":88.65}';
 	var testRoute = JSON.parse(testRouteStr);
-	var testRouteVecs = new route_1.Line();
+	var testRouteVecs = new _1.Line();
 	var r = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
@@ -101,7 +101,7 @@
 	    var br = Math.atan2(dy, dx);
 	    b.x -= dx;
 	    b.y -= dy;
-	    var routes = route_1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
+	    var routes = _1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
 	    var min = Number.MAX_VALUE;
 	    var route;
 	    routes.forEach(function (r) {
@@ -211,8 +211,22 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var route_1 = __webpack_require__(4);
+	exports.Route = route_1.default;
+	var line_1 = __webpack_require__(5);
+	exports.Line = line_1.default;
+	var generator_1 = __webpack_require__(6);
+	exports.RouteGenerator = generator_1.default;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var utils_1 = __webpack_require__(1);
 	var matthew_1 = __webpack_require__(2);
+	var line_1 = __webpack_require__(5);
 	var Route = (function () {
 	    function Route(c1, c2, c1rb, c2rb, c1rl, c2rl) {
 	        this.c1 = c1;
@@ -223,7 +237,7 @@
 	        this.c2rl = c2rl;
 	    }
 	    Route.prototype.generateRoute = function (res, line) {
-	        if (line === void 0) { line = new Line(); }
+	        if (line === void 0) { line = new line_1.default(); }
 	        var c1rres = res / (this.c1.r * 2 * matthew_1.default.PI) * matthew_1.default.D_PI;
 	        var c2rres = res / (this.c2.r * 2 * matthew_1.default.PI) * matthew_1.default.D_PI;
 	        var _x = Math.cos(this.c1rb) * this.c1.r + this.c1.pos.x;
@@ -276,7 +290,15 @@
 	    };
 	    return Route;
 	}());
-	exports.Route = Route;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Route;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
 	var Line = (function () {
 	    function Line(data) {
 	        if (data === void 0) { data = []; }
@@ -320,7 +342,18 @@
 	    };
 	    return Line;
 	}());
-	exports.Line = Line;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Line;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var utils_1 = __webpack_require__(1);
+	var matthew_1 = __webpack_require__(2);
+	var route_1 = __webpack_require__(4);
 	var RouteGenerator = (function () {
 	    function RouteGenerator() {
 	    }
@@ -447,7 +480,7 @@
 	        this.circle(c2.pos.x, c2.pos.y, 2);
 	        this.circle(c1.pos.x, c1.pos.y, c1.r);
 	        this.circle(c2.pos.x, c2.pos.y, c2.r);
-	        return new Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
+	        return new route_1.default(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	    };
 	    RouteGenerator.line = function (x1, y1, x2, y2) {
 	        if (!this.graphics)
@@ -462,11 +495,12 @@
 	    };
 	    return RouteGenerator;
 	}());
-	exports.RouteGenerator = RouteGenerator;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = RouteGenerator;
 
 
 /***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -476,13 +510,13 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var utils_1 = __webpack_require__(1);
-	var route_1 = __webpack_require__(3);
+	var _1 = __webpack_require__(3);
 	var Worm = (function (_super) {
 	    __extends(Worm, _super);
 	    function Worm(length) {
 	        var _this = _super.call(this) || this;
 	        _this.length = length;
-	        _this.bone = new route_1.Line();
+	        _this.bone = new _1.Line();
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
 	            _this.bone.push(new utils_1.Pos());

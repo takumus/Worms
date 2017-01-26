@@ -1,5 +1,5 @@
-import {Pos, VecPos, Circle} from '../routes/utils';
-import {Line} from '../routes/route';
+import {Pos, VecPos, Circle} from '../utils';
+import {Line} from '../routes/';
 class Worm extends PIXI.Graphics{
     protected bone:Line;
     private body:Array<BodyPos>;

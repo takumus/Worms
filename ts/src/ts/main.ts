@@ -1,5 +1,5 @@
-import {Pos, VecPos, Circle} from './routes/utils';
-import {Route, RouteGenerator, Line} from './routes/route';
+import {Pos, VecPos, Circle} from './utils';
+import {Route, RouteGenerator, Line} from './routes/';
 import {FollowWorm} from './worms/worm';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
