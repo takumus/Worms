@@ -99,8 +99,8 @@ class Line{
 	}
 	public getHeadRadian():number{
 		if(this.length < 2) console.error("line ga mijikai");
-		const dx = this.data[1].x - this.data[0].x;
-		const dy = this.data[1].y - this.data[0].y;
+		const dx = this.at(1).x - this.at(0).x;
+		const dy = this.at(1).y - this.at(0).y;
 		return Math.atan2(dy, dx);
 	}
 	public at(id:number):Pos{
@@ -123,6 +123,13 @@ class Line{
 	}
 	public getLength():number{
 		return this.length;
+	}
+	public clone():Line{
+		const data:Array<Pos> = [];
+		this.forEach((p)=>{
+			data.push(p.clone());
+		});
+		return new Line(data);
 	}
 }
 class RouteGenerator{
