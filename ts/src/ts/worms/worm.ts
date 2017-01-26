@@ -34,7 +34,7 @@ class Worm extends PIXI.Graphics{
             const nbody = this.body[i];
             let vx = this.bone[i-1].x - nbone.x;
             let vy = this.bone[i-1].y - nbone.y;
-            const r = ((Math.sin(i/(this.bone.length - 1)*(Math.PI))))*60;
+            const r = ((Math.sin(i/(this.bone.length - 1)*(Math.PI))))*30;
             const vl = vx*vx+vy*vy;
             const vr = Math.sqrt(vl);
             vx = vx / vr * r;
@@ -50,7 +50,7 @@ class Worm extends PIXI.Graphics{
     public render(){
         this.clear();
         this.lineStyle(2, 0xffffff);
-        this.beginFill(0xffffff);
+        //this.beginFill(0xffffff);
         this.moveTo(this.body[0].left.x, this.body[0].left.y);
         for(let i = 1; i < this.body.length; i ++){
             this.lineTo(this.body[i].left.x, this.body[i].left.y);
@@ -72,14 +72,17 @@ class FollowWorm extends Worm{
     }
     public setRoute(route:Array<VecPos>){
         if(route.length <= this.length) return;
-        this.route = route;
+        this.route = [];
+        route.forEach((vp)=>{
+            this.route.push(vp.clone());
+        });
         //this.routeIndex = 0;
         this.routeLength = this.route.length;
         let ri:number = 0;
-        for (let ii = 0; ii < route.length; ii++) {
-            let rr:number = Math.sin(ri)*(50*Math.sin(Math.PI*(ii/(this.routeLength))));
+        for (let ii = 0; ii < this.route.length; ii++) {
+            let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
             ri+=0.2;
-            var vpos:VecPos = route[ii];
+            var vpos:VecPos = this.route[ii];
             vpos.pos.x = vpos.pos.x + Math.cos(vpos.r+Math.PI/2) * rr;
             vpos.pos.y = vpos.pos.y + Math.sin(vpos.r+Math.PI/2) * rr;
         }

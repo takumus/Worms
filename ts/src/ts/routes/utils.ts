@@ -7,6 +7,9 @@ class Pos {
         this.x = x;
         this.y = y;
     }
+    public clone():Pos{
+        return new Pos(this.x, this.y);
+    }
 }
 class VecPos {
     public pos:Pos;
@@ -15,6 +18,9 @@ class VecPos {
     constructor(x:number = 0, y:number = 0, r:number = 0) {
         this.pos = new Pos(x, y);
         this.r = r;
+    }
+    public clone():VecPos{
+        return new VecPos(this.pos.x, this.pos.y, this.r);
     }
 }
 class Circle {
