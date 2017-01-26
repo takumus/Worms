@@ -38,7 +38,7 @@ class Worm extends PIXI.Graphics{
             const nbody = this.body[i];
             let vx = this.bone.at(i-1).x - nbone.x;
             let vy = this.bone.at(i-1).y - nbone.y;
-            const r = ((Math.sin(i/(this.bone.getLength()  - 1)*(Math.PI))))*30;
+            const r = ((Math.sin(i/(this.bone.getLength()  - 1)*(Math.PI))))*40;
             const vl = vx*vx+vy*vy;
             const vr = Math.sqrt(vl);
             vx = vx / vr * r;
@@ -75,17 +75,6 @@ class FollowWorm extends Worm{
     public setRoute(line:Line){
         if(line.getLength() <= this.length) return;
         this.line = line;
-        //this.routeIndex = 0;
-        /*
-        let ri:number = 0;
-        for (let ii = 0; ii < this.line.length; ii++) {
-            let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
-            ri+=0.2;
-            var vpos:Pos = this.line[ii];
-            //vpos.x = vpos.x + Math.cos(vpos.r+Math.PI/2) * rr;
-            //vpos.y = vpos.y + Math.sin(vpos.r+Math.PI/2) * rr;
-        }
-        */
     }
     public gotoHead(){
         this.routeIndex = 0;

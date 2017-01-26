@@ -57,18 +57,18 @@ export default class Line{
 			const all = Math.sin(i/(this.length-1)*Math.PI);
 			const r = all*all*Math.sin(n)*amp;
 			n += freq;
-            const p = this.at(i);
+			const p = this.at(i);
 			const np = new Pos();
-            let vx = this.at(i-1).x - p.x;
-            let vy = this.at(i-1).y - p.y;
-            const vl = vx*vx+vy*vy;
-            const vr = Math.sqrt(vl);
-            vx = vx / vr * r;
-            vy = vy / vr * r;
-            np.x = p.x + -vy;
-            np.y = p.y + vx;
+			let vx = this.at(i-1).x - p.x;
+			let vy = this.at(i-1).y - p.y;
+			const vl = vx*vx+vy*vy;
+			const vr = Math.sqrt(vl);
+			vx = vx / vr * r;
+			vy = vy / vr * r;
+			np.x = p.x + -vy;
+			np.y = p.y + vx;
 			newData.push(np);
-        }
+		}
 		newData.push(this.at(this.length - 1).clone());
 		this.data = newData;
 		return this;

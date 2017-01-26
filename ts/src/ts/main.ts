@@ -36,7 +36,7 @@ const init = ()=> {
 	w2 = new FollowWorm(testRouteVecs2.getLength());
 	stage.addChild(w2);
 	testRouteVecs.reverse();
-	RouteGenerator.graphics = g;
+	//RouteGenerator.graphics = g;
 	draw();
 	resize();
 }
@@ -61,7 +61,7 @@ const draw = ()=> {
 		400
 	);
 	const route2 = RouteGenerator.getMinimumRoute(
-		new VecPos(mouse.x+500 , mouse.y+300, 0.5),
+		new VecPos(mouse.x+500 , mouse.y+300, 0.5+Math.PI),
 		testRouteVecs2.getHeadVecPos(),
 		200,
 		400

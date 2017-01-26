@@ -83,7 +83,7 @@
 	    w2 = new worm_1.FollowWorm(testRouteVecs2.getLength());
 	    stage.addChild(w2);
 	    testRouteVecs.reverse();
-	    _1.RouteGenerator.graphics = g;
+	    //RouteGenerator.graphics = g;
 	    draw();
 	    resize();
 	};
@@ -101,7 +101,7 @@
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
 	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 200, 400);
-	    var route2 = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x + 500, mouse.y + 300, 0.5), testRouteVecs2.getHeadVecPos(), 200, 400);
+	    var route2 = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x + 500, mouse.y + 300, 0.5 + Math.PI), testRouteVecs2.getHeadVecPos(), 200, 400);
 	    if (route) {
 	        var vecs = route.generateRoute(5).wave(20, 0.1).pushLine(testRouteVecs);
 	        w.setRoute(vecs);
@@ -588,7 +588,7 @@
 	            var nbody = this.body[i];
 	            var vx = this.bone.at(i - 1).x - nbone.x;
 	            var vy = this.bone.at(i - 1).y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 30;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 40;
 	            var vl = vx * vx + vy * vy;
 	            var vr = Math.sqrt(vl);
 	            vx = vx / vr * r;
@@ -627,17 +627,6 @@
 	        if (line.getLength() <= this.length)
 	            return;
 	        this.line = line;
-	        //this.routeIndex = 0;
-	        /*
-	        let ri:number = 0;
-	        for (let ii = 0; ii < this.line.length; ii++) {
-	            let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
-	            ri+=0.2;
-	            var vpos:Pos = this.line[ii];
-	            //vpos.x = vpos.x + Math.cos(vpos.r+Math.PI/2) * rr;
-	            //vpos.y = vpos.y + Math.sin(vpos.r+Math.PI/2) * rr;
-	        }
-	        */
 	    };
 	    FollowWorm.prototype.gotoHead = function () {
 	        this.routeIndex = 0;
