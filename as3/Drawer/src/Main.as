@@ -21,6 +21,8 @@ package {
 		private var lines:Vector.<Vector.<Point>>;
 		private var nowPoint:Point;
 		private var nowId:int;
+		private var minPos:Point;
+		private var maxPos:Point;
         public function Main() {
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -42,6 +44,8 @@ package {
 			stage.stageWidth = sketch.width;
 			stage.stageHeight = sketch.height;
 			lines = new Vector.<Vector.<Point>>();
+			minPos = new Point();
+			maxPos = new Point();
 			nowId = -1;
         }
         private function begin(e:MouseEvent):void{
@@ -88,8 +92,8 @@ package {
 					}
 				}
 			}
-			var minPos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
-			var maxPos:Point = new Point(Number.MIN_VALUE, Number.MIN_VALUE);
+			minPos.x = minPos.y = Number.MAX_VALUE;
+			maxPos.x = maxPos.y = Number.MIN_VALUE;
 			for(var i:int = 0; i < lines.length; i ++){
 				canvas.graphics.lineStyle(3, 0xff0000);
 				for(var ii:int = 0; ii < lines[i].length; ii++){
@@ -110,7 +114,30 @@ package {
 			canvas.graphics.drawRect(minPos.x, minPos.y, maxPos.x - minPos.x, maxPos.y - minPos.y);
         }
 		private function showData(e:*):void{
-			
+			var w:Number = maxPos.x - minPos.x;
+			var h:Number = maxPos.y - minPos.y;
+			w = int(w*100)/100;
+			h = int(h*100)/100;
+			var data:Object = {
+				lines:[],
+				width:w,
+				height:h
+			};
+			for(var i:int = 0; i < lines.length; i ++){
+				var d:Array = [];
+				for(var ii:int = 0; ii < lines[i].length; ii++){
+					var x:Number = lines[i][ii].x - minPos.x;
+					var y:Number = lines[i][ii].y - minPos.y;
+					x = int(x*100)/100;
+					y = int(y*100)/100;
+					d.push({
+						x:x,
+						y:y
+					});
+				}
+				data.lines.push(d);
+			}
+			trace(JSON.stringify(data));
 		}
 		private function rightMouseDown(e:MouseEvent):void{
 			if(!drawing){
