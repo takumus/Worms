@@ -49,20 +49,14 @@ const draw = ()=> {
 
 	g.clear();
 	g.lineStyle(2, 0xff0000);
-	const b:Pos = new Pos(testRouteVecs.at(0).x, testRouteVecs.at(0).y);
-	const dx = testRouteVecs.at(1).x - testRouteVecs.at(0).x;
-	const dy = testRouteVecs.at(1).y - testRouteVecs.at(0).y;
-	const br = Math.atan2(dy, dx);
-	b.x -= dx;
-	b.y -= dy;
 	const route = RouteGenerator.getMinimumRoute(
 		new VecPos(mouse.x , mouse.y, 0.5),
-		new VecPos(b.x, b.y, br),
+		testRouteVecs.getHeadVecPos(),
 		400,
 		400
 	);
 	if(!route) return;
-	let vecs = route.generateRoute(5);//.pushLine(testRouteVecs);
+	let vecs = route.generateRoute(5).pushLine(testRouteVecs);
 	//vecs.forEach((v)=>{
 	//	//g.drawCircle(v.x, v.y, 10);
 	//});

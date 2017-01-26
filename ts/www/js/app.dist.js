@@ -95,16 +95,10 @@
 	    requestAnimationFrame(draw);
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
-	    var b = new utils_1.Pos(testRouteVecs.at(0).x, testRouteVecs.at(0).y);
-	    var dx = testRouteVecs.at(1).x - testRouteVecs.at(0).x;
-	    var dy = testRouteVecs.at(1).y - testRouteVecs.at(0).y;
-	    var br = Math.atan2(dy, dx);
-	    b.x -= dx;
-	    b.y -= dy;
-	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
+	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 400, 400);
 	    if (!route)
 	        return;
-	    var vecs = route.generateRoute(5); //.pushLine(testRouteVecs);
+	    var vecs = route.generateRoute(5).pushLine(testRouteVecs);
 	    //vecs.forEach((v)=>{
 	    //	//g.drawCircle(v.x, v.y, 10);
 	    //});
@@ -288,9 +282,10 @@
 
 /***/ },
 /* 5 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var utils_1 = __webpack_require__(1);
 	var Line = (function () {
 	    function Line(data) {
 	        if (data === void 0) { data = []; }
@@ -299,6 +294,13 @@
 	    }
 	    Line.prototype.reverse = function () {
 	        this.data.reverse();
+	    };
+	    Line.prototype.getHeadVecPos = function () {
+	        var fp = this.at(0);
+	        var sp = this.at(1);
+	        var dx = fp.x - sp.x;
+	        var dy = fp.y - sp.y;
+	        return new utils_1.VecPos(fp.x + dx, fp.y + dy, this.getHeadRadian());
 	    };
 	    Line.prototype.getHeadRadian = function () {
 	        if (this.length < 2)

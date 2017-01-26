@@ -10,7 +10,18 @@ export default class Line{
 	public reverse():void{
 		this.data.reverse();
 	}
-	public getHeadRadian():number{
+	public getHeadVecPos():VecPos{
+		const fp = this.at(0);
+		const sp = this.at(1);
+		const dx = fp.x - sp.x;
+		const dy = fp.y - sp.y;
+		return new VecPos(
+			fp.x + dx,
+			fp.y + dy,
+			this.getHeadRadian()
+		);
+	}
+	private getHeadRadian():number{
 		if(this.length < 2) console.error("line ga mijikai");
 		const dx = this.at(1).x - this.at(0).x;
 		const dy = this.at(1).y - this.at(0).y;
