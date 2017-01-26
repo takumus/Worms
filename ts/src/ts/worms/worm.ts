@@ -53,7 +53,7 @@ class Worm extends PIXI.Graphics{
         
         this.clear();
         this.lineStyle(2, 0xffffff);
-        //this.beginFill(0xffffff);
+        this.beginFill(0xffffff);
         this.moveTo(bbody.left.x, bbody.left.y);
         for(let i = 1; i < this.body.length; i ++){
             this.lineTo(this.body[i].left.x, this.body[i].left.y);
@@ -94,6 +94,7 @@ class FollowWorm extends Worm{
         }
     }
     public setStep(pos:number = 0.5):void{
+        if(!this.line) return;
         const beginIndex = this.length;
         const length = this.line.getLength() - beginIndex - 1;
         const posIndex = Math.floor(length * pos);

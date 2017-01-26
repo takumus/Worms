@@ -73,29 +73,29 @@
 	        mouse.x = e.clientX * 2;
 	        mouse.y = e.clientY * 2;
 	    });
-	    stage.addChild(w);
 	    testRoute.lines[0].forEach(function (p) {
 	        var vp = new utils_1.Pos(p.x + 800, p.y + 800);
 	        testRouteVecs.push(vp);
 	    });
-	    testRouteVecs.reverse();
+	    w = new worm_1.FollowWorm(testRouteVecs.getLength());
+	    stage.addChild(w);
+	    //testRouteVecs.reverse();
 	    _1.RouteGenerator.graphics = g;
 	    draw();
 	    resize();
 	};
 	var g = new PIXI.Graphics();
 	var mouse = new utils_1.Pos();
-	var L = 80;
-	var w = new worm_1.FollowWorm(L);
-	var testRouteStr = '{"lines":[[{"x":0.35,"y":0},{"x":0.88,"y":4.97},{"x":0.51,"y":9.95},{"x":0.82,"y":14.94},{"x":0.55,"y":19.94},{"x":0.81,"y":24.93},{"x":0.56,"y":29.92},{"x":0.81,"y":34.92},{"x":0.56,"y":39.91},{"x":0.14,"y":44.89},{"x":0.24,"y":49.89},{"x":0.78,"y":54.86},{"x":0.29,"y":59.84},{"x":0.1,"y":64.83},{"x":0.2,"y":69.83},{"x":0.92,"y":74.78},{"x":0.31,"y":79.74},{"x":0.24,"y":84.74},{"x":0.42,"y":89.74},{"x":0.33,"y":94.74},{"x":0.37,"y":99.74},{"x":0.35,"y":104.74},{"x":0.36,"y":109.74},{"x":0.36,"y":114.74},{"x":0.22,"y":119.74},{"x":0.26,"y":124.74},{"x":0.4,"y":129.73},{"x":0.34,"y":134.73},{"x":0.37,"y":139.73},{"x":0.35,"y":144.73},{"x":1.06,"y":149.68},{"x":1.02,"y":154.68},{"x":1.02,"y":159.68},{"x":0,"y":164.58},{"x":0.76,"y":169.52},{"x":0.83,"y":174.52},{"x":2.44,"y":179.25},{"x":3.99,"y":184},{"x":6.78,"y":188.16},{"x":9.86,"y":192.1},{"x":13.05,"y":195.95},{"x":17.05,"y":198.94},{"x":21.15,"y":201.8},{"x":25.83,"y":203.57},{"x":30.53,"y":205.29},{"x":35.43,"y":206.26},{"x":40.34,"y":207.22},{"x":45.24,"y":208.18},{"x":50.19,"y":208.92},{"x":55.19,"y":208.85},{"x":60.19,"y":208.88},{"x":65.04,"y":207.67},{"x":69.91,"y":206.52},{"x":74.71,"y":205.14},{"x":79.26,"y":203.07},{"x":84.24,"y":202.57},{"x":88.65,"y":200.22}]],"height":208.92,"width":88.65}';
+	var testRouteStr = '{"lines":[[{"x":1.42,"y":0},{"x":1.87,"y":4.97},{"x":1.9,"y":9.97},{"x":1.9,"y":14.97},{"x":1.9,"y":19.97},{"x":1.9,"y":24.97},{"x":1.9,"y":29.97},{"x":1.9,"y":34.97},{"x":1.9,"y":39.97},{"x":1.99,"y":44.97},{"x":1.34,"y":49.93},{"x":1.84,"y":54.91},{"x":1.44,"y":59.89},{"x":1.66,"y":64.88},{"x":1.54,"y":69.88},{"x":1.02,"y":74.86},{"x":1.1,"y":79.85},{"x":1.94,"y":84.78},{"x":1.44,"y":89.76},{"x":1.68,"y":94.75},{"x":1.57,"y":99.75},{"x":1.62,"y":104.75},{"x":1.6,"y":109.75},{"x":0,"y":116.01},{"x":1.87,"y":120.64},{"x":1.77,"y":125.64},{"x":1.77,"y":130.64},{"x":1.77,"y":135.64},{"x":1.77,"y":140.64},{"x":1.77,"y":145.64},{"x":1.77,"y":150.64},{"x":1.77,"y":155.64},{"x":1.09,"y":160.6},{"x":1.87,"y":165.54},{"x":1.56,"y":170.53},{"x":1.68,"y":175.52},{"x":1.64,"y":180.52},{"x":1.65,"y":185.52},{"x":1.65,"y":190.52},{"x":1.84,"y":195.52},{"x":1.91,"y":200.52},{"x":1.96,"y":205.52},{"x":1.94,"y":210.52},{"x":1.95,"y":215.52},{"x":1.94,"y":220.52},{"x":1.94,"y":225.52},{"x":1.94,"y":230.52},{"x":1.54,"y":235.5},{"x":1.69,"y":240.5},{"x":1.82,"y":245.5},{"x":1.35,"y":250.48},{"x":1.82,"y":255.46},{"x":1.38,"y":260.43},{"x":1.84,"y":265.41},{"x":1.61,"y":270.41},{"x":1.69,"y":275.41},{"x":1.66,"y":280.41},{"x":1.67,"y":285.41},{"x":1.67,"y":290.41},{"x":1.67,"y":295.41},{"x":1.87,"y":300.4},{"x":1.61,"y":305.4},{"x":1.69,"y":310.4},{"x":1.67,"y":315.4},{"x":1.68,"y":320.4},{"x":1.67,"y":325.4},{"x":1.67,"y":330.4},{"x":2.86,"y":335.25},{"x":2.48,"y":340.24},{"x":3.88,"y":345.04},{"x":4.71,"y":349.97},{"x":5.75,"y":354.86},{"x":6.77,"y":359.76},{"x":8.85,"y":364.3},{"x":10.27,"y":369.1},{"x":12.75,"y":373.44},{"x":15.24,"y":377.78},{"x":17.6,"y":382.19},{"x":21.48,"y":385.34},{"x":24.21,"y":389.53},{"x":27.27,"y":393.48},{"x":31.59,"y":396},{"x":35.58,"y":399.01},{"x":39.47,"y":402.15},{"x":43.87,"y":404.53},{"x":48.36,"y":406.72},{"x":53.06,"y":408.44},{"x":57.45,"y":410.82},{"x":62.16,"y":412.53},{"x":66.95,"y":413.95},{"x":71.65,"y":415.66},{"x":76.61,"y":416.25},{"x":81.47,"y":417.42},{"x":86.47,"y":417.32},{"x":91.37,"y":418.35},{"x":96.33,"y":418.95},{"x":101.26,"y":418.11},{"x":106.26,"y":418.04},{"x":111.26,"y":418.04},{"x":116.26,"y":418.04},{"x":121.17,"y":417.1},{"x":126.16,"y":416.79},{"x":131.16,"y":416.86},{"x":135.83,"y":415.08},{"x":140.8,"y":414.52},{"x":145.67,"y":413.4},{"x":150.64,"y":412.89},{"x":155.16,"y":410.75},{"x":160.08,"y":409.87},{"x":164.9,"y":408.52},{"x":169.42,"y":406.39},{"x":174.11,"y":404.66},{"x":179.06,"y":403.91},{"x":183.15,"y":401.05}]],"height":418.95,"width":183.15}';
 	var testRoute = JSON.parse(testRouteStr);
 	var testRouteVecs = new _1.Line();
+	var w;
 	var r = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
 	    g.clear();
 	    g.lineStyle(2, 0xff0000);
-	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 400, 400);
+	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 100, 100);
 	    if (!route)
 	        return;
 	    var vecs = route.generateRoute(5).pushLine(testRouteVecs);
@@ -298,16 +298,9 @@
 	    Line.prototype.getHeadVecPos = function () {
 	        var fp = this.at(0);
 	        var sp = this.at(1);
-	        var dx = fp.x - sp.x;
-	        var dy = fp.y - sp.y;
-	        return new utils_1.VecPos(fp.x + dx, fp.y + dy, this.getHeadRadian());
-	    };
-	    Line.prototype.getHeadRadian = function () {
-	        if (this.length < 2)
-	            console.error("line ga mijikai");
-	        var dx = this.at(1).x - this.at(0).x;
-	        var dy = this.at(1).y - this.at(0).y;
-	        return Math.atan2(dy, dx);
+	        var dx = sp.x - fp.x;
+	        var dy = sp.y - fp.y;
+	        return new utils_1.VecPos(fp.x - dx, fp.y - dy, Math.atan2(dy, dx));
 	    };
 	    Line.prototype.at = function (id) {
 	        return this.data[id];
@@ -570,7 +563,7 @@
 	        ebody.left.y = ebone.y;
 	        this.clear();
 	        this.lineStyle(2, 0xffffff);
-	        //this.beginFill(0xffffff);
+	        this.beginFill(0xffffff);
 	        this.moveTo(bbody.left.x, bbody.left.y);
 	        for (var i = 1; i < this.body.length; i++) {
 	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
@@ -615,6 +608,8 @@
 	    };
 	    FollowWorm.prototype.setStep = function (pos) {
 	        if (pos === void 0) { pos = 0.5; }
+	        if (!this.line)
+	            return;
 	        var beginIndex = this.length;
 	        var length = this.line.getLength() - beginIndex - 1;
 	        var posIndex = Math.floor(length * pos);
