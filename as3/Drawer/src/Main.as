@@ -168,8 +168,7 @@ package {
                 var x:Number = basePoint.x + Math.cos(i)*r;
                 var y:Number = basePoint.y + Math.sin(i)*r;
 				var color:uint = sketch.getPixel(x, y);
-                if(pColor < 0)pColor = color;
-                if(pColor != color) return new Point(x, y);
+                if(color == 0xffff00) return new Point(x, y);
             }
             return null;
         }
