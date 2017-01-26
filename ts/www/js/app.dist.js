@@ -588,7 +588,7 @@
 	            var nbody = this.body[i];
 	            var vx = this.bone.at(i - 1).x - nbone.x;
 	            var vy = this.bone.at(i - 1).y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 40;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 30;
 	            var vl = vx * vx + vy * vy;
 	            var vr = Math.sqrt(vl);
 	            vx = vx / vr * r;
