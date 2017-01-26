@@ -90,6 +90,7 @@
 	var testRouteStr = '{"lines":[[{"x":0.35,"y":0},{"x":0.88,"y":4.97},{"x":0.51,"y":9.95},{"x":0.82,"y":14.94},{"x":0.55,"y":19.94},{"x":0.81,"y":24.93},{"x":0.56,"y":29.92},{"x":0.81,"y":34.92},{"x":0.56,"y":39.91},{"x":0.14,"y":44.89},{"x":0.24,"y":49.89},{"x":0.78,"y":54.86},{"x":0.29,"y":59.84},{"x":0.1,"y":64.83},{"x":0.2,"y":69.83},{"x":0.92,"y":74.78},{"x":0.31,"y":79.74},{"x":0.24,"y":84.74},{"x":0.42,"y":89.74},{"x":0.33,"y":94.74},{"x":0.37,"y":99.74},{"x":0.35,"y":104.74},{"x":0.36,"y":109.74},{"x":0.36,"y":114.74},{"x":0.22,"y":119.74},{"x":0.26,"y":124.74},{"x":0.4,"y":129.73},{"x":0.34,"y":134.73},{"x":0.37,"y":139.73},{"x":0.35,"y":144.73},{"x":1.06,"y":149.68},{"x":1.02,"y":154.68},{"x":1.02,"y":159.68},{"x":0,"y":164.58},{"x":0.76,"y":169.52},{"x":0.83,"y":174.52},{"x":2.44,"y":179.25},{"x":3.99,"y":184},{"x":6.78,"y":188.16},{"x":9.86,"y":192.1},{"x":13.05,"y":195.95},{"x":17.05,"y":198.94},{"x":21.15,"y":201.8},{"x":25.83,"y":203.57},{"x":30.53,"y":205.29},{"x":35.43,"y":206.26},{"x":40.34,"y":207.22},{"x":45.24,"y":208.18},{"x":50.19,"y":208.92},{"x":55.19,"y":208.85},{"x":60.19,"y":208.88},{"x":65.04,"y":207.67},{"x":69.91,"y":206.52},{"x":74.71,"y":205.14},{"x":79.26,"y":203.07},{"x":84.24,"y":202.57},{"x":88.65,"y":200.22}]],"height":208.92,"width":88.65}';
 	var testRoute = JSON.parse(testRouteStr);
 	var testRouteVecs = new route_1.Line();
+	var r = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
 	    g.clear();
@@ -100,7 +101,7 @@
 	    var br = Math.atan2(dy, dx);
 	    b.x -= dx;
 	    b.y -= dy;
-	    var routes = route_1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 200, 200);
+	    var routes = route_1.RouteGenerator.getAllRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), new utils_1.VecPos(b.x, b.y, br), 400, 400);
 	    var min = Number.MAX_VALUE;
 	    var route;
 	    routes.forEach(function (r) {
@@ -111,14 +112,15 @@
 	    });
 	    if (!route)
 	        return;
-	    var vecs = route.generateRoute(5).pushLine(testRouteVecs);
-	    vecs.forEach(function (v) {
-	        //g.drawCircle(v.x, v.y, 10);
-	    });
+	    var vecs = route.generateRoute(5); //.pushLine(testRouteVecs);
+	    //vecs.forEach((v)=>{
+	    //	//g.drawCircle(v.x, v.y, 10);
+	    //});
 	    w.setRoute(vecs);
-	    w.step();
+	    w.setStep((Math.sin(r) + 1) / 2);
 	    w.render();
 	    renderer.render(stage);
+	    r += 0.04;
 	};
 	var resize = function () {
 	    var width = canvas.offsetWidth * 2;
@@ -306,17 +308,14 @@
 	        this.length = this.data.length;
 	        return this;
 	    };
-	    Line.prototype.forEach = function (f) {
-	        this.data.forEach(f);
-	    };
 	    Line.prototype.getLength = function () {
 	        return this.length;
 	    };
 	    Line.prototype.clone = function () {
 	        var data = [];
-	        this.forEach(function (p) {
-	            data.push(p.clone());
-	        });
+	        for (var i = 0; i < this.length; i++) {
+	            data.push(data[i].clone());
+	        }
 	        return new Line(data);
 	    };
 	    return Line;
@@ -477,12 +476,13 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var utils_1 = __webpack_require__(1);
+	var route_1 = __webpack_require__(3);
 	var Worm = (function (_super) {
 	    __extends(Worm, _super);
 	    function Worm(length) {
 	        var _this = _super.call(this) || this;
 	        _this.length = length;
-	        _this.bone = [];
+	        _this.bone = new route_1.Line();
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
 	            _this.bone.push(new utils_1.Pos());
@@ -492,26 +492,29 @@
 	    }
 	    Worm.prototype.push = function (x, y) {
 	        //先頭に加えて、１つずつずらす。
-	        var i = this.bone.length - 1;
+	        var i = this.bone.getLength() - 1;
 	        for (; i >= 1; i--) {
-	            this.bone[i].x = this.bone[i - 1].x;
-	            this.bone[i].y = this.bone[i - 1].y;
+	            this.bone.at(i).x = this.bone.at(i - 1).x;
+	            this.bone.at(i).y = this.bone.at(i - 1).y;
 	        }
-	        var bbone = this.bone[0];
+	        var bbone = this.bone.at(0);
 	        bbone.x = x;
 	        bbone.y = y;
+	    };
+	    Worm.prototype.render = function () {
+	        var bbone = this.bone.at(0);
 	        //ワームの外殻を生成
-	        var ebone = this.bone[this.bone.length - 1];
+	        var ebone = this.bone.at(this.bone.getLength() - 1);
 	        var bbody = this.body[0];
 	        var ebody = this.body[this.body.length - 1];
 	        bbody.left.x = bbone.x;
 	        bbody.left.y = bbone.y;
-	        for (i = 1; i < this.bone.length - 1; i++) {
-	            var nbone = this.bone[i];
+	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
+	            var nbone = this.bone.at(i);
 	            var nbody = this.body[i];
-	            var vx = this.bone[i - 1].x - nbone.x;
-	            var vy = this.bone[i - 1].y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.length - 1) * (Math.PI)))) * 30;
+	            var vx = this.bone.at(i - 1).x - nbone.x;
+	            var vy = this.bone.at(i - 1).y - nbone.y;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 30;
 	            var vl = vx * vx + vy * vy;
 	            var vr = Math.sqrt(vl);
 	            vx = vx / vr * r;
@@ -523,19 +526,17 @@
 	        }
 	        ebody.left.x = ebone.x;
 	        ebody.left.y = ebone.y;
-	    };
-	    Worm.prototype.render = function () {
 	        this.clear();
 	        this.lineStyle(2, 0xffffff);
 	        //this.beginFill(0xffffff);
-	        this.moveTo(this.body[0].left.x, this.body[0].left.y);
+	        this.moveTo(bbody.left.x, bbody.left.y);
 	        for (var i = 1; i < this.body.length; i++) {
 	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
 	        }
 	        for (var i = this.body.length - 2; i >= 2; i--) {
 	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
 	        }
-	        this.lineTo(this.body[0].left.x, this.body[0].left.y);
+	        this.lineTo(bbody.left.x, bbody.left.y);
 	        this.endFill();
 	    };
 	    return Worm;
@@ -570,7 +571,19 @@
 	            this.step();
 	        }
 	    };
-	    FollowWorm.prototype.setStep = function () {
+	    FollowWorm.prototype.setStep = function (pos) {
+	        if (pos === void 0) { pos = 0.5; }
+	        var beginIndex = this.length;
+	        var length = this.line.getLength() - beginIndex - 1;
+	        var posIndex = Math.floor(length * pos);
+	        for (var i = 0; i < this.bone.getLength(); i++) {
+	            var b = this.bone.at(i);
+	            var l = this.line.at(beginIndex - i + posIndex);
+	            if (!l)
+	                continue;
+	            b.x = l.x;
+	            b.y = l.y;
+	        }
 	    };
 	    FollowWorm.prototype.step = function (n) {
 	        if (n === void 0) { n = 1; }

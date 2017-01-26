@@ -118,17 +118,14 @@ class Line{
 		this.length = this.data.length;
 		return this;
 	}
-	public forEach(f:(p:Pos, id?, data?)=>void):void{
-		this.data.forEach(f);
-	}
 	public getLength():number{
 		return this.length;
 	}
 	public clone():Line{
 		const data:Array<Pos> = [];
-		this.forEach((p)=>{
-			data.push(p.clone());
-		});
+		for(let i = 0; i < this.length; i ++){
+			data.push(data[i].clone());
+		}
 		return new Line(data);
 	}
 }
