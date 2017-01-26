@@ -287,8 +287,8 @@
 	    Line.prototype.getHeadRadian = function () {
 	        if (this.length < 2)
 	            console.error("line ga mijikai");
-	        var dx = this.data[1].x - this.data[0].x;
-	        var dy = this.data[1].y - this.data[0].y;
+	        var dx = this.at(1).x - this.at(0).x;
+	        var dy = this.at(1).y - this.at(0).y;
 	        return Math.atan2(dy, dx);
 	    };
 	    Line.prototype.at = function (id) {
@@ -311,6 +311,13 @@
 	    };
 	    Line.prototype.getLength = function () {
 	        return this.length;
+	    };
+	    Line.prototype.clone = function () {
+	        var data = [];
+	        this.forEach(function (p) {
+	            data.push(p.clone());
+	        });
+	        return new Line(data);
 	    };
 	    return Line;
 	}());
@@ -541,30 +548,29 @@
 	        _this.routeIndex = 0;
 	        return _this;
 	    }
-	    FollowWorm.prototype.setTarget = function (line) {
-	    };
 	    FollowWorm.prototype.setRoute = function (line) {
-	        var _this = this;
 	        if (line.getLength() <= this.length)
 	            return;
-	        this.route = [];
-	        line.forEach(function (vp) {
-	            _this.route.push(vp.clone());
-	        });
+	        this.line = line;
 	        //this.routeIndex = 0;
-	        this.routeLength = this.route.length;
-	        var ri = 0;
-	        for (var ii = 0; ii < this.route.length; ii++) {
-	            var rr = Math.sin(ri) * (30 * Math.sin(Math.PI * (ii / (this.routeLength))));
-	            ri += 0.2;
-	            var vpos = this.route[ii];
+	        /*
+	        let ri:number = 0;
+	        for (let ii = 0; ii < this.line.length; ii++) {
+	            let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
+	            ri+=0.2;
+	            var vpos:Pos = this.line[ii];
+	            //vpos.x = vpos.x + Math.cos(vpos.r+Math.PI/2) * rr;
+	            //vpos.y = vpos.y + Math.sin(vpos.r+Math.PI/2) * rr;
 	        }
+	        */
 	    };
 	    FollowWorm.prototype.gotoHead = function () {
 	        this.routeIndex = 0;
 	        for (var i = 0; i < this.length; i++) {
 	            this.step();
 	        }
+	    };
+	    FollowWorm.prototype.setStep = function () {
 	    };
 	    FollowWorm.prototype.step = function (n) {
 	        if (n === void 0) { n = 1; }
@@ -573,14 +579,14 @@
 	            this.step(n - 1);
 	    };
 	    FollowWorm.prototype._step = function () {
-	        if (!this.route)
+	        if (!this.line)
 	            return;
-	        if (this.routeIndex >= this.routeLength) {
+	        if (this.routeIndex >= this.line.getLength()) {
 	            this.routeIndex = 0;
 	            this.gotoHead();
 	            return;
 	        }
-	        var pos = this.route[this.routeIndex];
+	        var pos = this.line.at(this.routeIndex);
 	        this.push(pos.x, pos.y);
 	        this.routeIndex++;
 	        return;
