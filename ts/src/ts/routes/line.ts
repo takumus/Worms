@@ -32,7 +32,10 @@ export default class Line{
 		return this.data.pop();
 	}
 	public pushLine(line:Line):Line{
-		this.data = this.data.concat(line.data);
+		const L = line.data.length;
+		for(let i = 0; i < L; i ++){
+			this.push(line.data[i].clone());
+		}
 		this.length = this.data.length;
 		return this;
 	}
@@ -45,5 +48,29 @@ export default class Line{
 			data.push(data[i].clone());
 		}
 		return new Line(data);
+	}
+	public wave(amp:number, freq:number):Line{
+		const newData:Array<Pos> = [];
+		let n = 0;
+		newData.push(this.at(0).clone());
+		for(let i = 1; i < this.length  - 1; i ++){
+			const all = Math.sin(i/(this.length-1)*Math.PI);
+			const r = all*all*Math.sin(n)*amp;
+			n += freq;
+            const p = this.at(i);
+			const np = new Pos();
+            let vx = this.at(i-1).x - p.x;
+            let vy = this.at(i-1).y - p.y;
+            const vl = vx*vx+vy*vy;
+            const vr = Math.sqrt(vl);
+            vx = vx / vr * r;
+            vy = vy / vr * r;
+            np.x = p.x + -vy;
+            np.y = p.y + vx;
+			newData.push(np);
+        }
+		newData.push(this.at(this.length - 1).clone());
+		this.data = newData;
+		return this;
 	}
 }
