@@ -6,13 +6,13 @@ package {
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.geom.Point;
 	import flash.geom.Point;
 	
 	[SWF(frameRate="60")]
     public class Main extends Sprite {
-        private var mouseDown:Boolean;
+        private var drawing:Boolean;
 		private var forceMode:Boolean;
         private var prevPoint:Point;
         private var sketch:BitmapData;
@@ -28,8 +28,9 @@ package {
             this.stage.addEventListener(Event.ENTER_FRAME, loop);
 			this.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, rightMouseDown);
 			this.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, rightMouseUp);
+			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, showData);
 			var s:Sketch = new Sketch();
-			mouseDown = false;
+			drawing = false;
             prevPoint = new Point(0, 0);
 			nowPoint = new Point(0, 0);
             sketch = new BitmapData(s.width*1.5, s.height*1.5, false, 0xffffff);
@@ -44,22 +45,20 @@ package {
 			nowId = -1;
         }
         private function begin(e:MouseEvent):void{
-            this.mouseDown = !mouseDown;
-			if(this.mouseDown) {
-				if (nowPoint) {
-					lines.push(new Vector.<Point>());
-					nowId++;
-					lines[nowId].push(nowPoint.clone());
-					prevPoint = nowPoint.clone();
-				}
+            this.drawing = !drawing;
+			if(this.drawing && nowPoint) {
+				lines.push(new Vector.<Point>());
+				nowId++;
+				lines[nowId].push(nowPoint.clone());
+				prevPoint = nowPoint.clone();
 			}
         }
         private function loop(e:Event):void{
 			canvas.graphics.clear();
-			canvas.graphics.lineStyle(1, mouseDown?0x0000ff:0x00ff00);
+			canvas.graphics.lineStyle(1, drawing?0x0000ff:0x00ff00);
 			canvas.graphics.drawCircle(mouseX, mouseY, 30);
 			canvas.graphics.lineStyle(1, 0xff0000);
-			if(!mouseDown) {
+			if(!drawing) {
 				nowPoint = findFit(new Point(mouseX, mouseY), 30);
 				if (nowPoint) {
 					canvas.graphics.drawCircle(nowPoint.x, nowPoint.y, 5);
@@ -89,18 +88,40 @@ package {
 					}
 				}
 			}
-			canvas.graphics.lineStyle(3, 0xff0000);
+			var minPos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
+			var maxPos:Point = new Point(Number.MIN_VALUE, Number.MIN_VALUE);
 			for(var i:int = 0; i < lines.length; i ++){
-				canvas.graphics.moveTo(lines[i][0].x, lines[i][0].y);
-				for(var ii:int = 1; ii < lines[i].length; ii++){
-					canvas.graphics.lineTo(lines[i][ii].x, lines[i][ii].y);
+				canvas.graphics.lineStyle(3, 0xff0000);
+				for(var ii:int = 0; ii < lines[i].length; ii++){
+					var x:Number = lines[i][ii].x;
+					var y:Number = lines[i][ii].y;
+					if(ii == 0){
+						canvas.graphics.moveTo(x, y);
+					}else{
+						canvas.graphics.lineTo(x, y);
+					}
+					if(minPos.x > x) minPos.x = x;
+					if(minPos.y > y) minPos.y = y;
+					if(maxPos.x < x) maxPos.x = x;
+					if(maxPos.y < y) maxPos.y = y;
 				}
 			}
+			canvas.graphics.lineStyle(1, 0x00ff00);
+			canvas.graphics.drawRect(minPos.x, minPos.y, maxPos.x - minPos.x, maxPos.y - minPos.y);
         }
+		private function showData(e:*):void{
+			
+		}
 		private function rightMouseDown(e:MouseEvent):void{
+			if(!drawing){
+				return;
+			}
 			forceMode = true;
 		}
 		private function rightMouseUp(e:MouseEvent):void{
+			if(!drawing){
+				return;
+			}
 			forceMode = false;
 			lines[nowId].push(nowPoint.clone());
 			prevPoint = nowPoint.clone();
