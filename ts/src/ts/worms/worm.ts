@@ -64,32 +64,26 @@ class Worm extends PIXI.Graphics{
     }
 }
 class FollowWorm extends Worm{
-    private route:Array<Pos>;
+    private line:Line;
     private routeIndex:number;
-    private routeLength:number;
     constructor(length:number){
         super(length);
         this.routeIndex = 0;
     }
-    public setTarget(line:Line){
-        
-    }
     public setRoute(line:Line){
         if(line.getLength() <= this.length) return;
-        this.route = [];
-        line.forEach((vp)=>{
-            this.route.push(vp.clone());
-        });
+        this.line = line;
         //this.routeIndex = 0;
-        this.routeLength = this.route.length;
+        /*
         let ri:number = 0;
-        for (let ii = 0; ii < this.route.length; ii++) {
+        for (let ii = 0; ii < this.line.length; ii++) {
             let rr:number = Math.sin(ri)*(30*Math.sin(Math.PI*(ii/(this.routeLength))));
             ri+=0.2;
-            var vpos:Pos = this.route[ii];
+            var vpos:Pos = this.line[ii];
             //vpos.x = vpos.x + Math.cos(vpos.r+Math.PI/2) * rr;
             //vpos.y = vpos.y + Math.sin(vpos.r+Math.PI/2) * rr;
         }
+        */
     }
     public gotoHead(){
         this.routeIndex = 0;
@@ -97,18 +91,21 @@ class FollowWorm extends Worm{
             this.step();
         }
     }
+    public setStep():void{
+
+    }
     public step(n:number = 1):void{
         this._step();
         if(n > 1)this.step(n-1);
     }
     private _step():void{
-        if(!this.route) return;
-        if(this.routeIndex >= this.routeLength){
+        if(!this.line) return;
+        if(this.routeIndex >= this.line.getLength()){
             this.routeIndex = 0;
             this.gotoHead();
             return;
         }
-        const pos = this.route[this.routeIndex];
+        const pos = this.line.at(this.routeIndex);
         this.push(pos.x, pos.y);
         this.routeIndex++;
         return;
