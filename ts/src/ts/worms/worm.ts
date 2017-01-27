@@ -11,7 +11,7 @@ export default class Worm extends WormBase{
     }
     public addRouteFromCurrent(line:Line){
         this.setRoute(
-            this.getCurrentLine().pushLine(line);
+            this.getCurrentLine().pushLine(line)
         );
     }
     public setRoute(line:Line){

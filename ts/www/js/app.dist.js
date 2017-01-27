@@ -571,7 +571,6 @@
 	    }
 	    Worm.prototype.addRouteFromCurrent = function (line) {
 	        this.setRoute(this.getCurrentLine().pushLine(line));
-	        ;
 	    };
 	    Worm.prototype.setRoute = function (line) {
 	        if (line.getLength() < this.length)
