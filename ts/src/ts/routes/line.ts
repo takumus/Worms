@@ -7,8 +7,9 @@ export default class Line{
 		this.data = data;
 		this.length = this.data.length;
 	}
-	public reverse():void{
+	public reverse():Line{
 		this.data.reverse();
+		return this;
 	}
 	public getHeadVecPos():VecPos{
 		const fp = this.at(0);
@@ -29,9 +30,15 @@ export default class Line{
 		this.length = this.data.length;
 	}
 	public pop():Pos{
+		this.length --;
 		return this.data.pop();
 	}
+	public shift():Pos{
+		this.length --;
+		return this.data.shift();
+	}
 	public pushLine(line:Line):Line{
+		if(line.at(0).equals(this.at(this.length - 1))) line.shift();
 		const L = line.data.length;
 		for(let i = 0; i < L; i ++){
 			this.push(line.data[i].clone());
@@ -45,7 +52,7 @@ export default class Line{
 	public clone():Line{
 		const data:Array<Pos> = [];
 		for(let i = 0; i < this.length; i ++){
-			data.push(data[i].clone());
+			data.push(this.data[i].clone());
 		}
 		return new Line(data);
 	}

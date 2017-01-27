@@ -6,7 +6,7 @@ export default class WormBase extends PIXI.Graphics{
     protected body:Array<BodyPos>;
     protected length:number;
     private thickness:number;
-    constructor(length:number){
+    constructor(length:number, thickness:number){
         super();
         this.length = length;
         this.bone = new Line();
@@ -15,7 +15,7 @@ export default class WormBase extends PIXI.Graphics{
             this.bone.push(new Pos());
             this.body.push(new BodyPos());
         }
-        this.setThickness(40);
+        this.setThickness(thickness);
     }
     public setThickness(thickness:number):void{
         this.thickness = thickness;

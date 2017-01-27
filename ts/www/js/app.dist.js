@@ -52,6 +52,8 @@
 	var stage = new PIXI.Container();
 	var canvas;
 	var sw, sh;
+	var g = new PIXI.Graphics();
+	var mouse = new utils_1.Pos();
 	var init = function () {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true });
 	    canvas = document.getElementById("content");
@@ -73,54 +75,39 @@
 	        mouse.x = e.clientX * 2;
 	        mouse.y = e.clientY * 2;
 	    });
-	    testRoute.lines[0].forEach(function (p) {
-	        var vp = new utils_1.Pos(p.x + 800, p.y + 800);
-	        testRouteVecs.push(vp);
-	        testRouteVecs2.push(vp.clone());
-	    });
-	    w = new _2.Worm(testRouteVecs.getLength());
-	    stage.addChild(w);
-	    w2 = new _2.Worm(testRouteVecs2.getLength());
-	    stage.addChild(w2);
-	    testRouteVecs.reverse();
 	    _1.RouteGenerator.graphics = g;
+	    g.lineStyle(2, 0xffffff);
 	    draw();
 	    resize();
+	    var pos1 = new utils_1.VecPos(200 * 2, 200 * 2, Math.PI);
+	    var pos2 = new utils_1.VecPos(900 * 2, 600 * 2, Math.PI);
+	    var pos3 = new utils_1.VecPos(400 * 2, 1200 * 2, -Math.PI / 2);
+	    var r1to2 = _1.RouteGenerator.getMinimumRoute(pos1, pos2, 200, 500).generateRoute(5);
+	    var r2to3 = _1.RouteGenerator.getMinimumRoute(pos2, pos3, 600, 200).generateRoute(5);
+	    var w = new _2.Worm(80, 40);
+	    w.setRoute(r1to2.clone().pushLine(r2to3));
+	    stage.addChild(w);
+	    new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 4000)
+	        .easing(TWEEN.Easing.Cubic.InOut)
+	        .onUpdate(function () {
+	        w.setStep(this.s);
+	        w.render();
+	    }).easing(TWEEN.Easing.Cubic.InOut).onComplete(function () {
+	        /*
+	        w.addRouteFromCurrent(r2to3);
+	        new TWEEN.Tween({s:0}).to({s:1}, 1000)
+	        .easing(TWEEN.Easing.Quartic.InOut)
+	        .onUpdate(function(){
+	            w.setStep(this.s);
+	            w.render();
+	        }).easing(TWEEN.Easing.Quartic.InOut).start();
+	        */
+	    }).start();
 	};
-	var g = new PIXI.Graphics();
-	var mouse = new utils_1.Pos();
-	var testRouteStr = '{"lines":[[{"x":1.42,"y":0},{"x":1.87,"y":4.97},{"x":1.9,"y":9.97},{"x":1.9,"y":14.97},{"x":1.9,"y":19.97},{"x":1.9,"y":24.97},{"x":1.9,"y":29.97},{"x":1.9,"y":34.97},{"x":1.9,"y":39.97},{"x":1.99,"y":44.97},{"x":1.34,"y":49.93},{"x":1.84,"y":54.91},{"x":1.44,"y":59.89},{"x":1.66,"y":64.88},{"x":1.54,"y":69.88},{"x":1.02,"y":74.86},{"x":1.1,"y":79.85},{"x":1.94,"y":84.78},{"x":1.44,"y":89.76},{"x":1.68,"y":94.75},{"x":1.57,"y":99.75},{"x":1.62,"y":104.75},{"x":1.6,"y":109.75},{"x":0,"y":116.01},{"x":1.87,"y":120.64},{"x":1.77,"y":125.64},{"x":1.77,"y":130.64},{"x":1.77,"y":135.64},{"x":1.77,"y":140.64},{"x":1.77,"y":145.64},{"x":1.77,"y":150.64},{"x":1.77,"y":155.64},{"x":1.09,"y":160.6},{"x":1.87,"y":165.54},{"x":1.56,"y":170.53},{"x":1.68,"y":175.52},{"x":1.64,"y":180.52},{"x":1.65,"y":185.52},{"x":1.65,"y":190.52},{"x":1.84,"y":195.52},{"x":1.91,"y":200.52},{"x":1.96,"y":205.52},{"x":1.94,"y":210.52},{"x":1.95,"y":215.52},{"x":1.94,"y":220.52},{"x":1.94,"y":225.52},{"x":1.94,"y":230.52},{"x":1.54,"y":235.5},{"x":1.69,"y":240.5},{"x":1.82,"y":245.5},{"x":1.35,"y":250.48},{"x":1.82,"y":255.46},{"x":1.38,"y":260.43},{"x":1.84,"y":265.41},{"x":1.61,"y":270.41},{"x":1.69,"y":275.41},{"x":1.66,"y":280.41},{"x":1.67,"y":285.41},{"x":1.67,"y":290.41},{"x":1.67,"y":295.41},{"x":1.87,"y":300.4},{"x":1.61,"y":305.4},{"x":1.69,"y":310.4},{"x":1.67,"y":315.4},{"x":1.68,"y":320.4},{"x":1.67,"y":325.4},{"x":1.67,"y":330.4},{"x":2.86,"y":335.25},{"x":2.48,"y":340.24},{"x":3.88,"y":345.04},{"x":4.71,"y":349.97},{"x":5.75,"y":354.86},{"x":6.77,"y":359.76},{"x":8.85,"y":364.3},{"x":10.27,"y":369.1},{"x":12.75,"y":373.44},{"x":15.24,"y":377.78},{"x":17.6,"y":382.19},{"x":21.48,"y":385.34},{"x":24.21,"y":389.53},{"x":27.27,"y":393.48},{"x":31.59,"y":396},{"x":35.58,"y":399.01},{"x":39.47,"y":402.15},{"x":43.87,"y":404.53},{"x":48.36,"y":406.72},{"x":53.06,"y":408.44},{"x":57.45,"y":410.82},{"x":62.16,"y":412.53},{"x":66.95,"y":413.95},{"x":71.65,"y":415.66},{"x":76.61,"y":416.25},{"x":81.47,"y":417.42},{"x":86.47,"y":417.32},{"x":91.37,"y":418.35},{"x":96.33,"y":418.95},{"x":101.26,"y":418.11},{"x":106.26,"y":418.04},{"x":111.26,"y":418.04},{"x":116.26,"y":418.04},{"x":121.17,"y":417.1},{"x":126.16,"y":416.79},{"x":131.16,"y":416.86},{"x":135.83,"y":415.08},{"x":140.8,"y":414.52},{"x":145.67,"y":413.4},{"x":150.64,"y":412.89},{"x":155.16,"y":410.75},{"x":160.08,"y":409.87},{"x":164.9,"y":408.52},{"x":169.42,"y":406.39},{"x":174.11,"y":404.66},{"x":179.06,"y":403.91},{"x":183.15,"y":401.05}]],"height":418.95,"width":183.15}';
-	var testRoute = JSON.parse(testRouteStr);
-	var testRouteVecs = new _1.Line();
-	var testRouteVecs2 = new _1.Line();
-	var w;
-	var w2;
-	var r = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
-	    g.clear();
-	    g.lineStyle(2, 0xff0000);
-	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 200, 400);
-	    var route2 = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x + 500, mouse.y + 300, 0.5 + Math.PI), testRouteVecs2.getHeadVecPos(), 200, 400);
-	    var p = (Math.sin(r) + 1) / 2;
-	    p = p * p * p;
-	    if (route) {
-	        var vecs = route.generateRoute(5).wave(20, 0.1).pushLine(testRouteVecs);
-	        w.setRoute(vecs);
-	        w.setStep(p);
-	        w.render();
-	    }
-	    if (route2) {
-	        var vecs = route2.generateRoute(5).wave(60, 0.03).pushLine(testRouteVecs2);
-	        w2.setRoute(vecs);
-	        w2.setStep(p);
-	        w2.render();
-	    }
-	    //vecs.forEach((v)=>{
-	    //	//g.drawCircle(v.x, v.y, 10);
-	    //});
 	    renderer.render(stage);
-	    r += 0.03;
+	    TWEEN.update();
 	};
 	var resize = function () {
 	    var width = canvas.offsetWidth * 2;
@@ -149,6 +136,12 @@
 	    }
 	    Pos.prototype.clone = function () {
 	        return new Pos(this.x, this.y);
+	    };
+	    Pos.prototype.equals = function (pos, diff) {
+	        if (diff === void 0) { diff = 1; }
+	        var dx = pos.x - this.x;
+	        var dy = pos.y - this.y;
+	        return dx * dx + dy * dy < diff;
 	    };
 	    return Pos;
 	}());
@@ -308,6 +301,7 @@
 	    }
 	    Line.prototype.reverse = function () {
 	        this.data.reverse();
+	        return this;
 	    };
 	    Line.prototype.getHeadVecPos = function () {
 	        var fp = this.at(0);
@@ -324,9 +318,16 @@
 	        this.length = this.data.length;
 	    };
 	    Line.prototype.pop = function () {
+	        this.length--;
 	        return this.data.pop();
 	    };
+	    Line.prototype.shift = function () {
+	        this.length--;
+	        return this.data.shift();
+	    };
 	    Line.prototype.pushLine = function (line) {
+	        if (line.at(0).equals(this.at(this.length - 1)))
+	            line.shift();
 	        var L = line.data.length;
 	        for (var i = 0; i < L; i++) {
 	            this.push(line.data[i].clone());
@@ -340,7 +341,7 @@
 	    Line.prototype.clone = function () {
 	        var data = [];
 	        for (var i = 0; i < this.length; i++) {
-	            data.push(data[i].clone());
+	            data.push(this.data[i].clone());
 	        }
 	        return new Line(data);
 	    };
@@ -563,13 +564,17 @@
 	var wormBase_1 = __webpack_require__(9);
 	var Worm = (function (_super) {
 	    __extends(Worm, _super);
-	    function Worm(length) {
-	        var _this = _super.call(this, length) || this;
+	    function Worm(length, thiskness) {
+	        var _this = _super.call(this, length, thiskness) || this;
 	        _this.routeIndex = 0;
 	        return _this;
 	    }
+	    Worm.prototype.addRouteFromCurrent = function (line) {
+	        this.setRoute(this.getCurrentLine().pushLine(line));
+	        ;
+	    };
 	    Worm.prototype.setRoute = function (line) {
-	        if (line.getLength() <= this.length)
+	        if (line.getLength() < this.length)
 	            return;
 	        this.line = line;
 	    };
@@ -590,7 +595,8 @@
 	        }
 	    };
 	    Worm.prototype.getCurrentLine = function () {
-	        return this.bone.clone();
+	        //console.log(this.bone);
+	        return this.bone.clone().reverse();
 	    };
 	    return Worm;
 	}(wormBase_1.default));
@@ -613,7 +619,7 @@
 	var bodyPos_1 = __webpack_require__(10);
 	var WormBase = (function (_super) {
 	    __extends(WormBase, _super);
-	    function WormBase(length) {
+	    function WormBase(length, thickness) {
 	        var _this = _super.call(this) || this;
 	        _this.length = length;
 	        _this.bone = new _1.Line();
@@ -622,8 +628,12 @@
 	            _this.bone.push(new utils_1.Pos());
 	            _this.body.push(new bodyPos_1.default());
 	        }
+	        _this.setThickness(thickness);
 	        return _this;
 	    }
+	    WormBase.prototype.setThickness = function (thickness) {
+	        this.thickness = thickness;
+	    };
 	    WormBase.prototype.push = function (x, y) {
 	        //先頭に加えて、１つずつずらす。
 	        var i = this.bone.getLength() - 1;
@@ -648,7 +658,7 @@
 	            var nbody = this.body[i];
 	            var vx = this.bone.at(i - 1).x - nbone.x;
 	            var vy = this.bone.at(i - 1).y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * 40;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
 	            var vl = vx * vx + vy * vy;
 	            var vr = Math.sqrt(vl);
 	            vx = vx / vr * r;

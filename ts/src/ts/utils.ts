@@ -10,6 +10,11 @@ class Pos {
     public clone():Pos{
         return new Pos(this.x, this.y);
     }
+    public equals(pos:Pos, diff:number = 1):boolean{
+        const dx = pos.x - this.x;
+        const dy = pos.y - this.y;
+        return dx*dx+dy*dy < diff
+    }
 }
 class VecPos {
     public pos:Pos;

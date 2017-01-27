@@ -5,12 +5,17 @@ import WormBase from './wormBase';
 export default class Worm extends WormBase{
     private line:Line;
     private routeIndex:number;
-    constructor(length:number){
-        super(length);
+    constructor(length:number, thiskness:number){
+        super(length, thiskness);
         this.routeIndex = 0;
     }
+    public addRouteFromCurrent(line:Line){
+        this.setRoute(
+            this.getCurrentLine().pushLine(line);
+        );
+    }
     public setRoute(line:Line){
-        if(line.getLength() <= this.length) return;
+        if(line.getLength() < this.length) return;
         this.line = line;
     }
     public setStep(pos:number = 0.5):void{
@@ -27,6 +32,7 @@ export default class Worm extends WormBase{
         }
     }
     public getCurrentLine():Line{
-        return this.bone.clone();
+        //console.log(this.bone);
+        return this.bone.clone().reverse();
     }
 }
