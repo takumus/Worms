@@ -5,6 +5,7 @@ export default class WormBase extends PIXI.Graphics{
     protected bone:Line;
     protected body:Array<BodyPos>;
     protected length:number;
+    private thickness:number;
     constructor(length:number){
         super();
         this.length = length;
@@ -14,6 +15,10 @@ export default class WormBase extends PIXI.Graphics{
             this.bone.push(new Pos());
             this.body.push(new BodyPos());
         }
+        this.setThickness(40);
+    }
+    public setThickness(thickness:number):void{
+        this.thickness = thickness;
     }
     public push(x:number, y:number){
         //先頭に加えて、１つずつずらす。
@@ -39,7 +44,7 @@ export default class WormBase extends PIXI.Graphics{
             const nbody = this.body[i];
             let vx = this.bone.at(i-1).x - nbone.x;
             let vy = this.bone.at(i-1).y - nbone.y;
-            const r = ((Math.sin(i/(this.bone.getLength()  - 1)*(Math.PI))))*40;
+            const r = ((Math.sin(i/(this.bone.getLength()  - 1)*(Math.PI))))*this.thickness;
             const vl = vx*vx+vy*vy;
             const vr = Math.sqrt(vl);
             vx = vx / vr * r;

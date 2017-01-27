@@ -111,7 +111,7 @@
 	        w.render();
 	    }
 	    if (route2) {
-	        var vecs = route2.generateRoute(5).wave(180, 0.03).pushLine(testRouteVecs2);
+	        var vecs = route2.generateRoute(5).wave(60, 0.03).pushLine(testRouteVecs2);
 	        w2.setRoute(vecs);
 	        w2.setStep(p);
 	        w2.render();
