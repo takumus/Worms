@@ -47,7 +47,7 @@
 	"use strict";
 	var utils_1 = __webpack_require__(1);
 	var _1 = __webpack_require__(3);
-	var worm_1 = __webpack_require__(7);
+	var _2 = __webpack_require__(7);
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
@@ -78,12 +78,12 @@
 	        testRouteVecs.push(vp);
 	        testRouteVecs2.push(vp.clone());
 	    });
-	    w = new worm_1.FollowWorm(testRouteVecs.getLength());
+	    w = new _2.Worm(testRouteVecs.getLength());
 	    stage.addChild(w);
-	    w2 = new worm_1.FollowWorm(testRouteVecs2.getLength());
+	    w2 = new _2.Worm(testRouteVecs2.getLength());
 	    stage.addChild(w2);
 	    testRouteVecs.reverse();
-	    //RouteGenerator.graphics = g;
+	    _1.RouteGenerator.graphics = g;
 	    draw();
 	    resize();
 	};
@@ -102,16 +102,18 @@
 	    g.lineStyle(2, 0xff0000);
 	    var route = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x, mouse.y, 0.5), testRouteVecs.getHeadVecPos(), 200, 400);
 	    var route2 = _1.RouteGenerator.getMinimumRoute(new utils_1.VecPos(mouse.x + 500, mouse.y + 300, 0.5 + Math.PI), testRouteVecs2.getHeadVecPos(), 200, 400);
+	    var p = (Math.sin(r) + 1) / 2;
+	    p = p * p * p;
 	    if (route) {
 	        var vecs = route.generateRoute(5).wave(20, 0.1).pushLine(testRouteVecs);
 	        w.setRoute(vecs);
-	        w.setStep((Math.sin(r) + 1) / 2);
+	        w.setStep(p);
 	        w.render();
 	    }
 	    if (route2) {
 	        var vecs = route2.generateRoute(5).wave(180, 0.03).pushLine(testRouteVecs2);
 	        w2.setRoute(vecs);
-	        w2.setStep((Math.sin(r) + 1) / 2);
+	        w2.setStep(p);
 	        w2.render();
 	    }
 	    //vecs.forEach((v)=>{
@@ -544,6 +546,63 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var worm_1 = __webpack_require__(8);
+	exports.Worm = worm_1.default;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var wormBase_1 = __webpack_require__(9);
+	var Worm = (function (_super) {
+	    __extends(Worm, _super);
+	    function Worm(length) {
+	        var _this = _super.call(this, length) || this;
+	        _this.routeIndex = 0;
+	        return _this;
+	    }
+	    Worm.prototype.setRoute = function (line) {
+	        if (line.getLength() <= this.length)
+	            return;
+	        this.line = line;
+	    };
+	    Worm.prototype.setStep = function (pos) {
+	        if (pos === void 0) { pos = 0.5; }
+	        if (!this.line)
+	            return;
+	        var beginIndex = this.length;
+	        var length = this.line.getLength() - beginIndex - 1;
+	        var posIndex = Math.floor(length * pos);
+	        for (var i = 0; i < this.bone.getLength(); i++) {
+	            var b = this.bone.at(i);
+	            var l = this.line.at(beginIndex - i + posIndex);
+	            if (!l)
+	                continue;
+	            b.x = l.x;
+	            b.y = l.y;
+	        }
+	    };
+	    Worm.prototype.getCurrentLine = function () {
+	        return this.bone.clone();
+	    };
+	    return Worm;
+	}(wormBase_1.default));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Worm;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	    function __() { this.constructor = d; }
@@ -551,20 +610,21 @@
 	};
 	var utils_1 = __webpack_require__(1);
 	var _1 = __webpack_require__(3);
-	var Worm = (function (_super) {
-	    __extends(Worm, _super);
-	    function Worm(length) {
+	var bodyPos_1 = __webpack_require__(10);
+	var WormBase = (function (_super) {
+	    __extends(WormBase, _super);
+	    function WormBase(length) {
 	        var _this = _super.call(this) || this;
 	        _this.length = length;
 	        _this.bone = new _1.Line();
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
 	            _this.bone.push(new utils_1.Pos());
-	            _this.body.push(new BodyPos());
+	            _this.body.push(new bodyPos_1.default());
 	        }
 	        return _this;
 	    }
-	    Worm.prototype.push = function (x, y) {
+	    WormBase.prototype.push = function (x, y) {
 	        //先頭に加えて、１つずつずらす。
 	        var i = this.bone.getLength() - 1;
 	        for (; i >= 1; i--) {
@@ -575,7 +635,7 @@
 	        bbone.x = x;
 	        bbone.y = y;
 	    };
-	    Worm.prototype.render = function () {
+	    WormBase.prototype.render = function () {
 	        var bbone = this.bone.at(0);
 	        //ワームの外殻を生成
 	        var ebone = this.bone.at(this.bone.getLength() - 1);
@@ -613,65 +673,18 @@
 	        this.lineTo(bbody.left.x, bbody.left.y);
 	        this.endFill();
 	    };
-	    return Worm;
+	    return WormBase;
 	}(PIXI.Graphics));
-	exports.Worm = Worm;
-	var FollowWorm = (function (_super) {
-	    __extends(FollowWorm, _super);
-	    function FollowWorm(length) {
-	        var _this = _super.call(this, length) || this;
-	        _this.routeIndex = 0;
-	        return _this;
-	    }
-	    FollowWorm.prototype.setRoute = function (line) {
-	        if (line.getLength() <= this.length)
-	            return;
-	        this.line = line;
-	    };
-	    FollowWorm.prototype.gotoHead = function () {
-	        this.routeIndex = 0;
-	        for (var i = 0; i < this.length; i++) {
-	            this.step();
-	        }
-	    };
-	    FollowWorm.prototype.setStep = function (pos) {
-	        if (pos === void 0) { pos = 0.5; }
-	        if (!this.line)
-	            return;
-	        var beginIndex = this.length;
-	        var length = this.line.getLength() - beginIndex - 1;
-	        var posIndex = Math.floor(length * pos);
-	        for (var i = 0; i < this.bone.getLength(); i++) {
-	            var b = this.bone.at(i);
-	            var l = this.line.at(beginIndex - i + posIndex);
-	            if (!l)
-	                continue;
-	            b.x = l.x;
-	            b.y = l.y;
-	        }
-	    };
-	    FollowWorm.prototype.step = function (n) {
-	        if (n === void 0) { n = 1; }
-	        this._step();
-	        if (n > 1)
-	            this.step(n - 1);
-	    };
-	    FollowWorm.prototype._step = function () {
-	        if (!this.line)
-	            return;
-	        if (this.routeIndex >= this.line.getLength()) {
-	            this.routeIndex = 0;
-	            this.gotoHead();
-	            return;
-	        }
-	        var pos = this.line.at(this.routeIndex);
-	        this.push(pos.x, pos.y);
-	        this.routeIndex++;
-	        return;
-	    };
-	    return FollowWorm;
-	}(Worm));
-	exports.FollowWorm = FollowWorm;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = WormBase;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var utils_1 = __webpack_require__(1);
 	var BodyPos = (function () {
 	    function BodyPos() {
 	        this.left = new utils_1.Pos();
@@ -679,6 +692,8 @@
 	    }
 	    return BodyPos;
 	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = BodyPos;
 
 
 /***/ }

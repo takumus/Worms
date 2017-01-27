@@ -1,6 +1,6 @@
 import {Pos, VecPos, Circle} from './utils';
 import {Route, RouteGenerator, Line} from './routes/';
-import {FollowWorm} from './worms/worm';
+import {Worm} from './worms/';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -31,12 +31,12 @@ const init = ()=> {
 		testRouteVecs.push(vp);
 		testRouteVecs2.push(vp.clone());
 	});
-	w = new FollowWorm(testRouteVecs.getLength());
+	w = new Worm(testRouteVecs.getLength());
 	stage.addChild(w);
-	w2 = new FollowWorm(testRouteVecs2.getLength());
+	w2 = new Worm(testRouteVecs2.getLength());
 	stage.addChild(w2);
 	testRouteVecs.reverse();
-	//RouteGenerator.graphics = g;
+	RouteGenerator.graphics = g;
 	draw();
 	resize();
 }
@@ -46,8 +46,8 @@ const testRouteStr:string = '{"lines":[[{"x":1.42,"y":0},{"x":1.87,"y":4.97},{"x
 const testRoute = JSON.parse(testRouteStr);
 let testRouteVecs:Line = new Line();
 let testRouteVecs2:Line = new Line();
-let w:FollowWorm;
-let w2:FollowWorm;
+let w:Worm;
+let w2:Worm;
 let r = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
@@ -66,16 +66,18 @@ const draw = ()=> {
 		200,
 		400
 	);
+	let p = (Math.sin(r)+1)/2;
+	p = p*p*p;
 	if(route) {
 		let vecs = route.generateRoute(5).wave(20, 0.1).pushLine(testRouteVecs);
 		w.setRoute(vecs);
-		w.setStep((Math.sin(r)+1)/2);
+		w.setStep(p);
 		w.render();
 	}
 	if(route2) {
 		let vecs = route2.generateRoute(5).wave(180, 0.03).pushLine(testRouteVecs2);
 		w2.setRoute(vecs);
-		w2.setStep((Math.sin(r)+1)/2);
+		w2.setStep(p);
 		w2.render();
 	}
 	//vecs.forEach((v)=>{
