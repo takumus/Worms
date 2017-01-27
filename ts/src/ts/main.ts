@@ -4,9 +4,11 @@ import {Worm} from './worms/';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
-let sw:number, sh:number;
+let stageWidth:number = 0, stageHeight:number = 0;
 const g:PIXI.Graphics = new PIXI.Graphics();
-const mouse:Pos = new Pos();
+const mouse:Pos = new Pos(0, 0);
+const w = new Worm(190, 60);
+const w2 = new Worm(190, 60);
 const init = ()=> {
 	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
@@ -29,7 +31,7 @@ const init = ()=> {
 		mouse.y = e.clientY*2;
 	});
 	RouteGenerator.graphics = g;
-	g.lineStyle(2, 0xffffff);
+	g.lineStyle(2, 0x666666);
 	draw();
 	resize();
 
@@ -53,35 +55,36 @@ const init = ()=> {
 		pos1,
 		pos2,
 		200,
-		500
-	).generateRoute(5);
-	const r2to3 = RouteGenerator.getMinimumRoute(
-		pos2,
-		pos3,
-		600,
-		200
-	).generateRoute(5);
-	const w = new Worm(80, 40);
-	w.setRoute(r1to2.clone().pushLine(r2to3));
+		500,
+		5
+	);
 
 	stage.addChild(w);
+	stage.addChild(w2);
+	w.setRoute(r1to2);
 	new TWEEN.Tween({s:0}).to({s:1}, 4000)
 	.easing(TWEEN.Easing.Cubic.InOut)
 	.onUpdate(function(){
 		w.setStep(this.s);
 		w.render();
 	}).easing(TWEEN.Easing.Cubic.InOut).onComplete(()=>{
-		/*
-		w.addRouteFromCurrent(r2to3);
+		const r = RouteGenerator.getMinimumRoute(
+			w.getCurrentLine().getTailVecPos().add(Math.PI),
+			pos3,
+			600,
+			200,
+			5
+		);
+		w.setRoute(w.getCurrentLine().pushLine(r));
 		new TWEEN.Tween({s:0}).to({s:1}, 1000)
 		.easing(TWEEN.Easing.Quartic.InOut)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
 		}).easing(TWEEN.Easing.Quartic.InOut).start();
-		*/
 	}).start();
 }
+let ppos = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
 	renderer.render(stage);
@@ -90,8 +93,8 @@ const draw = ()=> {
 const resize = ()=> {
 	const width:number = canvas.offsetWidth*2;
 	const height:number = canvas.offsetHeight*2;
-	sw = width;
-	sh = height;
+	stageWidth = width;
+	stageHeight = height;
 	renderer.resize(width, height);
 }
 

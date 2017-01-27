@@ -1,9 +1,10 @@
 import {Circle, Pos, VecPos} from '../utils';
+import Line from './line';
 import Matthew from '../matthew';
 import Route from './route';
 export default class RouteGenerator{
 	public static graphics:PIXI.Graphics;
-	public static getMinimumRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Route{
+	public static getMinimumRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number, res:number):Line{
 		const routes = this.getAllRoute(vposB, vposE, rB, rE);
 		let min:number = Number.MAX_VALUE;
 		let route:Route = null;
@@ -14,7 +15,7 @@ export default class RouteGenerator{
 				route = r;
 			}
 		};
-		return route;
+		return route.generateRoute(res);
 	}
 	public static getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
 		const cB1 = new Circle(

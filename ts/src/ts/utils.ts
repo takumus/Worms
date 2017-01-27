@@ -27,6 +27,10 @@ class VecPos {
     public clone():VecPos{
         return new VecPos(this.pos.x, this.pos.y, this.r);
     }
+    public add(radius:number):VecPos{
+        this.r += radius;
+        return this;
+    }
 }
 class Circle {
     public pos:Pos;

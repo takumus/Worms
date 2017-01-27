@@ -22,6 +22,17 @@ export default class Line{
 			Math.atan2(dy, dx)
 		);
 	}
+	public getTailVecPos():VecPos{
+		const fp = this.at(this.length - 1);
+		const sp = this.at(this.length - 2);
+		const dx = sp.x - fp.x;
+		const dy = sp.y - fp.y;
+		return new VecPos(
+			fp.x - dx,
+			fp.y - dy,
+			Math.atan2(dy, dx)
+		);
+	}
 	public at(id:number):Pos{
 		return this.data[id];
 	}

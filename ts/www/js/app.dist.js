@@ -51,9 +51,11 @@
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
-	var sw, sh;
+	var stageWidth = 0, stageHeight = 0;
 	var g = new PIXI.Graphics();
-	var mouse = new utils_1.Pos();
+	var mouse = new utils_1.Pos(0, 0);
+	var w = new _2.Worm(190, 60);
+	var w2 = new _2.Worm(190, 60);
 	var init = function () {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true });
 	    canvas = document.getElementById("content");
@@ -76,34 +78,33 @@
 	        mouse.y = e.clientY * 2;
 	    });
 	    _1.RouteGenerator.graphics = g;
-	    g.lineStyle(2, 0xffffff);
+	    g.lineStyle(2, 0x666666);
 	    draw();
 	    resize();
 	    var pos1 = new utils_1.VecPos(200 * 2, 200 * 2, Math.PI);
 	    var pos2 = new utils_1.VecPos(900 * 2, 600 * 2, Math.PI);
 	    var pos3 = new utils_1.VecPos(400 * 2, 1200 * 2, -Math.PI / 2);
-	    var r1to2 = _1.RouteGenerator.getMinimumRoute(pos1, pos2, 200, 500).generateRoute(5);
-	    var r2to3 = _1.RouteGenerator.getMinimumRoute(pos2, pos3, 600, 200).generateRoute(5);
-	    var w = new _2.Worm(80, 40);
-	    w.setRoute(r1to2.clone().pushLine(r2to3));
+	    var r1to2 = _1.RouteGenerator.getMinimumRoute(pos1, pos2, 200, 500, 5);
 	    stage.addChild(w);
+	    stage.addChild(w2);
+	    w.setRoute(r1to2);
 	    new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 4000)
 	        .easing(TWEEN.Easing.Cubic.InOut)
 	        .onUpdate(function () {
 	        w.setStep(this.s);
 	        w.render();
 	    }).easing(TWEEN.Easing.Cubic.InOut).onComplete(function () {
-	        /*
-	        w.addRouteFromCurrent(r2to3);
-	        new TWEEN.Tween({s:0}).to({s:1}, 1000)
-	        .easing(TWEEN.Easing.Quartic.InOut)
-	        .onUpdate(function(){
+	        var r = _1.RouteGenerator.getMinimumRoute(w.getCurrentLine().getTailVecPos().add(Math.PI), pos3, 600, 200, 5);
+	        w.setRoute(w.getCurrentLine().pushLine(r));
+	        new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
+	            .easing(TWEEN.Easing.Quartic.InOut)
+	            .onUpdate(function () {
 	            w.setStep(this.s);
 	            w.render();
 	        }).easing(TWEEN.Easing.Quartic.InOut).start();
-	        */
 	    }).start();
 	};
+	var ppos = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
 	    renderer.render(stage);
@@ -112,8 +113,8 @@
 	var resize = function () {
 	    var width = canvas.offsetWidth * 2;
 	    var height = canvas.offsetHeight * 2;
-	    sw = width;
-	    sh = height;
+	    stageWidth = width;
+	    stageHeight = height;
 	    renderer.resize(width, height);
 	};
 	window.onload = init;
@@ -157,6 +158,10 @@
 	    }
 	    VecPos.prototype.clone = function () {
 	        return new VecPos(this.pos.x, this.pos.y, this.r);
+	    };
+	    VecPos.prototype.add = function (radius) {
+	        this.r += radius;
+	        return this;
 	    };
 	    return VecPos;
 	}());
@@ -310,6 +315,13 @@
 	        var dy = sp.y - fp.y;
 	        return new utils_1.VecPos(fp.x - dx, fp.y - dy, Math.atan2(dy, dx));
 	    };
+	    Line.prototype.getTailVecPos = function () {
+	        var fp = this.at(this.length - 1);
+	        var sp = this.at(this.length - 2);
+	        var dx = sp.x - fp.x;
+	        var dy = sp.y - fp.y;
+	        return new utils_1.VecPos(fp.x - dx, fp.y - dy, Math.atan2(dy, dx));
+	    };
 	    Line.prototype.at = function (id) {
 	        return this.data[id];
 	    };
@@ -386,7 +398,7 @@
 	var RouteGenerator = (function () {
 	    function RouteGenerator() {
 	    }
-	    RouteGenerator.getMinimumRoute = function (vposB, vposE, rB, rE) {
+	    RouteGenerator.getMinimumRoute = function (vposB, vposE, rB, rE, res) {
 	        var routes = this.getAllRoute(vposB, vposE, rB, rE);
 	        var min = Number.MAX_VALUE;
 	        var route = null;
@@ -398,7 +410,7 @@
 	            }
 	        }
 	        ;
-	        return route;
+	        return route.generateRoute(res);
 	    };
 	    RouteGenerator.getAllRoute = function (vposB, vposE, rB, rE) {
 	        var cB1 = new utils_1.Circle(Math.cos(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.x, Math.sin(vposB.r + matthew_1.default.H_PI) * rB + vposB.pos.y, rB, 1, vposB.r - matthew_1.default.H_PI);
@@ -578,9 +590,12 @@
 	        this.line = line;
 	    };
 	    Worm.prototype.setStep = function (pos) {
-	        if (pos === void 0) { pos = 0.5; }
 	        if (!this.line)
 	            return;
+	        if (pos < 0)
+	            pos = 0;
+	        if (pos > 1)
+	            pos = 1;
 	        var beginIndex = this.length;
 	        var length = this.line.getLength() - beginIndex - 1;
 	        var posIndex = Math.floor(length * pos);
@@ -671,7 +686,7 @@
 	        ebody.left.y = ebone.y;
 	        this.clear();
 	        this.lineStyle(2, 0xffffff);
-	        this.beginFill(0xffffff);
+	        //this.beginFill(0xffffff);
 	        this.moveTo(bbody.left.x, bbody.left.y);
 	        for (var i = 1; i < this.body.length; i++) {
 	            this.lineTo(this.body[i].left.x, this.body[i].left.y);

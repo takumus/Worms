@@ -18,8 +18,10 @@ export default class Worm extends WormBase{
         if(line.getLength() < this.length) return;
         this.line = line;
     }
-    public setStep(pos:number = 0.5):void{
+    public setStep(pos:number):void{
         if(!this.line) return;
+        if(pos < 0) pos = 0;
+        if(pos > 1) pos = 1;
         const beginIndex = this.length;
         const length = this.line.getLength() - beginIndex - 1;
         const posIndex = Math.floor(length * pos);

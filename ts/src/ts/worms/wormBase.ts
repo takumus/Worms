@@ -59,7 +59,7 @@ export default class WormBase extends PIXI.Graphics{
         
         this.clear();
         this.lineStyle(2, 0xffffff);
-        this.beginFill(0xffffff);
+        //this.beginFill(0xffffff);
         this.moveTo(bbody.left.x, bbody.left.y);
         for(let i = 1; i < this.body.length; i ++){
             this.lineTo(this.body[i].left.x, this.body[i].left.y);
