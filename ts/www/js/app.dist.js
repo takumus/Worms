@@ -54,8 +54,8 @@
 	var stageWidth = 0, stageHeight = 0;
 	var g = new PIXI.Graphics();
 	var mouse = new utils_1.Pos(0, 0);
-	var w = new _2.Worm(190, 60);
-	var w2 = new _2.Worm(190, 60);
+	var w = new _2.Worm(190, 80);
+	var w2 = new _2.Worm(100, 40);
 	var init = function () {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true });
 	    canvas = document.getElementById("content");
@@ -77,31 +77,50 @@
 	        mouse.x = e.clientX * 2;
 	        mouse.y = e.clientY * 2;
 	    });
-	    _1.RouteGenerator.graphics = g;
+	    //RouteGenerator.graphics = g;
 	    g.lineStyle(2, 0x666666);
 	    draw();
 	    resize();
 	    var pos1 = new utils_1.VecPos(200 * 2, 200 * 2, Math.PI);
 	    var pos2 = new utils_1.VecPos(900 * 2, 600 * 2, Math.PI);
-	    var pos3 = new utils_1.VecPos(400 * 2, 1200 * 2, -Math.PI / 2);
 	    var r1to2 = _1.RouteGenerator.getMinimumRoute(pos1, pos2, 200, 500, 5);
 	    stage.addChild(w);
 	    stage.addChild(w2);
-	    w.setRoute(r1to2);
-	    new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 4000)
-	        .easing(TWEEN.Easing.Cubic.InOut)
+	    w.setRoute(r1to2.clone().wave(20, 0.08));
+	    w2.setRoute(r1to2.clone().wave(20, 0.08));
+	    new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
 	        .onUpdate(function () {
 	        w.setStep(this.s);
 	        w.render();
-	    }).easing(TWEEN.Easing.Cubic.InOut).onComplete(function () {
-	        var r = _1.RouteGenerator.getMinimumRoute(w.getCurrentLine().getTailVecPos().add(Math.PI), pos3, 600, 200, 5);
-	        w.setRoute(w.getCurrentLine().pushLine(r));
-	        new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
-	            .easing(TWEEN.Easing.Quartic.InOut)
+	        w2.setStep(this.s);
+	        w2.render();
+	    }).easing(TWEEN.Easing.Sinusoidal.InOut).onComplete(function () {
+	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 2000)
 	            .onUpdate(function () {
 	            w.setStep(this.s);
 	            w.render();
-	        }).easing(TWEEN.Easing.Quartic.InOut).start();
+	            w2.setStep(this.s);
+	            w2.render();
+	        }).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(function () {
+	            var pos = new utils_1.VecPos(stageWidth / 4 + stageWidth / 2 * Math.random(), stageHeight / 4 + stageHeight / 2 * Math.random(), Math.PI * 2 * Math.random());
+	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
+	            r.wave(80 * Math.random(), 0.1 * Math.random());
+	            w.setRoute(w.getCurrentLine().pushLine(r));
+	            var pos2 = new utils_1.VecPos(stageWidth / 4 + stageWidth / 2 * Math.random(), stageHeight / 4 + stageHeight / 2 * Math.random(), Math.PI * 2 * Math.random());
+	            if (Math.random() < 2) {
+	                pos2 = pos.clone();
+	                pos2.add(Math.PI);
+	            }
+	            var r2 = _1.RouteGenerator.getMinimumRoute(w2.getHeadVecPos(), pos2, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
+	            r2.wave(80 * Math.random(), 0.1 * Math.random());
+	            w2.setRoute(w2.getCurrentLine().pushLine(r2));
+	        }).onComplete(function () {
+	            g.clear();
+	            g.lineStyle(2, 0x666666);
+	            this.s = 0;
+	            t.start();
+	        });
+	        t.start();
 	    }).start();
 	};
 	var ppos = 0;
@@ -109,6 +128,8 @@
 	    requestAnimationFrame(draw);
 	    renderer.render(stage);
 	    TWEEN.update();
+	    //stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
+	    //stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 	};
 	var resize = function () {
 	    var width = canvas.offsetWidth * 2;
@@ -612,6 +633,12 @@
 	        //console.log(this.bone);
 	        return this.bone.clone().reverse();
 	    };
+	    Worm.prototype.getHeadVecPos = function () {
+	        return this.bone.getHeadVecPos().clone().add(Math.PI);
+	    };
+	    Worm.prototype.getTailVecPos = function () {
+	        return this.bone.getTailVecPos().clone().add(Math.PI);
+	    };
 	    return Worm;
 	}(wormBase_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -686,7 +713,7 @@
 	        ebody.left.y = ebone.y;
 	        this.clear();
 	        this.lineStyle(2, 0xffffff);
-	        //this.beginFill(0xffffff);
+	        this.beginFill(0xffffff);
 	        this.moveTo(bbody.left.x, bbody.left.y);
 	        for (var i = 1; i < this.body.length; i++) {
 	            this.lineTo(this.body[i].left.x, this.body[i].left.y);

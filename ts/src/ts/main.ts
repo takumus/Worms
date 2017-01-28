@@ -7,8 +7,8 @@ let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
 const g:PIXI.Graphics = new PIXI.Graphics();
 const mouse:Pos = new Pos(0, 0);
-const w = new Worm(190, 60);
-const w2 = new Worm(190, 60);
+const w = new Worm(190, 80);
+const w2 = new Worm(100, 40);
 const init = ()=> {
 	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
@@ -30,7 +30,7 @@ const init = ()=> {
 		mouse.x = e.clientX*2;
 		mouse.y = e.clientY*2;
 	});
-	RouteGenerator.graphics = g;
+	//RouteGenerator.graphics = g;
 	g.lineStyle(2, 0x666666);
 	draw();
 	resize();
@@ -46,11 +46,6 @@ const init = ()=> {
 		600*2,
 		Math.PI
 	);
-	const pos3 = new VecPos(
-		400*2,
-		1200*2,
-		-Math.PI/2
-	);
 	const r1to2 = RouteGenerator.getMinimumRoute(
 		pos1,
 		pos2,
@@ -61,27 +56,61 @@ const init = ()=> {
 
 	stage.addChild(w);
 	stage.addChild(w2);
-	w.setRoute(r1to2);
-	new TWEEN.Tween({s:0}).to({s:1}, 4000)
-	.easing(TWEEN.Easing.Cubic.InOut)
+	w.setRoute(r1to2.clone().wave(20, 0.08));
+	w2.setRoute(r1to2.clone().wave(20, 0.08));
+	new TWEEN.Tween({s:0}).to({s:1}, 1000)
 	.onUpdate(function(){
 		w.setStep(this.s);
 		w.render();
-	}).easing(TWEEN.Easing.Cubic.InOut).onComplete(()=>{
-		const r = RouteGenerator.getMinimumRoute(
-			w.getCurrentLine().getTailVecPos().add(Math.PI),
-			pos3,
-			600,
-			200,
-			5
-		);
-		w.setRoute(w.getCurrentLine().pushLine(r));
-		new TWEEN.Tween({s:0}).to({s:1}, 1000)
-		.easing(TWEEN.Easing.Quartic.InOut)
+		w2.setStep(this.s);
+		w2.render();
+	}).easing(TWEEN.Easing.Sinusoidal.InOut).onComplete(()=>{
+		const t = new TWEEN.Tween({s:0}).to({s:1}, 2000)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
-		}).easing(TWEEN.Easing.Quartic.InOut).start();
+			w2.setStep(this.s);
+			w2.render();
+		}).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(()=>{
+			const pos = new VecPos(
+				stageWidth/4+stageWidth/2*Math.random(),
+				stageHeight/4+stageHeight/2*Math.random(),
+				Math.PI*2*Math.random()
+			);
+			const r = RouteGenerator.getMinimumRoute(
+				w.getHeadVecPos(),
+				pos,
+				500*Math.random()+200,
+				500*Math.random()+200,
+				5
+			);
+			r.wave(80*Math.random(), 0.1*Math.random());
+			w.setRoute(w.getCurrentLine().pushLine(r));
+			let pos2 = new VecPos(
+				stageWidth/4+stageWidth/2*Math.random(),
+				stageHeight/4+stageHeight/2*Math.random(),
+				Math.PI*2*Math.random()
+			);
+			if(Math.random()<2){
+				pos2 = pos.clone();
+				pos2.add(Math.PI);
+			}
+			const r2 = RouteGenerator.getMinimumRoute(
+				w2.getHeadVecPos(),
+				pos2,
+				500*Math.random()+200,
+				500*Math.random()+200,
+				5
+			);
+			r2.wave(80*Math.random(), 0.1*Math.random());
+			w2.setRoute(w2.getCurrentLine().pushLine(r2));
+		}).onComplete(function(){
+			g.clear();
+			g.lineStyle(2, 0x666666);
+			this.s = 0;
+			t.start();
+		});
+		t.start();
 	}).start();
 }
 let ppos = 0;
@@ -89,6 +118,8 @@ const draw = ()=> {
 	requestAnimationFrame(draw);
 	renderer.render(stage);
 	TWEEN.update();
+	//stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
+	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }
 const resize = ()=> {
 	const width:number = canvas.offsetWidth*2;
