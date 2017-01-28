@@ -37,4 +37,10 @@ export default class Worm extends WormBase{
         //console.log(this.bone);
         return this.bone.clone().reverse();
     }
+    public getHeadVecPos():VecPos{
+        return this.bone.getHeadVecPos().clone().add(Math.PI);
+    }
+    public getTailVecPos():VecPos{
+        return this.bone.getTailVecPos().clone().add(Math.PI);
+    }
 }
