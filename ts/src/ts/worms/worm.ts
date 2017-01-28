@@ -33,6 +33,9 @@ export default class Worm extends WormBase{
             b.y = l.y;
         }
     }
+    public reverse():void{
+        this.bone.reverse();
+    }
     public getCurrentLine():Line{
         //console.log(this.bone);
         return this.bone.clone().reverse();

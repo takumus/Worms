@@ -103,6 +103,7 @@
 	            w2.render();
 	        }).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(function () {
 	            var pos = new utils_1.VecPos(stageWidth / 4 + stageWidth / 2 * Math.random(), stageHeight / 4 + stageHeight / 2 * Math.random(), Math.PI * 2 * Math.random());
+	            w.reverse();
 	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
 	            r.wave(80 * Math.random(), 0.1 * Math.random());
 	            w.setRoute(w.getCurrentLine().pushLine(r));
@@ -111,6 +112,7 @@
 	                pos2 = pos.clone();
 	                pos2.add(Math.PI);
 	            }
+	            w2.reverse();
 	            var r2 = _1.RouteGenerator.getMinimumRoute(w2.getHeadVecPos(), pos2, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
 	            r2.wave(80 * Math.random(), 0.1 * Math.random());
 	            w2.setRoute(w2.getCurrentLine().pushLine(r2));
@@ -628,6 +630,9 @@
 	            b.x = l.x;
 	            b.y = l.y;
 	        }
+	    };
+	    Worm.prototype.reverse = function () {
+	        this.bone.reverse();
 	    };
 	    Worm.prototype.getCurrentLine = function () {
 	        //console.log(this.bone);

@@ -77,6 +77,7 @@ const init = ()=> {
 				stageHeight/4+stageHeight/2*Math.random(),
 				Math.PI*2*Math.random()
 			);
+			w.reverse();
 			const r = RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
@@ -95,6 +96,7 @@ const init = ()=> {
 				pos2 = pos.clone();
 				pos2.add(Math.PI);
 			}
+			w2.reverse();
 			const r2 = RouteGenerator.getMinimumRoute(
 				w2.getHeadVecPos(),
 				pos2,
