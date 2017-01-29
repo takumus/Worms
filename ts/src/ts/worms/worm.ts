@@ -25,12 +25,21 @@ export default class Worm extends WormBase{
         const beginIndex = this.length;
         const length = this.line.getLength() - beginIndex - 1;
         const posIndex = Math.floor(length * pos);
+        const offset = (length * pos - posIndex);
         for(let i = 0; i < this.bone.getLength(); i ++){
+            const id = beginIndex-i + posIndex;
             const b = this.bone.at(i);
-            const l = this.line.at(beginIndex-i + posIndex);
+            const l = this.line.at(id);
+            const nl = this.line.at(id+1);
             if(!l) continue;
-            b.x = l.x;
-            b.y = l.y;
+            let dx = 0;
+            let dy = 0;
+            if(nl){
+                dx = (nl.x - l.x) * offset;
+                dy = (nl.y - l.y) * offset;
+            }
+            b.x = l.x + dx;
+            b.y = l.y + dy;
         }
     }
     public reverse():void{
