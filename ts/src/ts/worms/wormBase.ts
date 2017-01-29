@@ -8,7 +8,7 @@ export default class WormBase extends PIXI.Graphics{
     private thickness:number;
     constructor(length:number, thickness:number){
         super();
-        this.length = length;
+        this.length = Math.floor(length);
         this.bone = new Line();
         this.body = [];
         for(let i = 0; i < length; i ++){
@@ -58,7 +58,7 @@ export default class WormBase extends PIXI.Graphics{
         ebody.left.y = ebone.y;
         
         this.clear();
-        this.lineStyle(2, 0xffffff);
+        this.lineStyle(3, 0);
         this.beginFill(0xffffff);
         this.moveTo(bbody.left.x, bbody.left.y);
         for(let i = 1; i < this.body.length; i ++){

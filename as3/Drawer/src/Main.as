@@ -32,13 +32,16 @@ package {
 			this.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, rightMouseUp);
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, showData);
 			var s:Sketch = new Sketch();
+			var ss:Sprite = new Sprite();
+			s.scaleX = s.scaleY = 2;
+			ss.addChild(s);
 			drawing = false;
             prevPoint = new Point(0, 0);
 			nowPoint = new Point(0, 0);
-            sketch = new BitmapData(s.width*1.5, s.height*1.5, false, 0xffffff);
+            sketch = new BitmapData(ss.width*1.5, ss.height*1.5, false, 0xffffff);
             sketchBitmap = new Bitmap(sketch);
 			canvas = new Shape();
-			sketch.draw(s);
+			sketch.draw(ss);
 			this.addChild(sketchBitmap);
 			this.addChild(canvas);
 			stage.stageWidth = sketch.width;
@@ -72,19 +75,19 @@ package {
 					nowPoint.x = mouseX;
 					nowPoint.y = mouseY;
 					canvas.graphics.lineStyle(1, 0x00ff00);
-					canvas.graphics.drawCircle(nowPoint.x, nowPoint.y, 5);
+					canvas.graphics.drawCircle(nowPoint.x, nowPoint.y, 2);
 				}else {
 					var r:Number = Math.atan2(mouseY - prevPoint.y, mouseX - prevPoint.x);
 					var br:Number = r - Math.PI / 4;
 					var er:Number = r + Math.PI / 4;
-					var p:Point = findFitByRadius(prevPoint, 20, br, er);
+					var p:Point = findFitByRadius(prevPoint, 5, br, er);
 					if (p) {
 						var tx:Number = p.x - mouseX;
 						var ty:Number = p.y - mouseY;
 						if (p) {
 							canvas.graphics.lineStyle(1, 0x00ff00);
-							canvas.graphics.drawCircle(p.x, p.y, 5);
-							if (Math.sqrt(tx * tx + ty * ty) < 5) {
+							canvas.graphics.drawCircle(p.x, p.y, 2);
+							if (Math.sqrt(tx * tx + ty * ty) < 2) {
 								lines[nowId].push(p.clone());
 								prevPoint = p.clone();
 							}
