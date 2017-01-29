@@ -54,9 +54,9 @@
 	var stageWidth = 0, stageHeight = 0;
 	var g = new PIXI.Graphics();
 	var mouse = new utils_1.Pos(0, 0);
-	var w = new _2.Worm(190, 80);
-	var w2 = new _2.Worm(100, 40);
+	var dpr;
 	var init = function () {
+	    dpr = 2; //window.devicePixelRatio;
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true });
 	    canvas = document.getElementById("content");
 	    canvas.appendChild(renderer.view);
@@ -69,61 +69,41 @@
 	    shape.lineTo(100, 100);
 	    shape.drawCircle(50, 50, 50);
 	    stage.addChild(shape);
-	    window.onresize = function () {
-	        resize();
-	    };
+	    window.addEventListener('resize', resize);
+	    window.addEventListener('orientationchange', resize);
 	    stage.addChild(g);
 	    window.addEventListener("mousemove", function (e) {
-	        mouse.x = e.clientX * 2;
-	        mouse.y = e.clientY * 2;
+	        mouse.x = e.clientX * dpr;
+	        mouse.y = e.clientY * dpr;
 	    });
 	    //RouteGenerator.graphics = g;
 	    g.lineStyle(2, 0x666666);
 	    draw();
 	    resize();
-	    var pos1 = new utils_1.VecPos(200 * 2, 200 * 2, Math.PI);
-	    var pos2 = new utils_1.VecPos(900 * 2, 600 * 2, Math.PI);
-	    var r1to2 = _1.RouteGenerator.getMinimumRoute(pos1, pos2, 200, 500, 5);
-	    stage.addChild(w);
-	    stage.addChild(w2);
-	    w.setRoute(r1to2.clone().wave(20, 0.08));
-	    w2.setRoute(r1to2.clone().wave(20, 0.08));
-	    new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
-	        .onUpdate(function () {
-	        w.setStep(this.s);
-	        w.render();
-	        w2.setStep(this.s);
-	        w2.render();
-	    }).easing(TWEEN.Easing.Sinusoidal.InOut).onComplete(function () {
-	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 2000)
+	    var _loop_1 = function (i) {
+	        var w = new _2.Worm(60, 50);
+	        stage.addChild(w);
+	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
 	            .onUpdate(function () {
 	            w.setStep(this.s);
 	            w.render();
-	            w2.setStep(this.s);
-	            w2.render();
 	        }).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(function () {
-	            var pos = new utils_1.VecPos(stageWidth / 4 + stageWidth / 2 * Math.random(), stageHeight / 4 + stageHeight / 2 * Math.random(), Math.PI * 2 * Math.random());
+	            var pos = new utils_1.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.PI * 2 * Math.random());
 	            w.reverse();
-	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
-	            r.wave(80 * Math.random(), 0.1 * Math.random());
+	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 200 * Math.random() + 200, 200 * Math.random() + 200, 10);
+	            r.wave(50 * Math.random() + 20, 0.1 * Math.random());
 	            w.setRoute(w.getCurrentLine().pushLine(r));
-	            var pos2 = new utils_1.VecPos(stageWidth / 4 + stageWidth / 2 * Math.random(), stageHeight / 4 + stageHeight / 2 * Math.random(), Math.PI * 2 * Math.random());
-	            if (Math.random() < 2) {
-	                pos2 = pos.clone();
-	                pos2.add(Math.PI);
-	            }
-	            w2.reverse();
-	            var r2 = _1.RouteGenerator.getMinimumRoute(w2.getHeadVecPos(), pos2, 500 * Math.random() + 200, 500 * Math.random() + 200, 5);
-	            r2.wave(80 * Math.random(), 0.1 * Math.random());
-	            w2.setRoute(w2.getCurrentLine().pushLine(r2));
-	        }).onComplete(function () {
+	        }).delay(500).onComplete(function () {
 	            g.clear();
 	            g.lineStyle(2, 0x666666);
 	            this.s = 0;
 	            t.start();
 	        });
 	        t.start();
-	    }).start();
+	    };
+	    for (var i = 0; i < 1; i++) {
+	        _loop_1(i);
+	    }
 	};
 	var ppos = 0;
 	var draw = function () {
@@ -134,8 +114,8 @@
 	    //stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 	};
 	var resize = function () {
-	    var width = canvas.offsetWidth * 2;
-	    var height = canvas.offsetHeight * 2;
+	    var width = canvas.offsetWidth * dpr;
+	    var height = canvas.offsetHeight * dpr;
 	    stageWidth = width;
 	    stageHeight = height;
 	    renderer.resize(width, height);
@@ -622,13 +602,22 @@
 	        var beginIndex = this.length;
 	        var length = this.line.getLength() - beginIndex - 1;
 	        var posIndex = Math.floor(length * pos);
+	        var offset = (length * pos - posIndex);
 	        for (var i = 0; i < this.bone.getLength(); i++) {
+	            var id = beginIndex - i + posIndex;
 	            var b = this.bone.at(i);
-	            var l = this.line.at(beginIndex - i + posIndex);
+	            var l = this.line.at(id);
+	            var nl = this.line.at(id + 1);
 	            if (!l)
 	                continue;
-	            b.x = l.x;
-	            b.y = l.y;
+	            var dx = 0;
+	            var dy = 0;
+	            if (nl) {
+	                dx = (nl.x - l.x) * offset;
+	                dy = (nl.y - l.y) * offset;
+	            }
+	            b.x = l.x + dx;
+	            b.y = l.y + dy;
 	        }
 	    };
 	    Worm.prototype.reverse = function () {
@@ -667,7 +656,7 @@
 	    __extends(WormBase, _super);
 	    function WormBase(length, thickness) {
 	        var _this = _super.call(this) || this;
-	        _this.length = length;
+	        _this.length = Math.floor(length);
 	        _this.bone = new _1.Line();
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
@@ -717,7 +706,7 @@
 	        ebody.left.x = ebone.x;
 	        ebody.left.y = ebone.y;
 	        this.clear();
-	        this.lineStyle(2, 0xffffff);
+	        this.lineStyle(3, 0);
 	        this.beginFill(0xffffff);
 	        this.moveTo(bbody.left.x, bbody.left.y);
 	        for (var i = 1; i < this.body.length; i++) {
