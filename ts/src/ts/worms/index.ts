@@ -1,6 +1,6 @@
 import NastyWorm from './nastyWorm';
-import WormBase from './wormBase';
+import Worm from './worm';
 export {
     NastyWorm,
-    WormBase
+    Worm
 }

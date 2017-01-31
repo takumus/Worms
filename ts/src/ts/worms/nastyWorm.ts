@@ -1,7 +1,6 @@
-import {Pos, VecPos, Circle} from '../../utils';
-import BodyPos from './bodyPos';
-import WormBase from '../wormBase';
-export default class Worm extends WormBase{
+import {Pos} from '../utils';
+import Worm from './worm';
+export default class NastyWorm extends Worm{
     private thickness:number;
     protected body:Array<BodyPos>;
     constructor(length:number, thickness:number){
@@ -50,5 +49,13 @@ export default class Worm extends WormBase{
         }
         this.lineTo(bbody.left.x, bbody.left.y);
         this.endFill();
+    }
+}
+class BodyPos{
+    public left:Pos;
+    public right:Pos;
+    constructor(){
+        this.left = new Pos();
+        this.right = new Pos();
     }
 }

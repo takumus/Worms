@@ -1,6 +1,6 @@
 import {Pos, VecPos, Circle} from '../utils';
 import {Line} from '../routes/';
-export default class WormBase extends PIXI.Graphics{
+export default class Worm extends PIXI.Graphics{
     protected bone:Line;
     protected length:number;
     private line:Line;

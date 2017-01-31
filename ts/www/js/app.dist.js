@@ -558,8 +558,8 @@
 	"use strict";
 	var nastyWorm_1 = __webpack_require__(8);
 	exports.NastyWorm = nastyWorm_1.default;
-	var wormBase_1 = __webpack_require__(10);
-	exports.WormBase = wormBase_1.default;
+	var worm_1 = __webpack_require__(9);
+	exports.Worm = worm_1.default;
 
 
 /***/ },
@@ -572,20 +572,20 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var bodyPos_1 = __webpack_require__(9);
-	var wormBase_1 = __webpack_require__(10);
-	var Worm = (function (_super) {
-	    __extends(Worm, _super);
-	    function Worm(length, thickness) {
+	var utils_1 = __webpack_require__(1);
+	var worm_1 = __webpack_require__(9);
+	var NastyWorm = (function (_super) {
+	    __extends(NastyWorm, _super);
+	    function NastyWorm(length, thickness) {
 	        var _this = _super.call(this, length) || this;
 	        _this.thickness = thickness;
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
-	            _this.body.push(new bodyPos_1.default());
+	            _this.body.push(new BodyPos());
 	        }
 	        return _this;
 	    }
-	    Worm.prototype.render = function () {
+	    NastyWorm.prototype.render = function () {
 	        var bbone = this.bone.at(0);
 	        //ワームの外殻を生成
 	        var ebone = this.bone.at(this.bone.getLength() - 1);
@@ -623,18 +623,10 @@
 	        this.lineTo(bbody.left.x, bbody.left.y);
 	        this.endFill();
 	    };
-	    return Worm;
-	}(wormBase_1.default));
+	    return NastyWorm;
+	}(worm_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Worm;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var utils_1 = __webpack_require__(1);
+	exports.default = NastyWorm;
 	var BodyPos = (function () {
 	    function BodyPos() {
 	        this.left = new utils_1.Pos();
@@ -642,12 +634,10 @@
 	    }
 	    return BodyPos;
 	}());
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = BodyPos;
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -658,9 +648,9 @@
 	};
 	var utils_1 = __webpack_require__(1);
 	var _1 = __webpack_require__(3);
-	var WormBase = (function (_super) {
-	    __extends(WormBase, _super);
-	    function WormBase(length) {
+	var Worm = (function (_super) {
+	    __extends(Worm, _super);
+	    function Worm(length) {
 	        var _this = _super.call(this) || this;
 	        _this.length = Math.floor(length);
 	        _this.bone = new _1.Line();
@@ -670,7 +660,7 @@
 	        _this.routeIndex = 0;
 	        return _this;
 	    }
-	    WormBase.prototype.push = function (x, y) {
+	    Worm.prototype.push = function (x, y) {
 	        //先頭に加えて、１つずつずらす。
 	        var i = this.bone.getLength() - 1;
 	        for (; i >= 1; i--) {
@@ -681,17 +671,17 @@
 	        bbone.x = x;
 	        bbone.y = y;
 	    };
-	    WormBase.prototype.render = function () {
+	    Worm.prototype.render = function () {
 	    };
-	    WormBase.prototype.addRouteFromCurrent = function (line) {
+	    Worm.prototype.addRouteFromCurrent = function (line) {
 	        this.setRoute(this.getCurrentLine().pushLine(line));
 	    };
-	    WormBase.prototype.setRoute = function (line) {
+	    Worm.prototype.setRoute = function (line) {
 	        if (line.getLength() < this.length)
 	            return;
 	        this.line = line;
 	    };
-	    WormBase.prototype.setStep = function (pos) {
+	    Worm.prototype.setStep = function (pos) {
 	        if (!this.line)
 	            return;
 	        if (pos < 0)
@@ -719,23 +709,23 @@
 	            b.y = l.y + dy;
 	        }
 	    };
-	    WormBase.prototype.reverse = function () {
+	    Worm.prototype.reverse = function () {
 	        this.bone.reverse();
 	    };
-	    WormBase.prototype.getCurrentLine = function () {
+	    Worm.prototype.getCurrentLine = function () {
 	        //console.log(this.bone);
 	        return this.bone.clone().reverse();
 	    };
-	    WormBase.prototype.getHeadVecPos = function () {
+	    Worm.prototype.getHeadVecPos = function () {
 	        return this.bone.getHeadVecPos().clone().add(Math.PI);
 	    };
-	    WormBase.prototype.getTailVecPos = function () {
+	    Worm.prototype.getTailVecPos = function () {
 	        return this.bone.getTailVecPos().clone().add(Math.PI);
 	    };
-	    return WormBase;
+	    return Worm;
 	}(PIXI.Graphics));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = WormBase;
+	exports.default = Worm;
 
 
 /***/ }
