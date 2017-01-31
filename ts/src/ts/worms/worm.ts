@@ -1,8 +1,8 @@
 import {Pos, VecPos, Circle} from '../utils';
 import {Line} from '../routes/';
 import BodyPos from './bodyPos';
-import WormBase from './wormBase';
-export default class Worm extends WormBase{
+import {WormBase} from './wormBase';
+export default class Worm extends WormBase.WormBase{
     private line:Line;
     private routeIndex:number;
     constructor(length:number, thiskness:number){

@@ -5,7 +5,6 @@ let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
-const g:PIXI.Graphics = new PIXI.Graphics();
 const mouse:Pos = new Pos(0, 0);
 let dpr:number;
 const init = ()=> {
@@ -24,20 +23,17 @@ const init = ()=> {
 	stage.addChild(shape);
 	window.addEventListener('resize', resize);
 	window.addEventListener('orientationchange', resize);
-	stage.addChild(g);
 	window.addEventListener("mousemove", (e)=>{
 		mouse.x = e.clientX*dpr;
 		mouse.y = e.clientY*dpr;
 	});
-	//RouteGenerator.graphics = g;
-	g.lineStyle(2, 0x666666);
 	draw();
 	resize();
 
 	for(let i = 0; i < 1; i ++){
-		const w:Worm = new Worm(60, 50);
+		const w:Worm = new Worm(100, 120);
 		stage.addChild(w);
-		const t = new TWEEN.Tween({s:0}).to({s:1}, 1000)
+	const t = new TWEEN.Tween({s:0}).to({s:1}, 1000)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
@@ -57,9 +53,7 @@ const init = ()=> {
 			);
 			r.wave(50*Math.random()+20, 0.1*Math.random());
 			w.setRoute(w.getCurrentLine().pushLine(r));
-		}).delay(500).onComplete(function(){
-			g.clear();
-			g.lineStyle(2, 0x666666);
+		}).delay(0).onComplete(function(){
 			this.s = 0;
 			t.start();
 		});
@@ -69,8 +63,9 @@ const init = ()=> {
 let ppos = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
-	renderer.render(stage);
 	TWEEN.update();
+	renderer.render(stage);
+
 	//stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
 	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }

@@ -52,7 +52,6 @@
 	var stage = new PIXI.Container();
 	var canvas;
 	var stageWidth = 0, stageHeight = 0;
-	var g = new PIXI.Graphics();
 	var mouse = new utils_1.Pos(0, 0);
 	var dpr;
 	var init = function () {
@@ -71,17 +70,14 @@
 	    stage.addChild(shape);
 	    window.addEventListener('resize', resize);
 	    window.addEventListener('orientationchange', resize);
-	    stage.addChild(g);
 	    window.addEventListener("mousemove", function (e) {
 	        mouse.x = e.clientX * dpr;
 	        mouse.y = e.clientY * dpr;
 	    });
-	    //RouteGenerator.graphics = g;
-	    g.lineStyle(2, 0x666666);
 	    draw();
 	    resize();
 	    var _loop_1 = function (i) {
-	        var w = new _2.Worm(60, 50);
+	        var w = new _2.Worm(100, 120);
 	        stage.addChild(w);
 	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
 	            .onUpdate(function () {
@@ -93,9 +89,7 @@
 	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 200 * Math.random() + 200, 200 * Math.random() + 200, 10);
 	            r.wave(50 * Math.random() + 20, 0.1 * Math.random());
 	            w.setRoute(w.getCurrentLine().pushLine(r));
-	        }).delay(500).onComplete(function () {
-	            g.clear();
-	            g.lineStyle(2, 0x666666);
+	        }).delay(0).onComplete(function () {
 	            this.s = 0;
 	            t.start();
 	        });
@@ -108,8 +102,8 @@
 	var ppos = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
-	    renderer.render(stage);
 	    TWEEN.update();
+	    renderer.render(stage);
 	    //stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
 	    //stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 	};
@@ -564,6 +558,8 @@
 	"use strict";
 	var worm_1 = __webpack_require__(8);
 	exports.Worm = worm_1.default;
+	var wormBase_1 = __webpack_require__(9);
+	exports.WormBase = wormBase_1.WormBase;
 
 
 /***/ },
@@ -634,7 +630,7 @@
 	        return this.bone.getTailVecPos().clone().add(Math.PI);
 	    };
 	    return Worm;
-	}(wormBase_1.default));
+	}(wormBase_1.WormBase.WormBase));
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Worm;
 
@@ -652,76 +648,79 @@
 	var utils_1 = __webpack_require__(1);
 	var _1 = __webpack_require__(3);
 	var bodyPos_1 = __webpack_require__(10);
-	var WormBase = (function (_super) {
-	    __extends(WormBase, _super);
-	    function WormBase(length, thickness) {
-	        var _this = _super.call(this) || this;
-	        _this.length = Math.floor(length);
-	        _this.bone = new _1.Line();
-	        _this.body = [];
-	        for (var i = 0; i < length; i++) {
-	            _this.bone.push(new utils_1.Pos());
-	            _this.body.push(new bodyPos_1.default());
+	var WormBase;
+	(function (WormBase_1) {
+	    var WormBase = (function (_super) {
+	        __extends(WormBase, _super);
+	        function WormBase(length, thickness) {
+	            var _this = _super.call(this) || this;
+	            _this.length = Math.floor(length);
+	            _this.bone = new _1.Line();
+	            _this.body = [];
+	            for (var i = 0; i < length; i++) {
+	                _this.bone.push(new utils_1.Pos());
+	                _this.body.push(new bodyPos_1.default());
+	            }
+	            _this.setThickness(thickness);
+	            _this.graphics = _this; //graphics;
+	            return _this;
 	        }
-	        _this.setThickness(thickness);
-	        return _this;
-	    }
-	    WormBase.prototype.setThickness = function (thickness) {
-	        this.thickness = thickness;
-	    };
-	    WormBase.prototype.push = function (x, y) {
-	        //先頭に加えて、１つずつずらす。
-	        var i = this.bone.getLength() - 1;
-	        for (; i >= 1; i--) {
-	            this.bone.at(i).x = this.bone.at(i - 1).x;
-	            this.bone.at(i).y = this.bone.at(i - 1).y;
-	        }
-	        var bbone = this.bone.at(0);
-	        bbone.x = x;
-	        bbone.y = y;
-	    };
-	    WormBase.prototype.render = function () {
-	        var bbone = this.bone.at(0);
-	        //ワームの外殻を生成
-	        var ebone = this.bone.at(this.bone.getLength() - 1);
-	        var bbody = this.body[0];
-	        var ebody = this.body[this.body.length - 1];
-	        bbody.left.x = bbone.x;
-	        bbody.left.y = bbone.y;
-	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
-	            var nbone = this.bone.at(i);
-	            var nbody = this.body[i];
-	            var vx = this.bone.at(i - 1).x - nbone.x;
-	            var vy = this.bone.at(i - 1).y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
-	            var vl = vx * vx + vy * vy;
-	            var vr = Math.sqrt(vl);
-	            vx = vx / vr * r;
-	            vy = vy / vr * r;
-	            nbody.left.x = nbone.x + -vy;
-	            nbody.left.y = nbone.y + vx;
-	            nbody.right.x = nbone.x + vy;
-	            nbody.right.y = nbone.y + -vx;
-	        }
-	        ebody.left.x = ebone.x;
-	        ebody.left.y = ebone.y;
-	        this.clear();
-	        this.lineStyle(3, 0);
-	        this.beginFill(0xffffff);
-	        this.moveTo(bbody.left.x, bbody.left.y);
-	        for (var i = 1; i < this.body.length; i++) {
-	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
-	        }
-	        for (var i = this.body.length - 2; i >= 2; i--) {
-	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
-	        }
-	        this.lineTo(bbody.left.x, bbody.left.y);
-	        this.endFill();
-	    };
-	    return WormBase;
-	}(PIXI.Graphics));
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = WormBase;
+	        WormBase.prototype.setThickness = function (thickness) {
+	            this.thickness = thickness;
+	        };
+	        WormBase.prototype.push = function (x, y) {
+	            //先頭に加えて、１つずつずらす。
+	            var i = this.bone.getLength() - 1;
+	            for (; i >= 1; i--) {
+	                this.bone.at(i).x = this.bone.at(i - 1).x;
+	                this.bone.at(i).y = this.bone.at(i - 1).y;
+	            }
+	            var bbone = this.bone.at(0);
+	            bbone.x = x;
+	            bbone.y = y;
+	        };
+	        WormBase.prototype.render = function () {
+	            var bbone = this.bone.at(0);
+	            //ワームの外殻を生成
+	            var ebone = this.bone.at(this.bone.getLength() - 1);
+	            var bbody = this.body[0];
+	            var ebody = this.body[this.body.length - 1];
+	            bbody.left.x = bbone.x;
+	            bbody.left.y = bbone.y;
+	            for (var i = 1; i < this.bone.getLength() - 1; i++) {
+	                var nbone = this.bone.at(i);
+	                var nbody = this.body[i];
+	                var vx = this.bone.at(i - 1).x - nbone.x;
+	                var vy = this.bone.at(i - 1).y - nbone.y;
+	                var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
+	                var vl = vx * vx + vy * vy;
+	                var vr = Math.sqrt(vl);
+	                vx = vx / vr * r;
+	                vy = vy / vr * r;
+	                nbody.left.x = nbone.x + -vy;
+	                nbody.left.y = nbone.y + vx;
+	                nbody.right.x = nbone.x + vy;
+	                nbody.right.y = nbone.y + -vx;
+	            }
+	            ebody.left.x = ebone.x;
+	            ebody.left.y = ebone.y;
+	            this.graphics.clear();
+	            this.graphics.lineStyle(3, 0);
+	            this.graphics.beginFill(0xffffff);
+	            this.graphics.moveTo(bbody.left.x, bbody.left.y);
+	            for (var i = 1; i < this.body.length; i++) {
+	                this.graphics.lineTo(this.body[i].left.x, this.body[i].left.y);
+	            }
+	            for (var i = this.body.length - 2; i >= 2; i--) {
+	                this.graphics.lineTo(this.body[i].right.x, this.body[i].right.y);
+	            }
+	            this.graphics.lineTo(bbody.left.x, bbody.left.y);
+	            this.graphics.endFill();
+	        };
+	        return WormBase;
+	    }(PIXI.Graphics));
+	    WormBase_1.WormBase = WormBase;
+	})(WormBase = exports.WormBase || (exports.WormBase = {}));
 
 
 /***/ },
