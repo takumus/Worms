@@ -1,4 +1,4 @@
-import {Pos} from '../utils';
+import {Pos} from '../../utils';
 export default class BodyPos{
     public left:Pos;
     public right:Pos;

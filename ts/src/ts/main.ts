@@ -1,6 +1,6 @@
 import {Pos, VecPos, Circle} from './utils';
 import {Route, RouteGenerator, Line} from './routes/';
-import {Worm} from './worms/';
+import {NastyWorm} from './worms/';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -31,7 +31,7 @@ const init = ()=> {
 	resize();
 
 	for(let i = 0; i < 1; i ++){
-		const w:Worm = new Worm(100, 120);
+		const w:NastyWorm = new NastyWorm(100, 120);
 		stage.addChild(w);
 	const t = new TWEEN.Tween({s:0}).to({s:1}, 1000)
 		.onUpdate(function(){

@@ -77,7 +77,7 @@
 	    draw();
 	    resize();
 	    var _loop_1 = function (i) {
-	        var w = new _2.Worm(100, 120);
+	        var w = new _2.NastyWorm(100, 120);
 	        stage.addChild(w);
 	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
 	            .onUpdate(function () {
@@ -556,10 +556,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var worm_1 = __webpack_require__(8);
-	exports.Worm = worm_1.default;
-	var wormBase_1 = __webpack_require__(9);
-	exports.WormBase = wormBase_1.WormBase;
+	var nastyWorm_1 = __webpack_require__(8);
+	exports.NastyWorm = nastyWorm_1.default;
+	var wormBase_1 = __webpack_require__(10);
+	exports.WormBase = wormBase_1.default;
 
 
 /***/ },
@@ -572,23 +572,126 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var wormBase_1 = __webpack_require__(9);
+	var bodyPos_1 = __webpack_require__(9);
+	var wormBase_1 = __webpack_require__(10);
 	var Worm = (function (_super) {
 	    __extends(Worm, _super);
-	    function Worm(length, thiskness) {
-	        var _this = _super.call(this, length, thiskness) || this;
+	    function Worm(length, thickness) {
+	        var _this = _super.call(this, length) || this;
+	        _this.thickness = thickness;
+	        _this.body = [];
+	        for (var i = 0; i < length; i++) {
+	            _this.body.push(new bodyPos_1.default());
+	        }
+	        return _this;
+	    }
+	    Worm.prototype.render = function () {
+	        var bbone = this.bone.at(0);
+	        //ワームの外殻を生成
+	        var ebone = this.bone.at(this.bone.getLength() - 1);
+	        var bbody = this.body[0];
+	        var ebody = this.body[this.body.length - 1];
+	        bbody.left.x = bbone.x;
+	        bbody.left.y = bbone.y;
+	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
+	            var nbone = this.bone.at(i);
+	            var nbody = this.body[i];
+	            var vx = this.bone.at(i - 1).x - nbone.x;
+	            var vy = this.bone.at(i - 1).y - nbone.y;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
+	            var vl = vx * vx + vy * vy;
+	            var vr = Math.sqrt(vl);
+	            vx = vx / vr * r;
+	            vy = vy / vr * r;
+	            nbody.left.x = nbone.x + -vy;
+	            nbody.left.y = nbone.y + vx;
+	            nbody.right.x = nbone.x + vy;
+	            nbody.right.y = nbone.y + -vx;
+	        }
+	        ebody.left.x = ebone.x;
+	        ebody.left.y = ebone.y;
+	        this.clear();
+	        this.lineStyle(3, 0);
+	        this.beginFill(0xffffff);
+	        this.moveTo(bbody.left.x, bbody.left.y);
+	        for (var i = 1; i < this.body.length; i++) {
+	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
+	        }
+	        for (var i = this.body.length - 2; i >= 2; i--) {
+	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
+	        }
+	        this.lineTo(bbody.left.x, bbody.left.y);
+	        this.endFill();
+	    };
+	    return Worm;
+	}(wormBase_1.default));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Worm;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var utils_1 = __webpack_require__(1);
+	var BodyPos = (function () {
+	    function BodyPos() {
+	        this.left = new utils_1.Pos();
+	        this.right = new utils_1.Pos();
+	    }
+	    return BodyPos;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = BodyPos;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var utils_1 = __webpack_require__(1);
+	var _1 = __webpack_require__(3);
+	var WormBase = (function (_super) {
+	    __extends(WormBase, _super);
+	    function WormBase(length) {
+	        var _this = _super.call(this) || this;
+	        _this.length = Math.floor(length);
+	        _this.bone = new _1.Line();
+	        for (var i = 0; i < length; i++) {
+	            _this.bone.push(new utils_1.Pos());
+	        }
 	        _this.routeIndex = 0;
 	        return _this;
 	    }
-	    Worm.prototype.addRouteFromCurrent = function (line) {
+	    WormBase.prototype.push = function (x, y) {
+	        //先頭に加えて、１つずつずらす。
+	        var i = this.bone.getLength() - 1;
+	        for (; i >= 1; i--) {
+	            this.bone.at(i).x = this.bone.at(i - 1).x;
+	            this.bone.at(i).y = this.bone.at(i - 1).y;
+	        }
+	        var bbone = this.bone.at(0);
+	        bbone.x = x;
+	        bbone.y = y;
+	    };
+	    WormBase.prototype.render = function () {
+	    };
+	    WormBase.prototype.addRouteFromCurrent = function (line) {
 	        this.setRoute(this.getCurrentLine().pushLine(line));
 	    };
-	    Worm.prototype.setRoute = function (line) {
+	    WormBase.prototype.setRoute = function (line) {
 	        if (line.getLength() < this.length)
 	            return;
 	        this.line = line;
 	    };
-	    Worm.prototype.setStep = function (pos) {
+	    WormBase.prototype.setStep = function (pos) {
 	        if (!this.line)
 	            return;
 	        if (pos < 0)
@@ -616,128 +719,23 @@
 	            b.y = l.y + dy;
 	        }
 	    };
-	    Worm.prototype.reverse = function () {
+	    WormBase.prototype.reverse = function () {
 	        this.bone.reverse();
 	    };
-	    Worm.prototype.getCurrentLine = function () {
+	    WormBase.prototype.getCurrentLine = function () {
 	        //console.log(this.bone);
 	        return this.bone.clone().reverse();
 	    };
-	    Worm.prototype.getHeadVecPos = function () {
+	    WormBase.prototype.getHeadVecPos = function () {
 	        return this.bone.getHeadVecPos().clone().add(Math.PI);
 	    };
-	    Worm.prototype.getTailVecPos = function () {
+	    WormBase.prototype.getTailVecPos = function () {
 	        return this.bone.getTailVecPos().clone().add(Math.PI);
 	    };
-	    return Worm;
-	}(wormBase_1.WormBase.WormBase));
+	    return WormBase;
+	}(PIXI.Graphics));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Worm;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var utils_1 = __webpack_require__(1);
-	var _1 = __webpack_require__(3);
-	var bodyPos_1 = __webpack_require__(10);
-	var WormBase;
-	(function (WormBase_1) {
-	    var WormBase = (function (_super) {
-	        __extends(WormBase, _super);
-	        function WormBase(length, thickness) {
-	            var _this = _super.call(this) || this;
-	            _this.length = Math.floor(length);
-	            _this.bone = new _1.Line();
-	            _this.body = [];
-	            for (var i = 0; i < length; i++) {
-	                _this.bone.push(new utils_1.Pos());
-	                _this.body.push(new bodyPos_1.default());
-	            }
-	            _this.setThickness(thickness);
-	            _this.graphics = _this; //graphics;
-	            return _this;
-	        }
-	        WormBase.prototype.setThickness = function (thickness) {
-	            this.thickness = thickness;
-	        };
-	        WormBase.prototype.push = function (x, y) {
-	            //先頭に加えて、１つずつずらす。
-	            var i = this.bone.getLength() - 1;
-	            for (; i >= 1; i--) {
-	                this.bone.at(i).x = this.bone.at(i - 1).x;
-	                this.bone.at(i).y = this.bone.at(i - 1).y;
-	            }
-	            var bbone = this.bone.at(0);
-	            bbone.x = x;
-	            bbone.y = y;
-	        };
-	        WormBase.prototype.render = function () {
-	            var bbone = this.bone.at(0);
-	            //ワームの外殻を生成
-	            var ebone = this.bone.at(this.bone.getLength() - 1);
-	            var bbody = this.body[0];
-	            var ebody = this.body[this.body.length - 1];
-	            bbody.left.x = bbone.x;
-	            bbody.left.y = bbone.y;
-	            for (var i = 1; i < this.bone.getLength() - 1; i++) {
-	                var nbone = this.bone.at(i);
-	                var nbody = this.body[i];
-	                var vx = this.bone.at(i - 1).x - nbone.x;
-	                var vy = this.bone.at(i - 1).y - nbone.y;
-	                var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
-	                var vl = vx * vx + vy * vy;
-	                var vr = Math.sqrt(vl);
-	                vx = vx / vr * r;
-	                vy = vy / vr * r;
-	                nbody.left.x = nbone.x + -vy;
-	                nbody.left.y = nbone.y + vx;
-	                nbody.right.x = nbone.x + vy;
-	                nbody.right.y = nbone.y + -vx;
-	            }
-	            ebody.left.x = ebone.x;
-	            ebody.left.y = ebone.y;
-	            this.graphics.clear();
-	            this.graphics.lineStyle(3, 0);
-	            this.graphics.beginFill(0xffffff);
-	            this.graphics.moveTo(bbody.left.x, bbody.left.y);
-	            for (var i = 1; i < this.body.length; i++) {
-	                this.graphics.lineTo(this.body[i].left.x, this.body[i].left.y);
-	            }
-	            for (var i = this.body.length - 2; i >= 2; i--) {
-	                this.graphics.lineTo(this.body[i].right.x, this.body[i].right.y);
-	            }
-	            this.graphics.lineTo(bbody.left.x, bbody.left.y);
-	            this.graphics.endFill();
-	        };
-	        return WormBase;
-	    }(PIXI.Graphics));
-	    WormBase_1.WormBase = WormBase;
-	})(WormBase = exports.WormBase || (exports.WormBase = {}));
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var utils_1 = __webpack_require__(1);
-	var BodyPos = (function () {
-	    function BodyPos() {
-	        this.left = new utils_1.Pos();
-	        this.right = new utils_1.Pos();
-	    }
-	    return BodyPos;
-	}());
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = BodyPos;
+	exports.default = WormBase;
 
 
 /***/ }
