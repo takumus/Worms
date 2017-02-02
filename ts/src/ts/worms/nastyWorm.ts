@@ -5,7 +5,7 @@ export default class NastyWorm extends Worm{
     protected body:Array<BodyPos>;
     constructor(length:number, thickness:number){
         super(length);
-        this.thickness = thickness;
+        this.thickness = thickness/2;
         this.body = [];
         for(let i = 0; i < length; i ++){
             this.body.push(new BodyPos());
