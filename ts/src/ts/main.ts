@@ -34,7 +34,7 @@ const init = ()=> {
 	for(let i = 0; i < 2; i ++){
 		const w = i%2==0?new SimpleWorm(100, 80):new NastyWorm(100, 80);
 		stage.addChild(w);
-		const t = new TWEEN.Tween({s:0}).to({s:1}, 1000*Math.random()+500)
+		const t = new TWEEN.Tween({s:0}).to({s:1}, 1000*Math.random()+1500)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
@@ -48,8 +48,8 @@ const init = ()=> {
 			const r = RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				300*Math.random()+200,
-				300*Math.random()+200,
+				i%2==0?100:300*Math.random()+200,
+				i%2==0?100:300*Math.random()+200,
 				10
 			);
 			//r.wave(20, 0.3);

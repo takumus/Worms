@@ -80,14 +80,14 @@
 	    var _loop_1 = function (i) {
 	        var w = i % 2 == 0 ? new simpleWorm_1.default(100, 80) : new nastyWorm_1.default(100, 80);
 	        stage.addChild(w);
-	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000 * Math.random() + 500)
+	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000 * Math.random() + 1500)
 	            .onUpdate(function () {
 	            w.setStep(this.s);
 	            w.render();
 	        }).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(function () {
 	            var pos = new utils_1.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.PI * 2 * Math.random());
 	            w.reverse();
-	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 300 * Math.random() + 200, 300 * Math.random() + 200, 10);
+	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i % 2 == 0 ? 100 : 300 * Math.random() + 200, i % 2 == 0 ? 100 : 300 * Math.random() + 200, 10);
 	            //r.wave(20, 0.3);
 	            w.setRoute(w.getCurrentLine().pushLine(r));
 	        }).delay(0).onComplete(function () {
@@ -571,13 +571,17 @@
 	        return _this;
 	    }
 	    SimpleWorm.prototype.render = function () {
+	        this.clear();
+	        this.renderWith(0xffffff, this.thickness);
+	        this.renderWith(0x000000, this.thickness * 0.7);
+	    };
+	    SimpleWorm.prototype.renderWith = function (color, thickness) {
 	        var bbone = this.bone.at(0);
 	        var ebone = this.bone.at(this.bone.getLength() - 1);
-	        this.clear();
-	        this.beginFill(0xffffff);
-	        this.drawCircle(bbone.x, bbone.y, this.thickness / 2);
+	        this.beginFill(color);
+	        this.drawCircle(bbone.x, bbone.y, thickness / 2);
 	        this.endFill();
-	        this.lineStyle(this.thickness, 0xffffff);
+	        this.lineStyle(thickness, color);
 	        this.moveTo(bbone.x, bbone.y);
 	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
 	            var nbone = this.bone.at(i);
@@ -585,8 +589,8 @@
 	        }
 	        this.lineTo(ebone.x, ebone.y);
 	        this.lineStyle();
-	        this.beginFill(0xffffff);
-	        this.drawCircle(ebone.x, ebone.y, this.thickness / 2);
+	        this.beginFill(color);
+	        this.drawCircle(ebone.x, ebone.y, thickness / 2);
 	        this.endFill();
 	    };
 	    return SimpleWorm;
@@ -703,7 +707,7 @@
 	    __extends(NastyWorm, _super);
 	    function NastyWorm(length, thickness) {
 	        var _this = _super.call(this, length) || this;
-	        _this.thickness = thickness;
+	        _this.thickness = thickness / 2;
 	        _this.body = [];
 	        for (var i = 0; i < length; i++) {
 	            _this.body.push(new BodyPos());
