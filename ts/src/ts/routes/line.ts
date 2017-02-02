@@ -33,6 +33,12 @@ export default class Line{
 			Math.atan2(dy, dx)
 		);
 	}
+	public head():Pos{
+		return this.at(0);
+	}
+	public tail():Pos{
+		return this.at(this.length - 1);
+	}
 	public at(id:number):Pos{
 		return this.data[id];
 	}
@@ -49,7 +55,7 @@ export default class Line{
 		return this.data.shift();
 	}
 	public pushLine(line:Line):Line{
-		if(line.at(0).equals(this.at(this.length - 1))) line.shift();
+		if(line.head().equals(this.tail())) line.shift();
 		const L = line.data.length;
 		for(let i = 0; i < L; i ++){
 			this.push(line.data[i].clone());
