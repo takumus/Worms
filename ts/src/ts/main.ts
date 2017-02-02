@@ -1,6 +1,7 @@
 import {Pos, VecPos, Circle} from './utils';
 import {Route, RouteGenerator, Line} from './routes/';
-import {NastyWorm} from './worms/';
+import SimpleWorm from './worms/simpleWorm';
+import NastyWorm from './worms/nastyWorm';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -30,10 +31,10 @@ const init = ()=> {
 	draw();
 	resize();
 
-	for(let i = 0; i < 1; i ++){
-		const w:NastyWorm = new NastyWorm(100, 120);
+	for(let i = 0; i < 2; i ++){
+		const w = i%2==0?new SimpleWorm(100, 80):new NastyWorm(100, 80);
 		stage.addChild(w);
-	const t = new TWEEN.Tween({s:0}).to({s:1}, 1000)
+		const t = new TWEEN.Tween({s:0}).to({s:1}, 1000*Math.random()+500)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
@@ -47,11 +48,11 @@ const init = ()=> {
 			const r = RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				200*Math.random()+200,
-				200*Math.random()+200,
+				300*Math.random()+200,
+				300*Math.random()+200,
 				10
 			);
-			r.wave(50*Math.random()+20, 0.1*Math.random());
+			//r.wave(20, 0.3);
 			w.setRoute(w.getCurrentLine().pushLine(r));
 		}).delay(0).onComplete(function(){
 			this.s = 0;

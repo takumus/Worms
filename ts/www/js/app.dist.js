@@ -47,7 +47,8 @@
 	"use strict";
 	var utils_1 = __webpack_require__(1);
 	var _1 = __webpack_require__(3);
-	var _2 = __webpack_require__(7);
+	var simpleWorm_1 = __webpack_require__(7);
+	var nastyWorm_1 = __webpack_require__(9);
 	var renderer;
 	var stage = new PIXI.Container();
 	var canvas;
@@ -77,17 +78,17 @@
 	    draw();
 	    resize();
 	    var _loop_1 = function (i) {
-	        var w = new _2.NastyWorm(100, 120);
+	        var w = i % 2 == 0 ? new simpleWorm_1.default(100, 80) : new nastyWorm_1.default(100, 80);
 	        stage.addChild(w);
-	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000)
+	        var t = new TWEEN.Tween({ s: 0 }).to({ s: 1 }, 1000 * Math.random() + 500)
 	            .onUpdate(function () {
 	            w.setStep(this.s);
 	            w.render();
 	        }).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(function () {
 	            var pos = new utils_1.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.PI * 2 * Math.random());
 	            w.reverse();
-	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 200 * Math.random() + 200, 200 * Math.random() + 200, 10);
-	            r.wave(50 * Math.random() + 20, 0.1 * Math.random());
+	            var r = _1.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, 300 * Math.random() + 200, 300 * Math.random() + 200, 10);
+	            //r.wave(20, 0.3);
 	            w.setRoute(w.getCurrentLine().pushLine(r));
 	        }).delay(0).onComplete(function () {
 	            this.s = 0;
@@ -95,7 +96,7 @@
 	        });
 	        t.start();
 	    };
-	    for (var i = 0; i < 1; i++) {
+	    for (var i = 0; i < 2; i++) {
 	        _loop_1(i);
 	    }
 	};
@@ -556,88 +557,46 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var nastyWorm_1 = __webpack_require__(8);
-	exports.NastyWorm = nastyWorm_1.default;
-	var worm_1 = __webpack_require__(9);
-	exports.Worm = worm_1.default;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var utils_1 = __webpack_require__(1);
-	var worm_1 = __webpack_require__(9);
-	var NastyWorm = (function (_super) {
-	    __extends(NastyWorm, _super);
-	    function NastyWorm(length, thickness) {
+	var worm_1 = __webpack_require__(8);
+	var SimpleWorm = (function (_super) {
+	    __extends(SimpleWorm, _super);
+	    function SimpleWorm(length, thickness) {
 	        var _this = _super.call(this, length) || this;
 	        _this.thickness = thickness;
-	        _this.body = [];
-	        for (var i = 0; i < length; i++) {
-	            _this.body.push(new BodyPos());
-	        }
 	        return _this;
 	    }
-	    NastyWorm.prototype.render = function () {
+	    SimpleWorm.prototype.render = function () {
 	        var bbone = this.bone.at(0);
-	        //ワームの外殻を生成
 	        var ebone = this.bone.at(this.bone.getLength() - 1);
-	        var bbody = this.body[0];
-	        var ebody = this.body[this.body.length - 1];
-	        bbody.left.x = bbone.x;
-	        bbody.left.y = bbone.y;
+	        this.clear();
+	        this.beginFill(0xffffff);
+	        this.drawCircle(bbone.x, bbone.y, this.thickness / 2);
+	        this.endFill();
+	        this.lineStyle(this.thickness, 0xffffff);
+	        this.moveTo(bbone.x, bbone.y);
 	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
 	            var nbone = this.bone.at(i);
-	            var nbody = this.body[i];
-	            var vx = this.bone.at(i - 1).x - nbone.x;
-	            var vy = this.bone.at(i - 1).y - nbone.y;
-	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
-	            var vl = vx * vx + vy * vy;
-	            var vr = Math.sqrt(vl);
-	            vx = vx / vr * r;
-	            vy = vy / vr * r;
-	            nbody.left.x = nbone.x + -vy;
-	            nbody.left.y = nbone.y + vx;
-	            nbody.right.x = nbone.x + vy;
-	            nbody.right.y = nbone.y + -vx;
+	            this.lineTo(nbone.x, nbone.y);
 	        }
-	        ebody.left.x = ebone.x;
-	        ebody.left.y = ebone.y;
-	        this.clear();
-	        this.lineStyle(3, 0);
+	        this.lineTo(ebone.x, ebone.y);
+	        this.lineStyle();
 	        this.beginFill(0xffffff);
-	        this.moveTo(bbody.left.x, bbody.left.y);
-	        for (var i = 1; i < this.body.length; i++) {
-	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
-	        }
-	        for (var i = this.body.length - 2; i >= 2; i--) {
-	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
-	        }
-	        this.lineTo(bbody.left.x, bbody.left.y);
+	        this.drawCircle(ebone.x, ebone.y, this.thickness / 2);
 	        this.endFill();
 	    };
-	    return NastyWorm;
+	    return SimpleWorm;
 	}(worm_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = NastyWorm;
-	var BodyPos = (function () {
-	    function BodyPos() {
-	        this.left = new utils_1.Pos();
-	        this.right = new utils_1.Pos();
-	    }
-	    return BodyPos;
-	}());
+	exports.default = SimpleWorm;
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -726,6 +685,80 @@
 	}(PIXI.Graphics));
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Worm;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var utils_1 = __webpack_require__(1);
+	var worm_1 = __webpack_require__(8);
+	var NastyWorm = (function (_super) {
+	    __extends(NastyWorm, _super);
+	    function NastyWorm(length, thickness) {
+	        var _this = _super.call(this, length) || this;
+	        _this.thickness = thickness;
+	        _this.body = [];
+	        for (var i = 0; i < length; i++) {
+	            _this.body.push(new BodyPos());
+	        }
+	        return _this;
+	    }
+	    NastyWorm.prototype.render = function () {
+	        var bbone = this.bone.at(0);
+	        //ワームの外殻を生成
+	        var ebone = this.bone.at(this.bone.getLength() - 1);
+	        var bbody = this.body[0];
+	        var ebody = this.body[this.body.length - 1];
+	        bbody.left.x = bbone.x;
+	        bbody.left.y = bbone.y;
+	        for (var i = 1; i < this.bone.getLength() - 1; i++) {
+	            var nbone = this.bone.at(i);
+	            var nbody = this.body[i];
+	            var vx = this.bone.at(i - 1).x - nbone.x;
+	            var vy = this.bone.at(i - 1).y - nbone.y;
+	            var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
+	            var vl = vx * vx + vy * vy;
+	            var vr = Math.sqrt(vl);
+	            vx = vx / vr * r;
+	            vy = vy / vr * r;
+	            nbody.left.x = nbone.x + -vy;
+	            nbody.left.y = nbone.y + vx;
+	            nbody.right.x = nbone.x + vy;
+	            nbody.right.y = nbone.y + -vx;
+	        }
+	        ebody.left.x = ebone.x;
+	        ebody.left.y = ebone.y;
+	        this.clear();
+	        this.lineStyle(3, 0);
+	        this.beginFill(0xffffff);
+	        this.moveTo(bbody.left.x, bbody.left.y);
+	        for (var i = 1; i < this.body.length; i++) {
+	            this.lineTo(this.body[i].left.x, this.body[i].left.y);
+	        }
+	        for (var i = this.body.length - 2; i >= 2; i--) {
+	            this.lineTo(this.body[i].right.x, this.body[i].right.y);
+	        }
+	        this.lineTo(bbody.left.x, bbody.left.y);
+	        this.endFill();
+	    };
+	    return NastyWorm;
+	}(worm_1.default));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = NastyWorm;
+	var BodyPos = (function () {
+	    function BodyPos() {
+	        this.left = new utils_1.Pos();
+	        this.right = new utils_1.Pos();
+	    }
+	    return BodyPos;
+	}());
 
 
 /***/ }
