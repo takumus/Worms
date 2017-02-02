@@ -17,8 +17,8 @@ export default class Line{
 		const dx = sp.x - fp.x;
 		const dy = sp.y - fp.y;
 		return new VecPos(
-			fp.x - dx,
-			fp.y - dy,
+			fp.x,
+			fp.y,
 			Math.atan2(dy, dx)
 		);
 	}
@@ -28,8 +28,8 @@ export default class Line{
 		const dx = sp.x - fp.x;
 		const dy = sp.y - fp.y;
 		return new VecPos(
-			fp.x - dx,
-			fp.y - dy,
+			fp.x,
+			fp.y,
 			Math.atan2(dy, dx)
 		);
 	}
