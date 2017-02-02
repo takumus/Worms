@@ -40,7 +40,7 @@ export default class Worm extends PIXI.Graphics{
         if(!this.line) return;
         if(pos < 0) pos = 0;
         if(pos > 1) pos = 1;
-        const beginIndex = this.length;
+        const beginIndex = this.length - 1;
         const length = this.line.getLength() - beginIndex - 1;
         const posIndex = Math.floor(length * pos);
         const offset = (length * pos - posIndex);
@@ -68,9 +68,9 @@ export default class Worm extends PIXI.Graphics{
         return this.bone.clone().reverse();
     }
     public getHeadVecPos():VecPos{
-        return this.bone.getHeadVecPos().clone().add(Math.PI);
+        return this.bone.getHeadVecPos().add(Math.PI);
     }
     public getTailVecPos():VecPos{
-        return this.bone.getTailVecPos().clone().add(Math.PI);
+        return this.bone.getTailVecPos().add(Math.PI);
     }
 }
