@@ -31,10 +31,11 @@ const init = ()=> {
 	draw();
 	resize();
 
-	for(let i = 0; i < 2; i ++){
-		const w = i%2==0?new SimpleWorm(100, 80):new NastyWorm(100, 80);
+	for(let i = 0; i < 10; i ++){
+		let n = 0;
+		const w = new SimpleWorm(30, 80);
 		stage.addChild(w);
-		const t = new TWEEN.Tween({s:0}).to({s:1}, 1000*Math.random()+1500)
+		const t = new TWEEN.Tween({s:0}).to({s:1}, 1500*Math.random()+1000)
 		.onUpdate(function(){
 			w.setStep(this.s);
 			w.render();
@@ -44,16 +45,17 @@ const init = ()=> {
 				stageHeight*Math.random(),
 				Math.PI*2*Math.random()
 			);
-			w.reverse();
+			//w.reverse();
 			const r = RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				i%2==0?100:300*Math.random()+200,
-				i%2==0?100:300*Math.random()+200,
+				200,
+				200,
 				10
 			);
-			//r.wave(20, 0.3);
-			w.setRoute(w.getCurrentLine().pushLine(r));
+			r.pop();
+			r.wave(20, 0.3);
+			w.addRouteFromCurrent(r);
 		}).delay(0).onComplete(function(){
 			this.s = 0;
 			t.start();
