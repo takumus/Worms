@@ -1,13 +1,16 @@
 import {Pos, VecPos, Circle} from './utils';
 import {Route, RouteGenerator, Line} from './routes/';
+import Worm from './worms/worm';
 import SimpleWorm from './worms/simpleWorm';
 import NastyWorm from './worms/nastyWorm';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
-const mouse:Pos = new Pos(0, 0);
+const targets:Array<Pos> = [];
 let dpr:number;
+const worms:Array<Worm> = [];
+let pressing = false;
 const init = ()=> {
 	dpr = 2;//window.devicePixelRatio;
 	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true});
@@ -16,56 +19,85 @@ const init = ()=> {
 	renderer.view.style.width = "100%";
 	renderer.view.style.height = "100%";
 	window.addEventListener("resize", resize);
-	const shape:PIXI.Graphics = new PIXI.Graphics();
-	shape.lineStyle(2, 0xffffff);
-	shape.moveTo(0, 0);
-	shape.lineTo(100, 100);
-	shape.drawCircle(50, 50, 50);
-	stage.addChild(shape);
 	window.addEventListener('resize', resize);
 	window.addEventListener('orientationchange', resize);
 	window.addEventListener("mousemove", (e)=>{
-		mouse.x = e.clientX*dpr;
-		mouse.y = e.clientY*dpr;
+		if(!pressing) return;
+		targets.length = 0;
+		targets[0] = new Pos(e.clientX*dpr, e.clientY*dpr);
 	});
+	window.addEventListener("mousedown", (e)=>{
+		pressing = true;
+		targets.length = 0;
+		targets[0] = new Pos(e.clientX*dpr, e.clientY*dpr);
+	});
+	window.addEventListener("mouseup", ()=>{
+		pressing = false;
+	});
+	window.addEventListener("touchmove", (e:TouchEvent)=>{
+		if(!pressing) return;
+		targets.length = 0;
+		for(let i = 0; i < e.touches.length; i ++){
+			const t = e.touches[i];
+			targets.push(new Pos(t.clientX*dpr, t.clientY*dpr));
+		}
+	});
+	window.addEventListener("touchstart", (e:TouchEvent)=>{
+		pressing = true;
+		targets.length = 0;
+		for(let i = 0; i < e.touches.length; i ++){
+			const t = e.touches[i];
+			targets.push(new Pos(t.clientX*dpr, t.clientY*dpr));
+		}
+	});
+	window.addEventListener("touchend", (e:TouchEvent)=>{
+		targets.length = 0;
+		for(let i = 0; i < e.touches.length; i ++){
+			const t = e.touches[i];
+			targets.push(new Pos(t.clientX*dpr, t.clientY*dpr));
+		}
+		if(targets.length<1)pressing = false;
+	});
+	for(let i = 0; i < 20; i ++){
+		const w = new SimpleWorm(30, 60);
+		worms.push(w);
+		stage.addChild(w);
+		w.setStep(1);
+	}
+	stage.addChild(new PIXI.Text("タッチ中はついてくる。", {fill:0xffffff, fontSize:60}));
 	draw();
 	resize();
+}
+let ppos = 0;
+const draw = ()=> {
+	requestAnimationFrame(draw);
 
-	for(let i = 0; i < 10; i ++){
-		let n = 0;
-		const w = new SimpleWorm(30, 80);
-		stage.addChild(w);
-		const t = new TWEEN.Tween({s:0}).to({s:1}, 1500*Math.random()+1000)
-		.onUpdate(function(){
-			w.setStep(this.s);
-			w.render();
-		}).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(()=>{
+	for(let i = 0; i < worms.length; i ++){
+		const w = worms[i];
+		if(w.getStep() == 1){
+			const target = pressing?targets[Math.floor(Math.random()*targets.length)].clone():null;
 			const pos = new VecPos(
-				stageWidth*Math.random(),
-				stageHeight*Math.random(),
+				target?target.x:stageWidth*Math.random(),
+				target?target.y:stageHeight*Math.random(),
 				Math.PI*2*Math.random()
 			);
 			//w.reverse();
 			const r = RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				200,
-				200,
+				pressing?80:200,
+				pressing?80:200,
 				10
 			);
 			r.pop();
-			r.wave(20, 0.3);
+			r.wave(pressing?10:30, 0.2);
 			w.addRouteFromCurrent(r);
-		}).delay(0).onComplete(function(){
-			this.s = 0;
-			t.start();
-		});
-		t.start();
+			w.setStep(0);
+		}
+		w.addStep(pressing?2:1);
+		w.render();
 	}
-}
-let ppos = 0;
-const draw = ()=> {
-	requestAnimationFrame(draw);
+
 	TWEEN.update();
 	renderer.render(stage);
 
