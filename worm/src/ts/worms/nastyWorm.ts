@@ -1,4 +1,4 @@
-import {Pos} from '../utils';
+import {Pos} from '../routes/utils';
 import Worm from './worm';
 export default class NastyWorm extends Worm{
     private thickness:number;

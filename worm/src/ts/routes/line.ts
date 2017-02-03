@@ -1,5 +1,4 @@
-import {Circle, Pos, VecPos} from '../utils';
-import Matthew from '../matthew';
+import {Circle, Pos, VecPos, Matthew} from './utils';
 export default class Line{
 	protected data:Array<Pos>;
 	private length:number;

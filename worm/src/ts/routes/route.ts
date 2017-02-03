@@ -1,5 +1,4 @@
-import {Circle, Pos, VecPos} from '../utils';
-import Matthew from '../matthew';
+import {Circle, Pos, VecPos, Matthew} from './utils';
 import Line from './line';
 export default class Route {
 	public c1:Circle;

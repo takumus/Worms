@@ -1,5 +1,6 @@
-import {Pos, VecPos, Circle} from './utils';
+import {Pos, VecPos, Circle} from './routes/utils';
 import {Route, RouteGenerator, Line} from './routes/';
+import ROUTES = require('./routes');
 import Worm from './worms/worm';
 import SimpleWorm from './worms/simpleWorm';
 import NastyWorm from './worms/nastyWorm';
@@ -87,7 +88,7 @@ const draw = ()=> {
 				pos,
 				pressing?80:200,
 				pressing?80:200,
-				10
+				20
 			);
 			r.pop();
 			r.wave(pressing?10:30, 0.2);

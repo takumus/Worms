@@ -1,6 +1,5 @@
-import {Circle, Pos, VecPos} from '../utils';
+import {Circle, Pos, VecPos, Matthew} from './utils';
 import Line from './line';
-import Matthew from '../matthew';
 import Route from './route';
 export default class RouteGenerator{
 	public static graphics:PIXI.Graphics;
