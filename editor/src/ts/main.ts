@@ -1,7 +1,4 @@
-import {Pos, VecPos, Circle} from './utils';
-import {Route, RouteGenerator, Line} from './routes/';
-import SimpleWorm from './worms/simpleWorm';
-import NastyWorm from './worms/nastyWorm';
+import {Pos} from './utils';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
@@ -30,47 +27,12 @@ const init = ()=> {
 	});
 	draw();
 	resize();
-
-	for(let i = 0; i < 10; i ++){
-		let n = 0;
-		const w = new SimpleWorm(30, 80);
-		stage.addChild(w);
-		const t = new TWEEN.Tween({s:0}).to({s:1}, 1500*Math.random()+1000)
-		.onUpdate(function(){
-			w.setStep(this.s);
-			w.render();
-		}).easing(TWEEN.Easing.Sinusoidal.InOut).onStart(()=>{
-			const pos = new VecPos(
-				stageWidth*Math.random(),
-				stageHeight*Math.random(),
-				Math.PI*2*Math.random()
-			);
-			//w.reverse();
-			const r = RouteGenerator.getMinimumRoute(
-				w.getHeadVecPos(),
-				pos,
-				200,
-				200,
-				10
-			);
-			r.pop();
-			r.wave(20, 0.3);
-			w.addRouteFromCurrent(r);
-		}).delay(0).onComplete(function(){
-			this.s = 0;
-			t.start();
-		});
-		t.start();
-	}
 }
 let ppos = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
 	TWEEN.update();
 	renderer.render(stage);
-
-	//stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
-	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }
 const resize = ()=> {
 	const width:number = canvas.offsetWidth*dpr;
