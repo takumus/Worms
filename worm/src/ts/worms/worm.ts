@@ -1,17 +1,15 @@
-import {Pos, VecPos, Circle} from '../routes/utils';
-import {Line} from '../routes/';
 export default class Worm extends PIXI.Graphics{
-    protected bone:Line;
+    protected bone:ROUTES.Line;
     protected length:number;
-    private line:Line;
+    private line:ROUTES.Line;
     private routeIndex:number;
     private step:number;
     constructor(length:number){
         super();
         this.length = Math.floor(length);
-        this.bone = new Line();
+        this.bone = new ROUTES.Line();
         for(let i = 0; i < length; i ++){
-            this.bone.push(new Pos());
+            this.bone.push(new ROUTES.Pos());
         }
         this.routeIndex = 0;
     }
@@ -28,12 +26,12 @@ export default class Worm extends PIXI.Graphics{
     }
     public render(){
     }
-    public addRouteFromCurrent(line:Line){
+    public addRouteFromCurrent(line:ROUTES.Line){
         this.setRoute(
             this.getCurrentLine().pushLine(line)
         );
     }
-    public setRoute(line:Line){
+    public setRoute(line:ROUTES.Line){
         if(line.getLength() < this.length) return;
         this.line = line;
     }
@@ -73,14 +71,14 @@ export default class Worm extends PIXI.Graphics{
     public reverse():void{
         this.bone.reverse();
     }
-    public getCurrentLine():Line{
+    public getCurrentLine():ROUTES.Line{
         //console.log(this.bone);
         return this.bone.clone().reverse();
     }
-    public getHeadVecPos():VecPos{
+    public getHeadVecPos():ROUTES.VecPos{
         return this.bone.getHeadVecPos().add(Math.PI);
     }
-    public getTailVecPos():VecPos{
+    public getTailVecPos():ROUTES.VecPos{
         return this.bone.getTailVecPos().add(Math.PI);
     }
 }

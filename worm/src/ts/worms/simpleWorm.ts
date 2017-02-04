@@ -1,4 +1,3 @@
-import {Pos} from '../routes/utils';
 import Worm from './worm';
 export default class SimpleWorm extends Worm{
     private thickness:number;

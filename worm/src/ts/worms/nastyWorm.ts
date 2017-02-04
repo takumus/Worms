@@ -1,4 +1,3 @@
-import {Pos} from '../routes/utils';
 import Worm from './worm';
 export default class NastyWorm extends Worm{
     private thickness:number;
@@ -52,10 +51,10 @@ export default class NastyWorm extends Worm{
     }
 }
 class BodyPos{
-    public left:Pos;
-    public right:Pos;
+    public left:ROUTES.Pos;
+    public right:ROUTES.Pos;
     constructor(){
-        this.left = new Pos();
-        this.right = new Pos();
+        this.left = new ROUTES.Pos();
+        this.right = new ROUTES.Pos();
     }
 }
