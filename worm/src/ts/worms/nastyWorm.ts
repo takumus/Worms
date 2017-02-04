@@ -51,10 +51,10 @@ export default class NastyWorm extends Worm{
     }
 }
 class BodyPos{
-    public left:ROUTES.Pos;
-    public right:ROUTES.Pos;
+    public left:UTILS.Pos;
+    public right:UTILS.Pos;
     constructor(){
-        this.left = new ROUTES.Pos();
-        this.right = new ROUTES.Pos();
+        this.left = new UTILS.Pos();
+        this.right = new UTILS.Pos();
     }
 }

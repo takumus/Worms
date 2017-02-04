@@ -5,7 +5,7 @@ let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
-const targets:Array<ROUTES.Pos> = [];
+const targets:Array<UTILS.Pos> = [];
 let dpr:number;
 const worms:Array<Worm> = [];
 let pressing = false;
@@ -22,12 +22,12 @@ const init = ()=> {
 	window.addEventListener("mousemove", (e)=>{
 		if(!pressing) return;
 		targets.length = 0;
-		targets[0] = new ROUTES.Pos(e.clientX*dpr, e.clientY*dpr);
+		targets[0] = new UTILS.Pos(e.clientX*dpr, e.clientY*dpr);
 	});
 	window.addEventListener("mousedown", (e)=>{
 		pressing = true;
 		targets.length = 0;
-		targets[0] = new ROUTES.Pos(e.clientX*dpr, e.clientY*dpr);
+		targets[0] = new UTILS.Pos(e.clientX*dpr, e.clientY*dpr);
 	});
 	window.addEventListener("mouseup", ()=>{
 		pressing = false;
@@ -37,7 +37,7 @@ const init = ()=> {
 		targets.length = 0;
 		for(let i = 0; i < e.touches.length; i ++){
 			const t = e.touches[i];
-			targets.push(new ROUTES.Pos(t.clientX*dpr, t.clientY*dpr));
+			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
 		}
 	});
 	window.addEventListener("touchstart", (e:TouchEvent)=>{
@@ -45,14 +45,14 @@ const init = ()=> {
 		targets.length = 0;
 		for(let i = 0; i < e.touches.length; i ++){
 			const t = e.touches[i];
-			targets.push(new ROUTES.Pos(t.clientX*dpr, t.clientY*dpr));
+			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
 		}
 	});
 	window.addEventListener("touchend", (e:TouchEvent)=>{
 		targets.length = 0;
 		for(let i = 0; i < e.touches.length; i ++){
 			const t = e.touches[i];
-			targets.push(new ROUTES.Pos(t.clientX*dpr, t.clientY*dpr));
+			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
 		}
 		if(targets.length<1)pressing = false;
 	});
@@ -74,7 +74,7 @@ const draw = ()=> {
 		const w = worms[i];
 		if(w.getStep() == 1){
 			const target = pressing?targets[Math.floor(Math.random()*targets.length)].clone():null;
-			const pos = new ROUTES.VecPos(
+			const pos = new UTILS.VecPos(
 				target?target.x:stageWidth*Math.random(),
 				target?target.y:stageHeight*Math.random(),
 				Math.PI*2*Math.random()

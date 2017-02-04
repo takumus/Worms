@@ -9,7 +9,7 @@ export default class Worm extends PIXI.Graphics{
         this.length = Math.floor(length);
         this.bone = new ROUTES.Line();
         for(let i = 0; i < length; i ++){
-            this.bone.push(new ROUTES.Pos());
+            this.bone.push(new UTILS.Pos());
         }
         this.routeIndex = 0;
     }
@@ -75,10 +75,10 @@ export default class Worm extends PIXI.Graphics{
         //console.log(this.bone);
         return this.bone.clone().reverse();
     }
-    public getHeadVecPos():ROUTES.VecPos{
+    public getHeadVecPos():UTILS.VecPos{
         return this.bone.getHeadVecPos().add(Math.PI);
     }
-    public getTailVecPos():ROUTES.VecPos{
+    public getTailVecPos():UTILS.VecPos{
         return this.bone.getTailVecPos().add(Math.PI);
     }
 }
