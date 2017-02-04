@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5"
-  }
+  },
+  "files": [
+    "./src/main.ts",
+    "./src/editor/index.ts",
+    "../utils/dist/index.d.ts",
+    "../routes/dist/index.d.ts",
+    "../worms/dist/index.d.ts"
+  ]
 }

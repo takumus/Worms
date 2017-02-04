@@ -1,4 +1,3 @@
-import {Pos} from './utils';
 import Editor from './editor';
 let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
@@ -16,7 +15,7 @@ const init = ()=> {
 	window.addEventListener("resize", resize);
 	window.addEventListener('resize', resize);
 	window.addEventListener('orientationchange', resize);
-
+	
 	editor = new Editor(dpr);
 	stage.addChild(editor);
 

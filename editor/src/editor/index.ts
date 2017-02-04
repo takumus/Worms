@@ -1,27 +1,28 @@
-import {Pos} from '../utils';
-import {Line} from '../routes/';
 export default class Editor extends PIXI.Container{
-    private mouse:Pos;
+    private mouse:UTILS.Pos;
     private drawerCanvas:PIXI.Graphics;
-    private lineCanvas:PIXI.Container;
+    private lineCanvas:PIXI.Graphics;
+    private editingLineCanvas:PIXI.Graphics;
     private dpr:number;
     private res:number = 20;
-    private nextPos:Pos;
-    private prevPos:Pos;
+    private nextPos:UTILS.Pos;
+    private prevPos:UTILS.Pos;
     private pressing:boolean;
-    private editingLine:Line;
-    private lines:Array<Line> = [];
+    private editingLine:ROUTES.Line;
+    private lines:Array<ROUTES.Line> = [];
     constructor(dpr:number){
         super();
         this.dpr = dpr;
-        this.mouse = new Pos();
+        this.mouse = new UTILS.Pos();
         this.drawerCanvas = new PIXI.Graphics();
-        this.lineCanvas = new PIXI.Container();
+        this.lineCanvas = new PIXI.Graphics();
+        this.editingLineCanvas = new PIXI.Graphics();
         this.addChild(this.drawerCanvas);
         this.addChild(this.lineCanvas);
+        this.addChild(this.editingLineCanvas);
         this.initMouse();
-        this.nextPos = new Pos();
-        this.prevPos = new Pos();
+        this.nextPos = new UTILS.Pos();
+        this.prevPos = new UTILS.Pos();
     }
 
     private initMouse():void{
@@ -51,7 +52,7 @@ export default class Editor extends PIXI.Container{
         this.prevPos.y = y;
         this.pressing = true;
         this.move(x, y);
-        this.editingLine = new Line();
+        this.editingLine = new ROUTES.Line();
         this.editingLine.push(this.prevPos.clone());
     }
     private move(x:number, y:number):void{
@@ -61,9 +62,24 @@ export default class Editor extends PIXI.Container{
         this.pressing = false;
     }
     private next():void{
-
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
+        this.editingLine.push(this.nextPos.clone());
+        console.log(this.nextPos);
+        this.updateEditingLine();
+    }
+    private updateEditingLine():void{
+        this.editingLineCanvas.clear();
+        this.editingLineCanvas.lineStyle(1, 0xffffff);
+        
+        for(let i = 0; i < this.editingLine.getLength(); i ++){
+            const p = this.editingLine.at(i);
+            if(i == 0){
+                this.editingLineCanvas.moveTo(p.x, p.y);
+            }else{
+                this.editingLineCanvas.lineTo(p.x, p.y);
+            }
+        }
     }
     public update():void{
         this.drawerCanvas.clear();
