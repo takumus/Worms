@@ -1,10 +1,10 @@
 var path = require('path');
 module.exports = {
     entry: {
-        app :'./routes/index.ts'
+        app :'./src/index.ts'
     },
     output: {
-        filename: './dist/routes.js',
+        filename: './dist/index.js',
         library: ''
     },
     resolve: {

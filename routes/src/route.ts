@@ -1,13 +1,13 @@
 namespace ROUTES{
 	export class Route {
-		public c1:Circle;
-		public c2:Circle;
+		public c1:UTILS.Circle;
+		public c2:UTILS.Circle;
 		public c1rb:number;
 		public c2rb:number;
 		public c1rl:number;
 		public c2rl:number;
 		
-		constructor(c1:Circle, c2:Circle, c1rb:number, c2rb:number, c1rl:number, c2rl:number) {
+		constructor(c1:UTILS.Circle, c2:UTILS.Circle, c1rb:number, c2rb:number, c1rl:number, c2rl:number) {
 			this.c1 = c1;
 			this.c2 = c2;
 			this.c1rb = c1rb;
@@ -27,12 +27,12 @@ namespace ROUTES{
 				tr = this.c1rb + r * this.c1.d;
 				_x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 				_y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
-				line.push(new Pos(_x, _y));
+				line.push(new UTILS.Pos(_x, _y));
 			}
 			line.pop();
 			this.getLineRoot(
-				new Pos(_x, _y),
-				new Pos(
+				new UTILS.Pos(_x, _y),
+				new UTILS.Pos(
 					Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x,
 					Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y
 				),
@@ -45,10 +45,10 @@ namespace ROUTES{
 				tr = this.c2rb + r * this.c2.d;
 				_x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 				_y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
-				line.push(new Pos(_x, _y));
+				line.push(new UTILS.Pos(_x, _y));
 			}
 			line.push(
-				new Pos(
+				new UTILS.Pos(
 					Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x,
 					Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y,
 				)
@@ -70,7 +70,7 @@ namespace ROUTES{
 			return l;
 		}
 		
-		private getLineRoot(bp:Pos, ep:Pos, res:number, line:Line):void {
+		private getLineRoot(bp:UTILS.Pos, ep:UTILS.Pos, res:number, line:Line):void {
 			const tx = ep.x - bp.x;
 			const ty = ep.y - bp.y;
 			const r = Math.atan2(ty, tx);
@@ -79,7 +79,7 @@ namespace ROUTES{
 			const l = Math.sqrt(tx * tx + ty * ty) - res;
 			const L = l / res;
 			for (let i = 0; i < L; i++) {
-				line.push(new Pos(
+				line.push(new UTILS.Pos(
 					dx * i + bp.x,
 					dy * i + bp.y
 				));

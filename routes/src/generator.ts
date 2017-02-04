@@ -1,6 +1,6 @@
 namespace ROUTES{
 	export class RouteGenerator{
-		public static getMinimumRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number, res:number):Line{
+		public static getMinimumRoute(vposB:UTILS.VecPos, vposE:UTILS.VecPos, rB:number, rE:number, res:number):Line{
 			const routes = this.getAllRoute(vposB, vposE, rB, rE);
 			let min:number = Number.MAX_VALUE;
 			let route:Route = null;
@@ -13,29 +13,29 @@ namespace ROUTES{
 			};
 			return route.generateRoute(res);
 		}
-		public static getAllRoute(vposB:VecPos, vposE:VecPos, rB:number, rE:number):Array<Route> {
-			const cB1 = new Circle(
+		public static getAllRoute(vposB:UTILS.VecPos, vposE:UTILS.VecPos, rB:number, rE:number):Array<Route> {
+			const cB1 = new UTILS.Circle(
 				Math.cos(vposB.r + Matthew.H_PI) * rB + vposB.pos.x,
 				Math.sin(vposB.r + Matthew.H_PI) * rB + vposB.pos.y,
 				rB, 
 				1,
 				vposB.r - Matthew.H_PI
 			);
-			const cB2 = new Circle(
+			const cB2 = new UTILS.Circle(
 				Math.cos(vposB.r - Matthew.H_PI) * rB + vposB.pos.x,
 				Math.sin(vposB.r - Matthew.H_PI) * rB + vposB.pos.y, 
 				rB, 
 				-1, 
 				vposB.r + Matthew.H_PI
 			);
-			const cE1 = new Circle(
+			const cE1 = new UTILS.Circle(
 				Math.cos(vposE.r + Matthew.H_PI) * rE + vposE.pos.x, 
 				Math.sin(vposE.r + Matthew.H_PI) * rE + vposE.pos.y, 
 				rE, 
 				1, 
 				vposE.r - Matthew.H_PI
 			);
-			const cE2 = new Circle(
+			const cE2 = new UTILS.Circle(
 				Math.cos(vposE.r - Matthew.H_PI) * rE + vposE.pos.x, 
 				Math.sin(vposE.r - Matthew.H_PI) * rE + vposE.pos.y, 
 				rE, 
@@ -55,11 +55,11 @@ namespace ROUTES{
 			return allRoute;
 		}
 		
-		private static getRoute(c1:Circle, c2:Circle):Route {
+		private static getRoute(c1:UTILS.Circle, c2:UTILS.Circle):Route {
 			const dx = c2.pos.x - c1.pos.x;
 			const dy = c2.pos.y - c1.pos.y;
 			const l = dx * dx + dy * dy;
-			const a1 = new Pos(), a2 = new Pos(), b1 = new Pos(), b2 = new Pos();
+			const a1 = new UTILS.Pos(), a2 = new UTILS.Pos(), b1 = new UTILS.Pos(), b2 = new UTILS.Pos();
 			const br = Math.atan2(c2.pos.y - c1.pos.y, c2.pos.x - c1.pos.x);
 			let c1tr = c1.tr;
 			let c2tr = c2.tr;

@@ -7,6 +7,7 @@
     "module" : "amd"
   },
   "files": [
-    "./routes/index.ts"
+    "./src/index.ts",
+    "../utils/dist/index.d.ts"
   ]
 }
