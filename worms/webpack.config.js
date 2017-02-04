@@ -1,10 +1,11 @@
 var path = require('path');
 module.exports = {
     entry: {
-        app :'./src/ts/main.ts'
+        app :'./src/index.ts'
     },
     output: {
-        filename: '../www/js/[name].dist.js'
+        filename: './dist/index.js',
+        library: ''
     },
     resolve: {
         root:[path.join(__dirname,'node_modules')],
