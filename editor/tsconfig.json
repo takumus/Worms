@@ -2,9 +2,10 @@
   "compilerOptions": {
     "target": "es5"
   },
+  "include":[
+    "./src/**/*"
+  ],
   "files": [
-    "./src/main.ts",
-    "./src/editor/index.ts",
     "../utils/dist/index.d.ts",
     "../routes/dist/index.d.ts",
     "../worms/dist/index.d.ts"

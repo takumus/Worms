@@ -66,6 +66,7 @@ export default class Editor extends PIXI.Container{
             this.lines.push(this.editingLine.clone());
         }
         this.editingLine = new ROUTES.Line();
+        this.prevPos.round(2);
         this.editingLine.push(this.prevPos.clone());
         console.log(JSON.stringify(this.lines));
     }
@@ -81,7 +82,8 @@ export default class Editor extends PIXI.Container{
         this.editingLineCanvas.lineTo(this.nextPos.x, this.nextPos.y);
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
-        this.editingLine.push(this.nextPos.clone());
+        this.prevPos.round(2);
+        this.editingLine.push(this.prevPos.clone());
     }
     public update():void{
         this.drawerCanvas.clear();
