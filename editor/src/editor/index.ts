@@ -43,15 +43,28 @@ export default class Editor extends PIXI.Container{
             if(e.keyCode == 17){
                 this.next();
             }else if(e.keyCode == 13){
+                console.log(JSON.stringify(this.lines));
+            }else if(e.keyCode == 27){
                 this.end();
             }
         });
     }
     private begin(x:number, y:number):void{
+        this.end();
         this.prevPos.x = x;
         this.prevPos.y = y;
         this.pressing = true;
         this.move(x, y);
+        this.editingLine = new ROUTES.Line();
+        this.prevPos.round(2);
+        this.editingLine.push(this.prevPos.clone());
+    }
+    private move(x:number, y:number):void{
+        
+    }
+    private end():void{
+        this.pressing = false;
+        this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
         this.lineCanvas.lineStyle(2, 0x999999);
         if(this.editingLine){
@@ -65,27 +78,18 @@ export default class Editor extends PIXI.Container{
             }
             this.lines.push(this.editingLine.clone());
         }
-        this.editingLine = new ROUTES.Line();
-        this.prevPos.round(2);
-        this.editingLine.push(this.prevPos.clone());
-        console.log(JSON.stringify(this.lines));
-    }
-    private move(x:number, y:number):void{
-        
-    }
-    private end():void{
-        this.pressing = false;
     }
     private next():void{
         this.editingLineCanvas.lineStyle(2, 0xffffff);
+        this.nextPos.round(2);
         this.editingLineCanvas.moveTo(this.prevPos.x, this.prevPos.y);
         this.editingLineCanvas.lineTo(this.nextPos.x, this.nextPos.y);
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
-        this.prevPos.round(2);
-        this.editingLine.push(this.prevPos.clone());
+        this.editingLine.push(this.nextPos.clone());
     }
     public update():void{
+        if(!this.pressing) return;
         this.drawerCanvas.clear();
         this.drawerCanvas.lineStyle(1, 0xffffff);
         this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 5);
