@@ -32,26 +32,16 @@ const init = ()=> {
 	window.addEventListener("touchmove", (e:TouchEvent)=>{
 		if(!pressing) return;
 		targets.length = 0;
-		for(let i = 0; i < e.touches.length; i ++){
-			const t = e.touches[i];
-			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
-		}
+		targets.length = 0;
+		targets.push(new UTILS.Pos(e.touches[0].clientX*dpr, e.touches[0].clientY*dpr));
 	});
 	window.addEventListener("touchstart", (e:TouchEvent)=>{
 		pressing = true;
 		targets.length = 0;
-		for(let i = 0; i < e.touches.length; i ++){
-			const t = e.touches[i];
-			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
-		}
+		targets.push(new UTILS.Pos(e.touches[0].clientX*dpr, e.touches[0].clientY*dpr));
 	});
 	window.addEventListener("touchend", (e:TouchEvent)=>{
-		targets.length = 0;
-		for(let i = 0; i < e.touches.length; i ++){
-			const t = e.touches[i];
-			targets.push(new UTILS.Pos(t.clientX*dpr, t.clientY*dpr));
-		}
-		if(targets.length<1)pressing = false;
+		pressing = false;
 	});
 	for(let i = 0; i < 20; i ++){
 		const w = new WORMS.Simple(30, 60);
@@ -67,10 +57,11 @@ let ppos = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
 
-	for(let i = 0; i < worms.length; i ++){
+	for(let i = 0; i < 20; i ++){
 		const w = worms[i];
-		if(w.getStep() == 1){
-			const target = pressing?targets[Math.floor(Math.random()*targets.length)].clone():null;
+		const target = pressing?targets[0].clone():null;
+		if(w.getStep() == 1 || pressing && !w.getRoute().tail().equals(new UTILS.Pos(target.x, target.y))){
+			
 			const pos = new UTILS.VecPos(
 				target?target.x:stageWidth*Math.random(),
 				target?target.y:stageHeight*Math.random(),
@@ -80,11 +71,11 @@ const draw = ()=> {
 			const r = ROUTES.RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				pressing?80:200,
-				pressing?80:200,
+				200*Math.random()+100,
+				200*Math.random()+100,
 				20
 			);
-			r.pop();
+			//r.pop();
 			r.wave(pressing?10:30, 0.2);
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
