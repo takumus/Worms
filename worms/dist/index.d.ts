@@ -18,6 +18,7 @@ declare namespace WORMS {
         getCurrentLine(): ROUTES.Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
+        getRoute(): ROUTES.Line;
     }
 }
 declare namespace WORMS {

@@ -134,6 +134,9 @@
 	        Base.prototype.getTailVecPos = function () {
 	            return this.bone.getTailVecPos().add(Math.PI);
 	        };
+	        Base.prototype.getRoute = function () {
+	            return this.line;
+	        };
 	        return Base;
 	    }(PIXI.Graphics));
 	    WORMS.Base = Base;

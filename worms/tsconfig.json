@@ -6,8 +6,10 @@
     "declaration" : true,
     "module" : "amd"
   },
+  "include":[
+    "./src/**/*"
+  ],
   "files": [
-    "./src/index.ts",
     "../utils/dist/index.d.ts",
     "../routes/dist/index.d.ts"
   ]

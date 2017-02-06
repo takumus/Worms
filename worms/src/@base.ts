@@ -82,5 +82,8 @@ namespace WORMS{
         public getTailVecPos():UTILS.VecPos{
             return this.bone.getTailVecPos().add(Math.PI);
         }
+        public getRoute():ROUTES.Line{
+            return this.line;
+        }
     }
 }
