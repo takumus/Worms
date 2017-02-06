@@ -5,6 +5,7 @@ declare namespace UTILS {
         constructor(x?: number, y?: number);
         clone(): Pos;
         equals(pos: Pos, diff?: number): boolean;
+        round(n: number): void;
     }
     class VecPos {
         pos: Pos;

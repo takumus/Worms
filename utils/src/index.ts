@@ -15,6 +15,11 @@ namespace UTILS{
             const dy = pos.y - this.y;
             return dx*dx+dy*dy < diff
         }
+        public round(n:number){
+            n = Math.pow(10, n);
+            this.x = Math.floor(this.x*n)/n;
+            this.y = Math.floor(this.y*n)/n;
+        }
     }
     export class VecPos {
         public pos:Pos;

@@ -64,6 +64,11 @@
 	            var dy = pos.y - this.y;
 	            return dx * dx + dy * dy < diff;
 	        };
+	        Pos.prototype.round = function (n) {
+	            n = Math.pow(10, n);
+	            this.x = Math.floor(this.x * n) / n;
+	            this.y = Math.floor(this.y * n) / n;
+	        };
 	        return Pos;
 	    }());
 	    UTILS.Pos = Pos;
