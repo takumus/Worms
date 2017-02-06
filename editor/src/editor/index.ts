@@ -53,7 +53,7 @@ export default class Editor extends PIXI.Container{
         this.pressing = true;
         this.move(x, y);
         this.editingLineCanvas.clear();
-        this.lineCanvas.lineStyle(1, 0xcccccc);
+        this.lineCanvas.lineStyle(2, 0x999999);
         if(this.editingLine){
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
@@ -76,23 +76,12 @@ export default class Editor extends PIXI.Container{
         this.pressing = false;
     }
     private next():void{
+        this.editingLineCanvas.lineStyle(2, 0xffffff);
+        this.editingLineCanvas.moveTo(this.prevPos.x, this.prevPos.y);
+        this.editingLineCanvas.lineTo(this.nextPos.x, this.nextPos.y);
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
         this.editingLine.push(this.nextPos.clone());
-        this.updateEditingLine();
-    }
-    private updateEditingLine():void{
-        this.editingLineCanvas.clear();
-        this.editingLineCanvas.lineStyle(1, 0xffffff);
-        
-        for(let i = 0; i < this.editingLine.getLength(); i ++){
-            const p = this.editingLine.at(i);
-            if(i == 0){
-                this.editingLineCanvas.moveTo(p.x, p.y);
-            }else{
-                this.editingLineCanvas.lineTo(p.x, p.y);
-            }
-        }
     }
     public update():void{
         this.drawerCanvas.clear();
