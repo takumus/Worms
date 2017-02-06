@@ -52,8 +52,22 @@ export default class Editor extends PIXI.Container{
         this.prevPos.y = y;
         this.pressing = true;
         this.move(x, y);
+        this.editingLineCanvas.clear();
+        this.lineCanvas.lineStyle(1, 0xcccccc);
+        if(this.editingLine){
+            for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
+                const p = this.editingLine.at(ii);
+                if(ii == 0){
+                    this.lineCanvas.moveTo(p.x, p.y);
+                }else{
+                    this.lineCanvas.lineTo(p.x, p.y);
+                }
+            }
+            this.lines.push(this.editingLine.clone());
+        }
         this.editingLine = new ROUTES.Line();
         this.editingLine.push(this.prevPos.clone());
+        console.log(JSON.stringify(this.lines));
     }
     private move(x:number, y:number):void{
         
@@ -65,7 +79,6 @@ export default class Editor extends PIXI.Container{
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
         this.editingLine.push(this.nextPos.clone());
-        console.log(this.nextPos);
         this.updateEditingLine();
     }
     private updateEditingLine():void{
