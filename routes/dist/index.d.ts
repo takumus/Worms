@@ -6,6 +6,7 @@ declare namespace ROUTES {
         reverse(): Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
+        private getVecPos(fp, sp);
         head(): UTILS.Pos;
         tail(): UTILS.Pos;
         at(id: number): UTILS.Pos;

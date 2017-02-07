@@ -2,7 +2,7 @@ namespace ROUTES{
 	export class RouteGenerator{
 		public static getMinimumRoute(vposB:UTILS.VecPos, vposE:UTILS.VecPos, rB:number, rE:number, res:number):Line{
 			const routes = this.getAllRoute(vposB, vposE, rB, rE);
-			let min:number = Number.MAX_VALUE;
+			let min = Number.MAX_VALUE;
 			let route:Route = null;
 			for(let i = 0; i < routes.length; i ++){
 				const r = routes[i];

@@ -57,18 +57,13 @@
 	            return this;
 	        };
 	        Line.prototype.getHeadVecPos = function () {
-	            var fp = this.at(0);
-	            var sp = this.at(1);
-	            var dx = sp.x - fp.x;
-	            var dy = sp.y - fp.y;
-	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(dy, dx));
+	            return this.getVecPos(this.at(0), this.at(1));
 	        };
 	        Line.prototype.getTailVecPos = function () {
-	            var fp = this.at(this.length - 1);
-	            var sp = this.at(this.length - 2);
-	            var dx = sp.x - fp.x;
-	            var dy = sp.y - fp.y;
-	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(dy, dx));
+	            return this.getVecPos(this.at(this.length - 1), this.at(this.length - 2));
+	        };
+	        Line.prototype.getVecPos = function (fp, sp) {
+	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.x - fp.x, sp.y - fp.y));
 	        };
 	        Line.prototype.head = function () {
 	            return this.at(0);
@@ -125,10 +120,8 @@
 	                var offset = all * all * Math.sin(rad) * amp;
 	                var vr = Math.sqrt(vx * vx + vy * vy);
 	                rad += freq;
-	                vx = vx / vr * offset;
-	                vy = vy / vr * offset;
-	                np.x = p.x + -vy;
-	                np.y = p.y + vx;
+	                np.x = p.x + -(vx / vr * offset);
+	                np.y = p.y + (vy / vr * offset);
 	                newData.push(np);
 	            }
 	            newData.push(this.at(this.length - 1).clone());
