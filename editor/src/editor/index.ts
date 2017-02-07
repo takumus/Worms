@@ -34,7 +34,6 @@ export default class Editor extends PIXI.Container{
         window.addEventListener("mousemove", (e)=>{
             this.mouse.x = e.clientX * this.dpr;
             this.mouse.y = e.clientY * this.dpr;
-            this.move(this.mouse.x, this.mouse.y);
         });
         window.addEventListener("mouseup", (e)=>{
             //this.end();
@@ -50,24 +49,21 @@ export default class Editor extends PIXI.Container{
         });
     }
     private begin(x:number, y:number):void{
-        this.end();
+        if(this.pressing) return;
         this.prevPos.x = x;
         this.prevPos.y = y;
         this.pressing = true;
-        this.move(x, y);
         this.editingLine = new ROUTES.Line();
         this.prevPos.round(2);
         this.editingLine.push(this.prevPos.clone());
     }
-    private move(x:number, y:number):void{
-        
-    }
     private end():void{
+        if(!this.pressing) return;
         this.pressing = false;
         this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
-        this.lineCanvas.lineStyle(2, 0x999999);
-        if(this.editingLine){
+        this.lineCanvas.lineStyle(3, 0x999999);
+        if(this.editingLine && this.editingLine.getLength() > 1){
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
                 if(ii == 0){
@@ -78,8 +74,10 @@ export default class Editor extends PIXI.Container{
             }
             this.lines.push(this.editingLine.clone());
         }
+        this.editingLine = null;
     }
     private next():void{
+        if(!this.pressing) return;
         this.editingLineCanvas.lineStyle(2, 0xffffff);
         this.nextPos.round(2);
         this.editingLineCanvas.moveTo(this.prevPos.x, this.prevPos.y);
