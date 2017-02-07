@@ -99,3 +99,4 @@ const resize = ()=> {
 }
 
 window.onload = init;
+//100コミット
