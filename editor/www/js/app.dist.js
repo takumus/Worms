@@ -96,12 +96,14 @@
 	    __extends(Editor, _super);
 	    function Editor() {
 	        var _this = _super.call(this) || this;
-	        _this.res = 10;
+	        _this.res = 5;
 	        _this.lines = [];
 	        _this.mouse = new UTILS.Pos();
 	        _this.drawerCanvas = new PIXI.Graphics();
 	        _this.lineCanvas = new PIXI.Graphics();
 	        _this.editingLineCanvas = new PIXI.Graphics();
+	        _this.wormsContainer = new PIXI.Container();
+	        _this.addChild(_this.wormsContainer);
 	        _this.addChild(_this.drawerCanvas);
 	        _this.addChild(_this.lineCanvas);
 	        _this.addChild(_this.editingLineCanvas);
@@ -153,7 +155,7 @@
 	        this.drawerCanvas.clear();
 	        this.editingLineCanvas.clear();
 	        if (this.editingLine && this.editingLine.getLength() > 1) {
-	            this.lineCanvas.lineStyle(2, 0x999999);
+	            this.lineCanvas.lineStyle(1, 0x999999);
 	            for (var ii = 0; ii < this.editingLine.getLength(); ii++) {
 	                var p = this.editingLine.at(ii);
 	                if (ii == 0) {
@@ -164,11 +166,11 @@
 	                }
 	            }
 	            this.lines.push(this.editingLine.clone());
-	            var w = new WORMS.Nasty(this.editingLine.getLength(), 30);
+	            var w = new WORMS.Simple(this.editingLine.getLength(), 30);
 	            w.setRoute(this.editingLine);
 	            w.setStep(0);
 	            w.render();
-	            this.addChild(w);
+	            this.wormsContainer.addChild(w);
 	        }
 	        //this.editingLine = null;
 	    };
@@ -188,13 +190,13 @@
 	            return;
 	        this.drawerCanvas.clear();
 	        this.drawerCanvas.lineStyle(1, 0xffffff);
-	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 3);
+	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 2);
 	        var dx = this.mouse.x - this.prevPos.x;
 	        var dy = this.mouse.y - this.prevPos.y;
 	        var d = Math.sqrt(dx * dx + dy * dy);
 	        this.nextPos.x = this.prevPos.x + dx / d * this.res;
 	        this.nextPos.y = this.prevPos.y + dy / d * this.res;
-	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 3);
+	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 2);
 	        this.drawerCanvas.moveTo(this.prevPos.x - dx, this.prevPos.y - dy);
 	        this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
 	    };

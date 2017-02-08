@@ -3,7 +3,8 @@ export default class Editor extends PIXI.Container{
     private drawerCanvas:PIXI.Graphics;
     private lineCanvas:PIXI.Graphics;
     private editingLineCanvas:PIXI.Graphics;
-    private res:number = 10;
+    private wormsContainer:PIXI.Container;
+    private res:number = 5;
     private nextPos:UTILS.Pos;
     private prevPos:UTILS.Pos;
     private pressing:boolean;
@@ -15,6 +16,8 @@ export default class Editor extends PIXI.Container{
         this.drawerCanvas = new PIXI.Graphics();
         this.lineCanvas = new PIXI.Graphics();
         this.editingLineCanvas = new PIXI.Graphics();
+        this.wormsContainer = new PIXI.Container();
+        this.addChild(this.wormsContainer);
         this.addChild(this.drawerCanvas);
         this.addChild(this.lineCanvas);
         this.addChild(this.editingLineCanvas);
@@ -61,7 +64,7 @@ export default class Editor extends PIXI.Container{
         this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
         if(this.editingLine && this.editingLine.getLength() > 1){
-            this.lineCanvas.lineStyle(2, 0x999999);
+            this.lineCanvas.lineStyle(1, 0x999999);
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
                 if(ii == 0){
@@ -71,11 +74,11 @@ export default class Editor extends PIXI.Container{
                 }
             }
             this.lines.push(this.editingLine.clone());
-            const w = new WORMS.Nasty(this.editingLine.getLength(), 30);
+            const w = new WORMS.Simple(this.editingLine.getLength(), 30);
             w.setRoute(this.editingLine);
             w.setStep(0);
             w.render();
-            this.addChild(w);
+            this.wormsContainer.addChild(w);
         }
         //this.editingLine = null;
     }
@@ -93,14 +96,14 @@ export default class Editor extends PIXI.Container{
         if(!this.pressing) return;
         this.drawerCanvas.clear();
         this.drawerCanvas.lineStyle(1, 0xffffff);
-        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 3);
+        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 2);
 
         const dx = this.mouse.x - this.prevPos.x;
         const dy = this.mouse.y - this.prevPos.y;
         let d = Math.sqrt(dx*dx + dy*dy);
         this.nextPos.x = this.prevPos.x + dx / d * this.res;
         this.nextPos.y = this.prevPos.y + dy / d * this.res;
-        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 3);
+        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 2);
 
         this.drawerCanvas.moveTo(this.prevPos.x - dx, this.prevPos.y - dy);
         this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
