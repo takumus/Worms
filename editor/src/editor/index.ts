@@ -93,20 +93,16 @@ export default class Editor extends PIXI.Container{
         if(!this.pressing) return;
         this.drawerCanvas.clear();
         this.drawerCanvas.lineStyle(1, 0xffffff);
-        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 5);
+        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 3);
 
-        let dx = this.mouse.x - this.prevPos.x;
-        let dy = this.mouse.y - this.prevPos.y;
+        const dx = this.mouse.x - this.prevPos.x;
+        const dy = this.mouse.y - this.prevPos.y;
         let d = Math.sqrt(dx*dx + dy*dy);
-        dx /= d;
-        dy /= d;
-        dx *= this.res;
-        dy *= this.res;
-        this.nextPos.x = this.prevPos.x + dx;
-        this.nextPos.y = this.prevPos.y + dy;
-        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 5);
+        this.nextPos.x = this.prevPos.x + dx / d * this.res;
+        this.nextPos.y = this.prevPos.y + dy / d * this.res;
+        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 3);
 
-        this.drawerCanvas.moveTo(this.prevPos.x, this.prevPos.y);
+        this.drawerCanvas.moveTo(this.prevPos.x - dx, this.prevPos.y - dy);
         this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
     }
 }
