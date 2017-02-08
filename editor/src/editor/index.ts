@@ -10,6 +10,9 @@ export default class Editor extends PIXI.Container{
     private pressing:boolean;
     private editingLine:ROUTES.Line;
     private lines:Array<ROUTES.Line> = [];
+    private LINE_COLOR:number = 0x0000ff;
+    private EDITING_LINE_COLOR:number = 0xff0000;
+    private DRAWER_COLOR:number = 0x666666;
     constructor(){
         super();
         this.mouse = new UTILS.Pos();
@@ -17,7 +20,7 @@ export default class Editor extends PIXI.Container{
         this.lineCanvas = new PIXI.Graphics();
         this.editingLineCanvas = new PIXI.Graphics();
         this.wormsContainer = new PIXI.Container();
-        this.addChild(this.wormsContainer);
+        //this.addChild(this.wormsContainer);
         this.addChild(this.drawerCanvas);
         this.addChild(this.lineCanvas);
         this.addChild(this.editingLineCanvas);
@@ -64,7 +67,7 @@ export default class Editor extends PIXI.Container{
         this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
         if(this.editingLine && this.editingLine.getLength() > 1){
-            this.lineCanvas.lineStyle(1, 0x999999);
+            this.lineCanvas.lineStyle(1, this.LINE_COLOR);
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
                 if(ii == 0){
@@ -84,7 +87,7 @@ export default class Editor extends PIXI.Container{
     }
     private next():void{
         if(!this.pressing) return;
-        this.editingLineCanvas.lineStyle(2, 0xffff00);
+        this.editingLineCanvas.lineStyle(2, this.EDITING_LINE_COLOR);
         this.nextPos.round(2);
         this.editingLineCanvas.moveTo(this.prevPos.x, this.prevPos.y);
         this.editingLineCanvas.lineTo(this.nextPos.x, this.nextPos.y);
@@ -95,7 +98,7 @@ export default class Editor extends PIXI.Container{
     public update():void{
         if(!this.pressing) return;
         this.drawerCanvas.clear();
-        this.drawerCanvas.lineStyle(1, 0xffffff);
+        this.drawerCanvas.lineStyle(1, this.DRAWER_COLOR);
         this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 2);
 
         const dx = this.mouse.x - this.prevPos.x;
