@@ -26,8 +26,7 @@ declare namespace WORMS {
     class Nasty extends Base {
         private thickness;
         private body;
-        private fillColor;
-        private borderColor;
+        private colors;
         constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
         setColor(fillColor: number, borderColor: number): void;
         render(): void;
@@ -36,8 +35,7 @@ declare namespace WORMS {
 declare namespace WORMS {
     class Simple extends Base {
         private thickness;
-        private fillColor;
-        private borderColor;
+        private colors;
         constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
         setColor(fillColor: number, borderColor: number): void;
         render(): void;

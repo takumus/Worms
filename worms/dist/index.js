@@ -166,8 +166,10 @@
 	            return _this;
 	        }
 	        Nasty.prototype.setColor = function (fillColor, borderColor) {
-	            this.fillColor = fillColor;
-	            this.borderColor = borderColor;
+	            this.colors = {
+	                fill: fillColor,
+	                border: borderColor
+	            };
 	        };
 	        Nasty.prototype.render = function () {
 	            var bbone = this.bone.at(0);
@@ -195,8 +197,8 @@
 	            ebody.left.x = ebone.x;
 	            ebody.left.y = ebone.y;
 	            this.clear();
-	            this.lineStyle(3, this.borderColor);
-	            this.beginFill(this.fillColor);
+	            this.lineStyle(3, this.colors.border);
+	            this.beginFill(this.colors.fill);
 	            this.moveTo(bbody.left.x, bbody.left.y);
 	            for (var i = 1; i < this.body.length; i++) {
 	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
@@ -228,16 +230,19 @@
 	            if (borderColor === void 0) { borderColor = 0xffffff; }
 	            var _this = _super.call(this, length) || this;
 	            _this.thickness = thickness;
+	            _this.setColor(fillColor, borderColor);
 	            return _this;
 	        }
 	        Simple.prototype.setColor = function (fillColor, borderColor) {
-	            this.fillColor = fillColor;
-	            this.borderColor = borderColor;
+	            this.colors = {
+	                fill: fillColor,
+	                border: borderColor
+	            };
 	        };
 	        Simple.prototype.render = function () {
 	            this.clear();
-	            this.renderWith(this.borderColor, this.thickness);
-	            this.renderWith(this.fillColor, this.thickness * 0.7);
+	            this.renderWith(this.colors.border, this.thickness);
+	            this.renderWith(this.colors.fill, this.thickness * 0.7);
 	        };
 	        Simple.prototype.renderWith = function (color, thickness) {
 	            var bbone = this.bone.at(0);
