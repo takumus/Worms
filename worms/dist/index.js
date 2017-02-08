@@ -58,6 +58,7 @@
 	            _this.step = 0;
 	            _this.length = Math.floor(length);
 	            _this.routeIndex = 0;
+	            _this.bone = new ROUTES.Line();
 	            _this.setlength(length);
 	            return _this;
 	        }

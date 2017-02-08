@@ -9,6 +9,7 @@ namespace WORMS{
             super();
             this.length = Math.floor(length);
             this.routeIndex = 0;
+            this.bone = new ROUTES.Line();
             this.setlength(length);
         }
         public setlength(length:number){
