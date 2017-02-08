@@ -16,6 +16,7 @@ declare namespace ROUTES {
         pushLine(line: Line): Line;
         getLength(): number;
         clone(): Line;
+        clear(): void;
         wave(amp: number, freq: number): Line;
     }
 }

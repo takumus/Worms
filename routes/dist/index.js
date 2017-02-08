@@ -106,6 +106,10 @@
 	            }
 	            return new Line(data);
 	        };
+	        Line.prototype.clear = function () {
+	            this.data = [];
+	            this.length = 0;
+	        };
 	        Line.prototype.wave = function (amp, freq) {
 	            var newData = [];
 	            var rad = 0;

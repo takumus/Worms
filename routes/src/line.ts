@@ -72,6 +72,10 @@ namespace ROUTES{
 			}
 			return new Line(data);
 		}
+		public clear():void{
+			this.data = [];
+			this.length = 0;
+		}
 		public wave(amp:number, freq:number):Line{
 			const newData:Array<UTILS.Pos> = [];
 			let rad = 0;
