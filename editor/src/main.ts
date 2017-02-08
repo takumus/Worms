@@ -4,10 +4,8 @@ const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
 let editor:Editor;
-let dpr:number;
 const init = ()=> {
-	dpr = 2;//window.devicePixelRatio;
-	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true});
+	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
 	canvas.appendChild(renderer.view);
 	renderer.view.style.width = "100%";
@@ -16,7 +14,7 @@ const init = ()=> {
 	window.addEventListener('resize', resize);
 	window.addEventListener('orientationchange', resize);
 	
-	editor = new Editor(dpr);
+	editor = new Editor();
 	stage.addChild(editor);
 
 	draw();
@@ -30,8 +28,8 @@ const draw = ()=> {
 	renderer.render(stage);
 }
 const resize = ()=> {
-	const width:number = canvas.offsetWidth*dpr;
-	const height:number = canvas.offsetHeight*dpr;
+	const width:number = canvas.offsetWidth;
+	const height:number = canvas.offsetHeight;
 	stageWidth = width;
 	stageHeight = height;
 	renderer.resize(width, height);
