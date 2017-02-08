@@ -47,7 +47,6 @@ const init = ()=> {
 		if(dx*dx + dy*dy > 2000){
 			prevMouse.x = mouse.x;
 			prevMouse.y = mouse.y;
-			console.log(dx*dx + dy*dy)
 		}
 		mouse.x = x;
 		mouse.y = y;
@@ -56,7 +55,7 @@ const init = ()=> {
 		pressing = false;
 	}
 	for(let i = 0; i < 10; i ++){
-		const w = new WORMS.Simple(40, 60);
+		const w = new WORMS.Simple(80, 60);
 		worms.push(w);
 		stage.addChild(w);
 		w.setStep(1);
@@ -70,8 +69,7 @@ const init = ()=> {
 	draw();
 	resize();
 }
-let ppos = 0;
-let wave:number = 0;
+let wave:number = 0.2;
 const draw = ()=> {
 	requestAnimationFrame(draw);
 	const target = mouse;
@@ -84,7 +82,7 @@ const draw = ()=> {
 			const pos = new UTILS.VecPos(
 				pressing?target.x:stageWidth*Math.random(),
 				pressing?target.y:stageHeight*Math.random(),
-				pressing?mouseRadian:Math.PI*2*Math.random()
+				Math.PI*2*Math.random()
 			);
 			//w.reverse();
 			const r = ROUTES.RouteGenerator.getMinimumRoute(
@@ -92,7 +90,7 @@ const draw = ()=> {
 				pos,
 				pressing?100:100*Math.random()+100,
 				pressing?100:100*Math.random()+100,
-				10
+				5
 			);
 			//r.pop();
 			r.wave(pressing?10:10, wave, true);
@@ -112,7 +110,7 @@ const draw = ()=> {
 			}
 			g.drawCircle(t.x, t.y, 10);
 		}
-		w.addStep(pressing?2:1);
+		w.addStep(pressing?4:4);
 		w.render();
 	}
 
