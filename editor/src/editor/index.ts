@@ -62,8 +62,8 @@ export default class Editor extends PIXI.Container{
         this.pressing = false;
         this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
-        this.lineCanvas.lineStyle(3, 0x999999);
         if(this.editingLine && this.editingLine.getLength() > 1){
+            this.lineCanvas.lineStyle(3, 0x999999);
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
                 if(ii == 0){
@@ -74,7 +74,7 @@ export default class Editor extends PIXI.Container{
             }
             this.lines.push(this.editingLine.clone());
         }
-        this.editingLine = null;
+        //this.editingLine = null;
     }
     private next():void{
         if(!this.pressing) return;
