@@ -76,9 +76,9 @@ namespace ROUTES{
 			this.data = [];
 			this.length = 0;
 		}
-		public wave(amp:number, freq:number):Line{
+		public wave(amp:number, freq:number, randomBegin:boolean = false):Line{
 			const newData:Array<UTILS.Pos> = [];
-			let rad = 0;
+			let rad = randomBegin?Math.random()*(Math.PI*2):0;
 			newData.push(this.at(0).clone());
 			for(let i = 1; i < this.length  - 1; i ++){
 				const p = this.at(i);
@@ -87,7 +87,7 @@ namespace ROUTES{
 				const np = new UTILS.Pos();
 				const all = Math.sin(i　/　(this.length　-　1)　*　Math.PI);
 				//all * allで開始、終了を極端にする。(先端への影響を少なく)
-				const offset = all　*　all　*　Math.sin(rad)　*　amp;
+				const offset = all　*　Math.sin(rad)　*　amp;
 				const vr = Math.sqrt(vx　*　vx　+　vy　*　vy);
 				rad += freq;
 				np.x = p.x + -(vy / vr * offset);

@@ -110,9 +110,10 @@
 	            this.data = [];
 	            this.length = 0;
 	        };
-	        Line.prototype.wave = function (amp, freq) {
+	        Line.prototype.wave = function (amp, freq, randomBegin) {
+	            if (randomBegin === void 0) { randomBegin = false; }
 	            var newData = [];
-	            var rad = 0;
+	            var rad = randomBegin ? Math.random() * (Math.PI * 2) : 0;
 	            newData.push(this.at(0).clone());
 	            for (var i = 1; i < this.length - 1; i++) {
 	                var p = this.at(i);
@@ -121,7 +122,7 @@
 	                var np = new UTILS.Pos();
 	                var all = Math.sin(i / (this.length - 1) * Math.PI);
 	                //all * allで開始、終了を極端にする。(先端への影響を少なく)
-	                var offset = all * all * Math.sin(rad) * amp;
+	                var offset = all * Math.sin(rad) * amp;
 	                var vr = Math.sqrt(vx * vx + vy * vy);
 	                rad += freq;
 	                np.x = p.x + -(vy / vr * offset);

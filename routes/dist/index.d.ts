@@ -17,7 +17,7 @@ declare namespace ROUTES {
         getLength(): number;
         clone(): Line;
         clear(): void;
-        wave(amp: number, freq: number): Line;
+        wave(amp: number, freq: number, randomBegin?: boolean): Line;
     }
 }
 declare namespace ROUTES {
