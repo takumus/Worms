@@ -61,7 +61,7 @@ export default class Editor extends PIXI.Container{
         this.drawerCanvas.clear();
         this.editingLineCanvas.clear();
         if(this.editingLine && this.editingLine.getLength() > 1){
-            this.lineCanvas.lineStyle(3, 0x999999);
+            this.lineCanvas.lineStyle(2, 0x999999);
             for(let ii = 0; ii < this.editingLine.getLength(); ii ++){
                 const p = this.editingLine.at(ii);
                 if(ii == 0){
@@ -71,7 +71,7 @@ export default class Editor extends PIXI.Container{
                 }
             }
             this.lines.push(this.editingLine.clone());
-            const w = new WORMS.Simple(this.editingLine.getLength(), 30);
+            const w = new WORMS.Nasty(this.editingLine.getLength(), 30);
             w.setRoute(this.editingLine);
             w.setStep(0);
             w.render();
@@ -81,7 +81,7 @@ export default class Editor extends PIXI.Container{
     }
     private next():void{
         if(!this.pressing) return;
-        this.editingLineCanvas.lineStyle(2, 0xffffff);
+        this.editingLineCanvas.lineStyle(2, 0xffff00);
         this.nextPos.round(2);
         this.editingLineCanvas.moveTo(this.prevPos.x, this.prevPos.y);
         this.editingLineCanvas.lineTo(this.nextPos.x, this.nextPos.y);
