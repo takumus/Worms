@@ -27,8 +27,8 @@ namespace ROUTES{
 				fp.x,
 				fp.y,
 				Math.atan2(
-					sp.x - fp.x,
-					sp.y - fp.y
+					sp.y - fp.y,
+					sp.x - fp.x
 				)
 			);
 		}
@@ -90,8 +90,8 @@ namespace ROUTES{
 				const offset = all　*　all　*　Math.sin(rad)　*　amp;
 				const vr = Math.sqrt(vx　*　vx　+　vy　*　vy);
 				rad += freq;
-				np.x = p.x + -(vx / vr * offset);
-				np.y = p.y +  (vy / vr * offset);
+				np.x = p.x + -(vy / vr * offset);
+				np.y = p.y +  (vx / vr * offset);
 				newData.push(np);
 			}
 			newData.push(this.at(this.length - 1).clone());

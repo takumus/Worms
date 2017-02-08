@@ -63,7 +63,7 @@
 	            return this.getVecPos(this.at(this.length - 1), this.at(this.length - 2));
 	        };
 	        Line.prototype.getVecPos = function (fp, sp) {
-	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.x - fp.x, sp.y - fp.y));
+	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.y - fp.y, sp.x - fp.x));
 	        };
 	        Line.prototype.head = function () {
 	            return this.at(0);
@@ -124,8 +124,8 @@
 	                var offset = all * all * Math.sin(rad) * amp;
 	                var vr = Math.sqrt(vx * vx + vy * vy);
 	                rad += freq;
-	                np.x = p.x + -(vx / vr * offset);
-	                np.y = p.y + (vy / vr * offset);
+	                np.x = p.x + -(vy / vr * offset);
+	                np.y = p.y + (vx / vr * offset);
 	                newData.push(np);
 	            }
 	            newData.push(this.at(this.length - 1).clone());
