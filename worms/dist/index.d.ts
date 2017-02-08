@@ -26,14 +26,20 @@ declare namespace WORMS {
     class Nasty extends Base {
         private thickness;
         private body;
-        constructor(length: number, thickness: number);
+        private fillColor;
+        private borderColor;
+        constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
+        setColor(fillColor: number, borderColor: number): void;
         render(): void;
     }
 }
 declare namespace WORMS {
     class Simple extends Base {
         private thickness;
-        constructor(length: number, thickness: number);
+        private fillColor;
+        private borderColor;
+        constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
+        setColor(fillColor: number, borderColor: number): void;
         render(): void;
         private renderWith(color, thickness);
     }

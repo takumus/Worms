@@ -2,14 +2,20 @@
 namespace WORMS{
     export class Simple extends Base{
         private thickness:number;
-        constructor(length:number, thickness:number){
+        private fillColor:number;
+        private borderColor:number;
+        constructor(length:number, thickness:number, fillColor:number = 0x000000, borderColor:number = 0xffffff){
             super(length);
             this.thickness = thickness;
         }
+        public setColor(fillColor:number, borderColor:number):void{
+            this.fillColor = fillColor;
+            this.borderColor = borderColor;
+        }
         public render(){
             this.clear();
-            this.renderWith(0xffffff, this.thickness);
-            this.renderWith(0x000000, this.thickness*0.7);
+            this.renderWith(this.borderColor, this.thickness);
+            this.renderWith(this.fillColor, this.thickness*0.7);
         }
         private renderWith(color:number, thickness:number):void{
             const bbone = this.bone.at(0);

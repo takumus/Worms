@@ -153,15 +153,22 @@
 	(function (WORMS) {
 	    var Nasty = (function (_super) {
 	        __extends(Nasty, _super);
-	        function Nasty(length, thickness) {
+	        function Nasty(length, thickness, fillColor, borderColor) {
+	            if (fillColor === void 0) { fillColor = 0xffffff; }
+	            if (borderColor === void 0) { borderColor = 0x000000; }
 	            var _this = _super.call(this, length) || this;
 	            _this.thickness = thickness / 2;
 	            _this.body = [];
 	            for (var i = 0; i < length; i++) {
 	                _this.body.push(new BodyPos());
 	            }
+	            _this.setColor(fillColor, borderColor);
 	            return _this;
 	        }
+	        Nasty.prototype.setColor = function (fillColor, borderColor) {
+	            this.fillColor = fillColor;
+	            this.borderColor = borderColor;
+	        };
 	        Nasty.prototype.render = function () {
 	            var bbone = this.bone.at(0);
 	            //ワームの外殻を生成
@@ -188,8 +195,8 @@
 	            ebody.left.x = ebone.x;
 	            ebody.left.y = ebone.y;
 	            this.clear();
-	            this.lineStyle(3, 0);
-	            this.beginFill(0xffffff);
+	            this.lineStyle(3, this.borderColor);
+	            this.beginFill(this.fillColor);
 	            this.moveTo(bbody.left.x, bbody.left.y);
 	            for (var i = 1; i < this.body.length; i++) {
 	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
@@ -216,15 +223,21 @@
 	(function (WORMS) {
 	    var Simple = (function (_super) {
 	        __extends(Simple, _super);
-	        function Simple(length, thickness) {
+	        function Simple(length, thickness, fillColor, borderColor) {
+	            if (fillColor === void 0) { fillColor = 0x000000; }
+	            if (borderColor === void 0) { borderColor = 0xffffff; }
 	            var _this = _super.call(this, length) || this;
 	            _this.thickness = thickness;
 	            return _this;
 	        }
+	        Simple.prototype.setColor = function (fillColor, borderColor) {
+	            this.fillColor = fillColor;
+	            this.borderColor = borderColor;
+	        };
 	        Simple.prototype.render = function () {
 	            this.clear();
-	            this.renderWith(0xffffff, this.thickness);
-	            this.renderWith(0x000000, this.thickness * 0.7);
+	            this.renderWith(this.borderColor, this.thickness);
+	            this.renderWith(this.fillColor, this.thickness * 0.7);
 	        };
 	        Simple.prototype.renderWith = function (color, thickness) {
 	            var bbone = this.bone.at(0);

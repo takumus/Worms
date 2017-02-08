@@ -3,13 +3,20 @@ namespace WORMS{
     export class Nasty extends Base{
         private thickness:number;
         private body:Array<BodyPos>;
-        constructor(length:number, thickness:number){
+        private fillColor:number;
+        private borderColor:number;
+        constructor(length:number, thickness:number, fillColor:number = 0xffffff, borderColor:number = 0x000000){
             super(length);
             this.thickness = thickness/2;
             this.body = [];
             for(let i = 0; i < length; i ++){
                 this.body.push(new BodyPos());
             }
+            this.setColor(fillColor, borderColor);
+        }
+        public setColor(fillColor:number, borderColor:number):void{
+            this.fillColor = fillColor;
+            this.borderColor = borderColor;
         }
         public render(){
             const bbone = this.bone.at(0);
@@ -38,8 +45,8 @@ namespace WORMS{
             ebody.left.y = ebone.y;
             
             this.clear();
-            this.lineStyle(3, 0);
-            this.beginFill(0xffffff);
+            this.lineStyle(3, this.borderColor);
+            this.beginFill(this.fillColor);
             this.moveTo(bbody.left.x, bbody.left.y);
             for(let i = 1; i < this.body.length; i ++){
                 this.lineTo(this.body[i].left.x, this.body[i].left.y);
