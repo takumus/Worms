@@ -3,12 +3,11 @@ const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
 const targets:Array<UTILS.Pos> = [];
-let dpr:number;
 const worms:Array<WORMS.Base> = [];
 let pressing = false;
 const init = ()=> {
-	dpr = 2;//window.devicePixelRatio;
-	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true});
+	//window.devicePixelRatio;
+	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
 	canvas.appendChild(renderer.view);
 	renderer.view.style.width = "100%";
@@ -19,12 +18,12 @@ const init = ()=> {
 	window.addEventListener("mousemove", (e)=>{
 		if(!pressing) return;
 		targets.length = 0;
-		targets[0] = new UTILS.Pos(e.clientX*dpr, e.clientY*dpr);
+		targets[0] = new UTILS.Pos(e.clientX, e.clientY);
 	});
 	window.addEventListener("mousedown", (e)=>{
 		pressing = true;
 		targets.length = 0;
-		targets[0] = new UTILS.Pos(e.clientX*dpr, e.clientY*dpr);
+		targets[0] = new UTILS.Pos(e.clientX, e.clientY);
 	});
 	window.addEventListener("mouseup", ()=>{
 		pressing = false;
@@ -33,18 +32,18 @@ const init = ()=> {
 		if(!pressing) return;
 		targets.length = 0;
 		targets.length = 0;
-		targets.push(new UTILS.Pos(e.touches[0].clientX*dpr, e.touches[0].clientY*dpr));
+		targets.push(new UTILS.Pos(e.touches[0].clientX, e.touches[0].clientY));
 	});
 	window.addEventListener("touchstart", (e:TouchEvent)=>{
 		pressing = true;
 		targets.length = 0;
-		targets.push(new UTILS.Pos(e.touches[0].clientX*dpr, e.touches[0].clientY*dpr));
+		targets.push(new UTILS.Pos(e.touches[0].clientX, e.touches[0].clientY));
 	});
 	window.addEventListener("touchend", (e:TouchEvent)=>{
 		pressing = false;
 	});
 	for(let i = 0; i < 20; i ++){
-		const w = new WORMS.Simple(30, 60);
+		const w = new WORMS.Simple(30, 30);
 		worms.push(w);
 		stage.addChild(w);
 		w.setStep(1);
@@ -71,16 +70,16 @@ const draw = ()=> {
 			const r = ROUTES.RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				200*Math.random()+100,
-				200*Math.random()+100,
-				20
+				100*Math.random()+100,
+				100*Math.random()+100,
+				10
 			);
 			//r.pop();
-			r.wave(pressing?10:30, 0.2);
+			r.wave(pressing?10:10, 0.3);
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
 		}
-		w.addStep(pressing?2:1);
+		w.addStep(pressing?1:0.5);
 		w.render();
 	}
 
@@ -91,8 +90,8 @@ const draw = ()=> {
 	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }
 const resize = ()=> {
-	const width:number = canvas.offsetWidth*dpr;
-	const height:number = canvas.offsetHeight*dpr;
+	const width:number = canvas.offsetWidth;
+	const height:number = canvas.offsetHeight;
 	stageWidth = width;
 	stageHeight = height;
 	renderer.resize(width, height);
