@@ -4,15 +4,20 @@ namespace WORMS{
         protected length:number;
         private line:ROUTES.Line;
         private routeIndex:number;
-        private step:number;
+        private step:number = 0;
         constructor(length:number){
             super();
             this.length = Math.floor(length);
-            this.bone = new ROUTES.Line();
+            this.routeIndex = 0;
+            this.setlength(length);
+        }
+        public setlength(length:number){
+            this.bone.clear();
             for(let i = 0; i < length; i ++){
                 this.bone.push(new UTILS.Pos());
             }
-            this.routeIndex = 0;
+            //re set bones
+            this.setStep(this.step);
         }
         public push(x:number, y:number){
             //先頭に加えて、１つずつずらす。

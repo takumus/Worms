@@ -55,14 +55,20 @@
 	        __extends(Base, _super);
 	        function Base(length) {
 	            var _this = _super.call(this) || this;
+	            _this.step = 0;
 	            _this.length = Math.floor(length);
-	            _this.bone = new ROUTES.Line();
-	            for (var i = 0; i < length; i++) {
-	                _this.bone.push(new UTILS.Pos());
-	            }
 	            _this.routeIndex = 0;
+	            _this.setlength(length);
 	            return _this;
 	        }
+	        Base.prototype.setlength = function (length) {
+	            this.bone.clear();
+	            for (var i = 0; i < length; i++) {
+	                this.bone.push(new UTILS.Pos());
+	            }
+	            //re set bones
+	            this.setStep(this.step);
+	        };
 	        Base.prototype.push = function (x, y) {
 	            //先頭に加えて、１つずつずらす。
 	            var i = this.bone.getLength() - 1;
