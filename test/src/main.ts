@@ -2,8 +2,10 @@ let renderer:PIXI.WebGLRenderer|PIXI.CanvasRenderer;
 const stage:PIXI.Container = new PIXI.Container();
 let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
-const targets:Array<UTILS.Pos> = [];
+const mouse:UTILS.Pos = new UTILS.Pos();
+const prevMouse:UTILS.Pos = new UTILS.Pos();
 const worms:Array<WORMS.Base> = [];
+const wormsGraphic:Array<PIXI.Graphics> = [];
 let pressing = false;
 const init = ()=> {
 	//window.devicePixelRatio;
@@ -16,70 +18,101 @@ const init = ()=> {
 	window.addEventListener('resize', resize);
 	window.addEventListener('orientationchange', resize);
 	window.addEventListener("mousemove", (e)=>{
-		if(!pressing) return;
-		targets.length = 0;
-		targets[0] = new UTILS.Pos(e.clientX, e.clientY);
+		move(e.clientX, e.clientY);
 	});
 	window.addEventListener("mousedown", (e)=>{
-		pressing = true;
-		targets.length = 0;
-		targets[0] = new UTILS.Pos(e.clientX, e.clientY);
+		begin(e.clientX, e.clientY);
 	});
 	window.addEventListener("mouseup", ()=>{
-		pressing = false;
+		end();
 	});
 	window.addEventListener("touchmove", (e:TouchEvent)=>{
-		if(!pressing) return;
-		targets.length = 0;
-		targets.length = 0;
-		targets.push(new UTILS.Pos(e.touches[0].clientX, e.touches[0].clientY));
+		move(e.touches[0].clientX, e.touches[0].clientY)
 	});
 	window.addEventListener("touchstart", (e:TouchEvent)=>{
-		pressing = true;
-		targets.length = 0;
-		targets.push(new UTILS.Pos(e.touches[0].clientX, e.touches[0].clientY));
+		begin(e.touches[0].clientX, e.touches[0].clientY);
 	});
 	window.addEventListener("touchend", (e:TouchEvent)=>{
-		pressing = false;
+		end();
 	});
-	for(let i = 0; i < 20; i ++){
-		const w = new WORMS.Simple(30, 30);
+	const begin = (x:number, y:number)=>{
+		pressing = true;
+		prevMouse.x = mouse.x = x;
+		prevMouse.y = mouse.y = y;
+	}
+	const move = (x:number, y:number)=>{
+		if(!pressing) return;
+		const dx = prevMouse.x - mouse.x;
+		const dy = prevMouse.y - mouse.y;
+		if(dx*dx + dy*dy > 2000){
+			prevMouse.x = mouse.x;
+			prevMouse.y = mouse.y;
+			console.log(dx*dx + dy*dy)
+		}
+		mouse.x = x;
+		mouse.y = y;
+	}
+	const end = ()=>{
+		pressing = false;
+	}
+	for(let i = 0; i < 10; i ++){
+		const w = new WORMS.Simple(40, 60);
 		worms.push(w);
 		stage.addChild(w);
 		w.setStep(1);
+		const g = new PIXI.Graphics();
+		wormsGraphic.push(g);
 	}
+	wormsGraphic.forEach((g)=>{
+		stage.addChild(g);
+	})
 	stage.addChild(new PIXI.Text("タッチ中はついてくる。", {fill:0xffffff, fontSize:60}));
 	draw();
 	resize();
 }
 let ppos = 0;
+let wave:number = 0;
 const draw = ()=> {
 	requestAnimationFrame(draw);
-
-	for(let i = 0; i < 20; i ++){
+	const target = mouse;
+	const mouseRadian = Math.atan2(target.y - prevMouse.y, target.x - prevMouse.x);
+	for(let i = 0; i < worms.length; i ++){
 		const w = worms[i];
-		const target = pressing?targets[0].clone():null;
-		if(w.getStep() == 1 || pressing && !w.getRoute().tail().equals(new UTILS.Pos(target.x, target.y))){
+		const g = wormsGraphic[i];
+		if(w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)){
 			
 			const pos = new UTILS.VecPos(
-				target?target.x:stageWidth*Math.random(),
-				target?target.y:stageHeight*Math.random(),
-				Math.PI*2*Math.random()
+				pressing?target.x:stageWidth*Math.random(),
+				pressing?target.y:stageHeight*Math.random(),
+				pressing?mouseRadian:Math.PI*2*Math.random()
 			);
 			//w.reverse();
 			const r = ROUTES.RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				100*Math.random()+100,
-				100*Math.random()+100,
+				pressing?100:100*Math.random()+100,
+				pressing?100:100*Math.random()+100,
 				10
 			);
 			//r.pop();
-			r.wave(pressing?10:10, 0.3);
+			r.wave(pressing?10:10, wave, true);
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
+
+			g.clear();
+			g.lineStyle(1, 0xff0000);
+			const L = r.getLength();
+			const h = r.head();
+			const t = r.tail();
+			g.drawCircle(h.x, h.y, 10);
+			g.moveTo(h.x, h.y);
+			for(let n = 1; n < L; n ++){
+				const p = r.at(n);
+				g.lineTo(p.x, p.y);
+			}
+			g.drawCircle(t.x, t.y, 10);
 		}
-		w.addStep(pressing?1:0.5);
+		w.addStep(pressing?2:1);
 		w.render();
 	}
 
@@ -89,13 +122,15 @@ const draw = ()=> {
 	//stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
 	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }
-const resize = ()=> {
+window["setWave"] = (w:number) => {
+	wave = w;
+}
+const resize = () => {
 	const width:number = canvas.offsetWidth;
 	const height:number = canvas.offsetHeight;
 	stageWidth = width;
 	stageHeight = height;
 	renderer.resize(width, height);
 }
-
 window.onload = init;
 //100コミット
