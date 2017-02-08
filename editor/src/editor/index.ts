@@ -3,16 +3,14 @@ export default class Editor extends PIXI.Container{
     private drawerCanvas:PIXI.Graphics;
     private lineCanvas:PIXI.Graphics;
     private editingLineCanvas:PIXI.Graphics;
-    private dpr:number;
-    private res:number = 20;
+    private res:number = 10;
     private nextPos:UTILS.Pos;
     private prevPos:UTILS.Pos;
     private pressing:boolean;
     private editingLine:ROUTES.Line;
     private lines:Array<ROUTES.Line> = [];
-    constructor(dpr:number){
+    constructor(){
         super();
-        this.dpr = dpr;
         this.mouse = new UTILS.Pos();
         this.drawerCanvas = new PIXI.Graphics();
         this.lineCanvas = new PIXI.Graphics();
@@ -27,13 +25,13 @@ export default class Editor extends PIXI.Container{
 
     private initMouse():void{
         window.addEventListener("mousedown", (e)=>{
-            this.mouse.x = e.clientX * this.dpr;
-            this.mouse.y = e.clientY * this.dpr;
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
             this.begin(this.mouse.x, this.mouse.y);
         });
         window.addEventListener("mousemove", (e)=>{
-            this.mouse.x = e.clientX * this.dpr;
-            this.mouse.y = e.clientY * this.dpr;
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
         });
         window.addEventListener("mouseup", (e)=>{
             //this.end();
@@ -73,6 +71,11 @@ export default class Editor extends PIXI.Container{
                 }
             }
             this.lines.push(this.editingLine.clone());
+            const w = new WORMS.Simple(this.editingLine.getLength(), 30);
+            w.setRoute(this.editingLine);
+            w.setStep(0);
+            w.render();
+            this.addChild(w);
         }
         //this.editingLine = null;
     }

@@ -51,10 +51,8 @@
 	var canvas;
 	var stageWidth = 0, stageHeight = 0;
 	var editor;
-	var dpr;
 	var init = function () {
-	    dpr = 2; //window.devicePixelRatio;
-	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true });
+	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true, resolution: 2 });
 	    canvas = document.getElementById("content");
 	    canvas.appendChild(renderer.view);
 	    renderer.view.style.width = "100%";
@@ -62,7 +60,7 @@
 	    window.addEventListener("resize", resize);
 	    window.addEventListener('resize', resize);
 	    window.addEventListener('orientationchange', resize);
-	    editor = new editor_1.default(dpr);
+	    editor = new editor_1.default();
 	    stage.addChild(editor);
 	    draw();
 	    resize();
@@ -75,8 +73,8 @@
 	    renderer.render(stage);
 	};
 	var resize = function () {
-	    var width = canvas.offsetWidth * dpr;
-	    var height = canvas.offsetHeight * dpr;
+	    var width = canvas.offsetWidth;
+	    var height = canvas.offsetHeight;
 	    stageWidth = width;
 	    stageHeight = height;
 	    renderer.resize(width, height);
@@ -96,11 +94,10 @@
 	};
 	var Editor = (function (_super) {
 	    __extends(Editor, _super);
-	    function Editor(dpr) {
+	    function Editor() {
 	        var _this = _super.call(this) || this;
-	        _this.res = 20;
+	        _this.res = 10;
 	        _this.lines = [];
-	        _this.dpr = dpr;
 	        _this.mouse = new UTILS.Pos();
 	        _this.drawerCanvas = new PIXI.Graphics();
 	        _this.lineCanvas = new PIXI.Graphics();
@@ -116,13 +113,13 @@
 	    Editor.prototype.initMouse = function () {
 	        var _this = this;
 	        window.addEventListener("mousedown", function (e) {
-	            _this.mouse.x = e.clientX * _this.dpr;
-	            _this.mouse.y = e.clientY * _this.dpr;
+	            _this.mouse.x = e.clientX;
+	            _this.mouse.y = e.clientY;
 	            _this.begin(_this.mouse.x, _this.mouse.y);
 	        });
 	        window.addEventListener("mousemove", function (e) {
-	            _this.mouse.x = e.clientX * _this.dpr;
-	            _this.mouse.y = e.clientY * _this.dpr;
+	            _this.mouse.x = e.clientX;
+	            _this.mouse.y = e.clientY;
 	        });
 	        window.addEventListener("mouseup", function (e) {
 	            //this.end();
@@ -167,6 +164,11 @@
 	                }
 	            }
 	            this.lines.push(this.editingLine.clone());
+	            var w = new WORMS.Simple(this.editingLine.getLength(), 30);
+	            w.setRoute(this.editingLine);
+	            w.setStep(0);
+	            w.render();
+	            this.addChild(w);
 	        }
 	        //this.editingLine = null;
 	    };
