@@ -5,7 +5,7 @@ let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
 let editor:Editor;
 const init = ()=> {
-	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2});
+	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2, transparent:true});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
 	canvas.appendChild(renderer.view);
 	renderer.view.style.width = "100%";
