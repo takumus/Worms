@@ -100,13 +100,14 @@
 	        _this.lines = [];
 	        _this.LINE_COLOR = 0x0000ff;
 	        _this.EDITING_LINE_COLOR = 0xff0000;
-	        _this.DRAWER_COLOR = 0x666666;
+	        _this.DRAWER_COLOR = 0x00ff00;
+	        _this.DRAWER_CIRCLE_COLOR = 0x0000ff;
 	        _this.mouse = new UTILS.Pos();
 	        _this.drawerCanvas = new PIXI.Graphics();
 	        _this.lineCanvas = new PIXI.Graphics();
 	        _this.editingLineCanvas = new PIXI.Graphics();
 	        _this.wormsContainer = new PIXI.Container();
-	        //this.addChild(this.wormsContainer);
+	        _this.addChild(_this.wormsContainer);
 	        _this.addChild(_this.drawerCanvas);
 	        _this.addChild(_this.lineCanvas);
 	        _this.addChild(_this.editingLineCanvas);
@@ -169,7 +170,7 @@
 	                }
 	            }
 	            this.lines.push(this.editingLine.clone());
-	            var w = new WORMS.Simple(this.editingLine.getLength(), 30);
+	            var w = new WORMS.Simple(this.editingLine.getLength(), 30, 0xffffff, 0x000000);
 	            w.setRoute(this.editingLine);
 	            w.setStep(0);
 	            w.render();
@@ -193,15 +194,16 @@
 	            return;
 	        this.drawerCanvas.clear();
 	        this.drawerCanvas.lineStyle(1, this.DRAWER_COLOR);
-	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 2);
 	        var dx = this.mouse.x - this.prevPos.x;
 	        var dy = this.mouse.y - this.prevPos.y;
 	        var d = Math.sqrt(dx * dx + dy * dy);
 	        this.nextPos.x = this.prevPos.x + dx / d * this.res;
 	        this.nextPos.y = this.prevPos.y + dy / d * this.res;
-	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 2);
 	        this.drawerCanvas.moveTo(this.prevPos.x - dx, this.prevPos.y - dy);
 	        this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
+	        this.drawerCanvas.lineStyle(1, this.DRAWER_CIRCLE_COLOR);
+	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 1);
+	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 1);
 	    };
 	    return Editor;
 	}(PIXI.Container));
