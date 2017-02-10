@@ -14,19 +14,19 @@
     <script src="../../worms/dist/index.js"></script>
 	<script src="./js/app.dist.js"></script>-->
     <script type="text/javascript">
-        function load(id, scripts){
-            if(id >= scripts.length) return;
+        function load(scripts){
+            if(scripts.length < 1) return;
             var elem = document.createElement("script");
-            var script = scripts[id];
+            var script = scripts.shift();
             elem.src = script+"?cache="+new Date().getTime();
             elem.type = "text/javascript";
-            document.head.appendChild(elem);
             elem.onload = function(){
-                console.log(id, script, "loaded.");
-                load(id+1, scripts);
+                console.log(script, "loaded.");
+                load(scripts);
             }
+            document.head.appendChild(elem);
         }
-        load(0, [
+        load([
             "../../utils/dist/index.js",
             "../../routes/dist/index.js",
             "../../worms/dist/index.js",
