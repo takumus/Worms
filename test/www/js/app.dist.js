@@ -100,7 +100,11 @@
 	        pressing = false;
 	    };
 	    for (var i = 0; i < 10; i++) {
-	        var w = new WORMS.Nasty2(50, { headLength: 15, tailLength: 30, thickness: i == 0 ? 30 : 20 }, i == 0 ? 0xffffff : 0x000000, i == 0 ? 0x666666 : 0xffffff);
+	        var w = new WORMS.Nasty2(30, {
+	            headLength: 10,
+	            tailLength: 20,
+	            thickness: i == 0 ? 20 : 15
+	        }, i == 0 ? 0xffffff : 0x000000, i == 0 ? 0x666666 : 0xffffff);
 	        worms.push(w);
 	        stage.addChild(w);
 	        w.setStep(1);
