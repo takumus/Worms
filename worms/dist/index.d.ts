@@ -42,3 +42,20 @@ declare namespace WORMS {
         private renderWith(color, thickness);
     }
 }
+declare namespace WORMS {
+    interface NastyOption {
+        headLength: number;
+        tailLength: number;
+        thickness: number;
+    }
+    class Nasty2 extends Base {
+        private body;
+        private colors;
+        private options;
+        private headLength;
+        private tailLength;
+        constructor(length: number, options: NastyOption, fillColor?: number, borderColor?: number);
+        setColor(fillColor: number, borderColor: number): void;
+        render(): void;
+    }
+}

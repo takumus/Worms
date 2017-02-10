@@ -270,6 +270,88 @@
 	///<reference path="nasty.ts" />
 	///<reference path="simple.ts" />
 	window["WORMS"] = WORMS;
+	///<reference path="@base.ts" />
+	var WORMS;
+	(function (WORMS) {
+	    var Nasty2 = (function (_super) {
+	        __extends(Nasty2, _super);
+	        function Nasty2(length, options, fillColor, borderColor) {
+	            if (fillColor === void 0) { fillColor = 0xffffff; }
+	            if (borderColor === void 0) { borderColor = 0x000000; }
+	            var _this = _super.call(this, length) || this;
+	            _this.options = options;
+	            _this.headLength = options.headLength;
+	            _this.tailLength = options.tailLength;
+	            _this.body = [];
+	            for (var i = 0; i < length; i++) {
+	                _this.body.push(new BodyPos());
+	            }
+	            _this.setColor(fillColor, borderColor);
+	            return _this;
+	        }
+	        Nasty2.prototype.setColor = function (fillColor, borderColor) {
+	            this.colors = {
+	                fill: fillColor,
+	                border: borderColor
+	            };
+	        };
+	        Nasty2.prototype.render = function () {
+	            var bbone = this.bone.at(0);
+	            //ワームの外殻を生成
+	            var ebone = this.bone.at(this.bone.getLength() - 1);
+	            var bbody = this.body[0];
+	            var ebody = this.body[this.body.length - 1];
+	            bbody.left.x = bbone.x;
+	            bbody.left.y = bbone.y;
+	            var L = this.bone.getLength() - 1;
+	            for (var i = 1; i < L; i++) {
+	                var nbone = this.bone.at(i);
+	                var nbody = this.body[i];
+	                var vx = this.bone.at(i - 1).x - nbone.x;
+	                var vy = this.bone.at(i - 1).y - nbone.y;
+	                var radian = Matthew.H_PI;
+	                if (i < this.headLength) {
+	                    radian = i / this.headLength * Matthew.H_PI;
+	                }
+	                else if (i > L - this.tailLength) {
+	                    radian = (i - (L - this.tailLength)) / this.tailLength * Matthew.H_PI + Matthew.H_PI;
+	                }
+	                var r = Math.sin(radian) * this.options.thickness;
+	                var vl = vx * vx + vy * vy;
+	                var vr = Math.sqrt(vl);
+	                vx = vx / vr * r;
+	                vy = vy / vr * r;
+	                nbody.left.x = nbone.x + -vy;
+	                nbody.left.y = nbone.y + vx;
+	                nbody.right.x = nbone.x + vy;
+	                nbody.right.y = nbone.y + -vx;
+	            }
+	            ebody.left.x = ebone.x;
+	            ebody.left.y = ebone.y;
+	            this.clear();
+	            this.lineStyle(3, this.colors.border);
+	            this.beginFill(this.colors.fill);
+	            this.moveTo(bbody.left.x, bbody.left.y);
+	            for (var i = 1; i < this.body.length; i++) {
+	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
+	            }
+	            for (var i = this.body.length - 2; i >= 2; i--) {
+	                this.lineTo(this.body[i].right.x, this.body[i].right.y);
+	            }
+	            this.lineTo(bbody.left.x, bbody.left.y);
+	            this.endFill();
+	        };
+	        return Nasty2;
+	    }(WORMS.Base));
+	    WORMS.Nasty2 = Nasty2;
+	    var BodyPos = (function () {
+	        function BodyPos() {
+	            this.left = new UTILS.Pos();
+	            this.right = new UTILS.Pos();
+	        }
+	        return BodyPos;
+	    }());
+	})(WORMS || (WORMS = {}));
 
 
 /***/ }
