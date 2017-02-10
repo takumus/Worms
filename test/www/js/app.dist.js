@@ -100,7 +100,7 @@
 	        pressing = false;
 	    };
 	    for (var i = 0; i < 10; i++) {
-	        var w = new WORMS.Nasty2(50, { headLength: 10, tailLength: 30, thickness: 20 }, 0xffffff * Math.random(), 0xffffff * Math.random());
+	        var w = new WORMS.Nasty2(50, { headLength: 10, tailLength: 30, thickness: 20 }, 0x000000, 0xffffff);
 	        worms.push(w);
 	        stage.addChild(w);
 	        w.setStep(1);

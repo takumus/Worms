@@ -41,7 +41,6 @@ const init = ()=> {
 		prevMouse.y = mouse.y = y;
 	}
 	const move = (x:number, y:number)=>{
-		if(!pressing) return;
 		const dx = prevMouse.x - mouse.x;
 		const dy = prevMouse.y - mouse.y;
 		if(dx*dx + dy*dy > 2000){
@@ -55,7 +54,7 @@ const init = ()=> {
 		pressing = false;
 	}
 	for(let i = 0; i < 10; i ++){
-		const w = new WORMS.Simple(80, 60);
+		const w = new WORMS.Nasty2(50,{headLength:10, tailLength:30, thickness:20}, 0x000000, 0xffffff);
 		worms.push(w);
 		stage.addChild(w);
 		w.setStep(1);
@@ -69,7 +68,7 @@ const init = ()=> {
 	draw();
 	resize();
 }
-let wave:number = 0.2;
+let wave:number = 0.12;
 const draw = ()=> {
 	requestAnimationFrame(draw);
 	const target = mouse;
@@ -93,24 +92,26 @@ const draw = ()=> {
 				5
 			);
 			//r.pop();
-			r.wave(pressing?10:10, wave, true);
+			r.wave(16, wave, true);
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
-
+			/*
 			g.clear();
-			g.lineStyle(1, 0xff0000);
 			const L = r.getLength();
 			const h = r.head();
 			const t = r.tail();
+			g.lineStyle(1, 0xffffff);
 			g.drawCircle(h.x, h.y, 10);
+			g.drawCircle(t.x, t.y, 10);
+			g.lineStyle(1, 0xffffff*Math.random());
 			g.moveTo(h.x, h.y);
 			for(let n = 1; n < L; n ++){
 				const p = r.at(n);
 				g.lineTo(p.x, p.y);
 			}
-			g.drawCircle(t.x, t.y, 10);
+			//*/
 		}
-		w.addStep(pressing?4:4);
+		w.addStep(pressing?5:2);
 		w.render();
 	}
 
@@ -132,3 +133,4 @@ const resize = () => {
 }
 window.onload = init;
 //100コミット
+console.log("call function 'setWave(freq)' to set wave frequency.");
