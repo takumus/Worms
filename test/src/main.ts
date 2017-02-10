@@ -54,7 +54,7 @@ const init = ()=> {
 		pressing = false;
 	}
 	for(let i = 0; i < 10; i ++){
-		const w = new WORMS.Nasty2(50,{headLength:10, tailLength:30, thickness:20}, 0x000000, 0xffffff);
+		const w = new WORMS.Nasty2(50,{headLength:15, tailLength:30, thickness:i==0?30:20}, i==0?0xffffff:0x000000, i==0?0x666666:0xffffff);
 		worms.push(w);
 		stage.addChild(w);
 		w.setStep(1);
@@ -78,17 +78,23 @@ const draw = ()=> {
 		const g = wormsGraphic[i];
 		if(w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)){
 			
-			const pos = new UTILS.VecPos(
-				pressing?target.x:stageWidth*Math.random(),
-				pressing?target.y:stageHeight*Math.random(),
-				Math.PI*2*Math.random()
-			);
+			let pos:UTILS.VecPos;
+			if(i!=0){
+				pos = worms[0].getTailVecPos().clone();
+				pos.add(Math.PI);
+			}else{
+				pos = new UTILS.VecPos(
+					pressing?target.x:stageWidth*Math.random(),
+					pressing?target.y:stageHeight*Math.random(),
+					Math.PI*2*Math.random()
+				);
+			}
 			//w.reverse();
 			const r = ROUTES.RouteGenerator.getMinimumRoute(
 				w.getHeadVecPos(),
 				pos,
-				pressing?100:100*Math.random()+100,
-				pressing?100:100*Math.random()+100,
+				i==0?60:100*Math.random()+100,
+				i==0?60:100*Math.random()+100,
 				5
 			);
 			//r.pop();
@@ -111,7 +117,7 @@ const draw = ()=> {
 			}
 			//*/
 		}
-		w.addStep(pressing?5:2);
+		w.addStep(i!=0?5:3);
 		w.render();
 	}
 

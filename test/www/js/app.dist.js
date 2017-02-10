@@ -100,7 +100,7 @@
 	        pressing = false;
 	    };
 	    for (var i = 0; i < 10; i++) {
-	        var w = new WORMS.Nasty2(50, { headLength: 10, tailLength: 30, thickness: 20 }, 0x000000, 0xffffff);
+	        var w = new WORMS.Nasty2(50, { headLength: 15, tailLength: 30, thickness: i == 0 ? 30 : 20 }, i == 0 ? 0xffffff : 0x000000, i == 0 ? 0x666666 : 0xffffff);
 	        worms.push(w);
 	        stage.addChild(w);
 	        w.setStep(1);
@@ -123,15 +123,22 @@
 	        var w = worms[i];
 	        var g = wormsGraphic[i];
 	        if (w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)) {
-	            var pos = new UTILS.VecPos(pressing ? target.x : stageWidth * Math.random(), pressing ? target.y : stageHeight * Math.random(), Math.PI * 2 * Math.random());
+	            var pos = void 0;
+	            if (i != 0) {
+	                pos = worms[0].getTailVecPos().clone();
+	                pos.add(Math.PI);
+	            }
+	            else {
+	                pos = new UTILS.VecPos(pressing ? target.x : stageWidth * Math.random(), pressing ? target.y : stageHeight * Math.random(), Math.PI * 2 * Math.random());
+	            }
 	            //w.reverse();
-	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, pressing ? 100 : 100 * Math.random() + 100, pressing ? 100 : 100 * Math.random() + 100, 5);
+	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i == 0 ? 60 : 100 * Math.random() + 100, i == 0 ? 60 : 100 * Math.random() + 100, 5);
 	            //r.pop();
 	            r.wave(16, wave, true);
 	            w.addRouteFromCurrent(r);
 	            w.setStep(0);
 	        }
-	        w.addStep(pressing ? 5 : 2);
+	        w.addStep(i != 0 ? 5 : 3);
 	        w.render();
 	    }
 	    TWEEN.update();
