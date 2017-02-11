@@ -100,7 +100,7 @@ const draw = ()=> {
 	for(let i = 0; i < worms.length; i ++){
 		const w = worms[i];
 		const g = wormsGraphic[i];
-		if(w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)){
+		if(w.getStep() == 1 || i == 0 && pressing && !w.getRoute().tail().equals(target)){
 			
 			let pos:UTILS.VecPos;
 			if(i!=0){

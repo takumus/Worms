@@ -141,7 +141,7 @@
 	    for (var i = 0; i < worms.length; i++) {
 	        var w = worms[i];
 	        var g = wormsGraphic[i];
-	        if (w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)) {
+	        if (w.getStep() == 1 || i == 0 && pressing && !w.getRoute().tail().equals(target)) {
 	            var pos = void 0;
 	            if (i != 0) {
 	                pos = worms[0].getTailVecPos().clone();
