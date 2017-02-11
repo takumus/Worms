@@ -58,21 +58,17 @@
 	var init = function () {
 	    takumusObj.forEach(function (s) {
 	        var line = new ROUTES.Line();
-	        if (s.data.length < 20)
-	            return;
 	        s.data.forEach(function (p) {
-	            line.push(new UTILS.Pos(p.x + 100, p.y + 100));
+	            line.push(new UTILS.Pos(p.x, p.y));
 	        });
 	        takumuses.push(line);
 	    });
-	    console.log(takumuses);
 	    //window.devicePixelRatio;
-	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true, resolution: 2 });
+	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true, resolution: 2, transparent: false });
 	    canvas = document.getElementById("content");
 	    canvas.appendChild(renderer.view);
 	    renderer.view.style.width = "100%";
 	    renderer.view.style.height = "100%";
-	    resize();
 	    window.addEventListener("resize", resize);
 	    window.addEventListener('resize', resize);
 	    window.addEventListener('orientationchange', resize);
@@ -98,6 +94,10 @@
 	        pressing = true;
 	        prevMouse.x = mouse.x = x;
 	        prevMouse.y = mouse.y = y;
+	        var c = 0xffffff * Math.random();
+	        for (var i = 0; i < worms.length; i++) {
+	            worms[i].setColor(i == 0 ? 0xffffff * Math.random() : 0x000000, i == 0 ? 0x000000 : c);
+	        }
 	    };
 	    var move = function (x, y) {
 	        var dx = prevMouse.x - mouse.x;
@@ -112,25 +112,17 @@
 	    var end = function () {
 	        pressing = false;
 	    };
-	    for (var i = 0; i < takumuses.length; i++) {
-	        var t = takumuses[i];
-	        var w = void 0;
-	        w = new WORMS.Nasty2(t.getLength(), {
-	            headLength: t.getLength() * 0.4,
-	            tailLength: t.getLength() * 0.4,
-	            thickness: 10
-	        }, 0xffffff, 0xffffff);
-	        w = new WORMS.Simple(t.getLength(), 20, 0, 0xffffff);
-	        if (Math.random() < 0.5)
-	            t.reverse();
-	        var r = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(stageWidth / 2, stageHeight * 2, Math.random() * Matthew.D_PI), new UTILS.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.random() * Matthew.PI), 80 * Math.random() + 100, 80 * Math.random() + 100, 2);
-	        var r2 = ROUTES.RouteGenerator.getMinimumRoute(r.getTailVecPos().add(Math.PI), t.getHeadVecPos(), 80 * Math.random() + 100, 80 * Math.random() + 100, 2);
-	        r.pushLine(r2);
-	        //r.wave(10, 0.1);
-	        r.pushLine(t);
-	        w.setRoute(r);
+	    var c = 0xffffff * Math.random();
+	    for (var i = 0; i < 16; i++) {
+	        var w = new WORMS.Nasty2(30, {
+	            headLength: 10,
+	            tailLength: 20,
+	            thickness: i == 0 ? 20 : 15
+	        }, i == 0 ? 0xffffff * Math.random() : 0x000000, i == 0 ? 0x000000 : 0xffffff * Math.random());
 	        worms.push(w);
 	        stage.addChild(w);
+	        w.blendMode = PIXI.BLEND_MODES.ADD;
+	        w.setStep(1);
 	        var g = new PIXI.Graphics();
 	        wormsGraphic.push(g);
 	    }
@@ -139,18 +131,52 @@
 	    });
 	    stage.addChild(new PIXI.Text("タッチ中はついてくる。", { fill: 0xffffff, fontSize: 60 }));
 	    draw();
+	    resize();
 	};
 	var wave = 0.12;
-	var mx = 0;
 	var draw = function () {
 	    requestAnimationFrame(draw);
-	    mx += (mouse.x - mx) * 0.1;
 	    var target = mouse;
 	    var mouseRadian = Math.atan2(target.y - prevMouse.y, target.x - prevMouse.x);
 	    for (var i = 0; i < worms.length; i++) {
 	        var w = worms[i];
 	        var g = wormsGraphic[i];
-	        w.setStep((mx * 1.2 + i * 10) / stageWidth - 0.1);
+	        if (w.getStep() == 1 || pressing && !w.getRoute().tail().equals(target)) {
+	            var pos = void 0;
+	            if (i != 0) {
+	                pos = worms[0].getTailVecPos().clone();
+	                pos.pos.x += Math.random() * 200 - 100;
+	                pos.pos.y += Math.random() * 200 - 100;
+	                pos.add(Math.PI);
+	            }
+	            else {
+	                var p = 0.5;
+	                pos = new UTILS.VecPos(pressing ? target.x : stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), pressing ? target.y : stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Math.PI * 2 * Math.random());
+	            }
+	            //w.reverse();
+	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i == 0 ? 200 : 50 * Math.random() + 100, i == 0 ? 200 : 50 * Math.random() + 100, 5);
+	            //r.pop();
+	            r.wave(16, wave, true);
+	            w.addRouteFromCurrent(r);
+	            w.setStep(0);
+	            ///*
+	            g.clear();
+	            var L = r.getLength();
+	            var h = r.head();
+	            var t = r.tail();
+	            var gc = 0xffffff * Math.random();
+	            g.lineStyle(1, gc, 0.5);
+	            g.drawCircle(h.x, h.y, 10);
+	            g.drawCircle(t.x, t.y, 10);
+	            g.moveTo(h.x, h.y);
+	            for (var n = 1; n < L; n++) {
+	                var p = r.at(n);
+	                g.lineTo(p.x, p.y);
+	            }
+	        }
+	        w.addStep(i != 0 ? 2 : 1.5);
+	        var add = Math.sin(w.getHeadVecPos().r) * 2;
+	        //w.addStep(add > 0?add:0);
 	        w.render();
 	    }
 	    TWEEN.update();
