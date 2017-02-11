@@ -96,7 +96,7 @@
 	        prevMouse.y = mouse.y = y;
 	        var c = 0xffffff * Math.random();
 	        for (var i = 0; i < worms.length; i++) {
-	            worms[i].setColor(i == 0 ? 0xffffff * Math.random() : 0x000000, i == 0 ? 0x000000 : c);
+	            worms[i].setColor(i != 0 ? c : 0x000000, i != 0 ? 0x000000 : c);
 	        }
 	    };
 	    var move = function (x, y) {
@@ -113,12 +113,12 @@
 	        pressing = false;
 	    };
 	    var c = 0xffffff * Math.random();
-	    for (var i = 0; i < 16; i++) {
+	    for (var i = 0; i < 36; i++) {
 	        var w = new WORMS.Nasty2(30, {
 	            headLength: 10,
 	            tailLength: 20,
 	            thickness: i == 0 ? 20 : 15
-	        }, i == 0 ? 0xffffff * Math.random() : 0x000000, i == 0 ? 0x000000 : 0xffffff * Math.random());
+	        }, i != 0 ? 0xffffff * Math.random() : 0x000000, i != 0 ? 0x000000 : 0xffffff * Math.random());
 	        worms.push(w);
 	        stage.addChild(w);
 	        w.blendMode = PIXI.BLEND_MODES.ADD;
@@ -145,8 +145,8 @@
 	            var pos = void 0;
 	            if (i != 0) {
 	                pos = worms[0].getTailVecPos().clone();
-	                pos.pos.x += Math.random() * 200 - 100;
-	                pos.pos.y += Math.random() * 200 - 100;
+	                pos.pos.x += Math.random() * 300 - 150;
+	                pos.pos.y += Math.random() * 300 - 150;
 	                pos.add(Math.PI);
 	            }
 	            else {
@@ -159,20 +159,6 @@
 	            r.wave(16, wave, true);
 	            w.addRouteFromCurrent(r);
 	            w.setStep(0);
-	            ///*
-	            g.clear();
-	            var L = r.getLength();
-	            var h = r.head();
-	            var t = r.tail();
-	            var gc = 0xffffff * Math.random();
-	            g.lineStyle(1, gc, 0.5);
-	            g.drawCircle(h.x, h.y, 10);
-	            g.drawCircle(t.x, t.y, 10);
-	            g.moveTo(h.x, h.y);
-	            for (var n = 1; n < L; n++) {
-	                var p = r.at(n);
-	                g.lineTo(p.x, p.y);
-	            }
 	        }
 	        w.addStep(i != 0 ? 2 : 1.5);
 	        var add = Math.sin(w.getHeadVecPos().r) * 2;

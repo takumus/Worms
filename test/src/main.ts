@@ -50,7 +50,7 @@ const init = ()=> {
 		prevMouse.y = mouse.y = y;
 		const c = 0xffffff*Math.random()
 		for(let i = 0; i < worms.length; i ++){
-			worms[i].setColor(i==0?0xffffff*Math.random():0x000000, i==0?0x000000:c);
+			worms[i].setColor(i!=0?c:0x000000, i!=0?0x000000:c);
 		}
 	}
 	const move = (x:number, y:number)=>{
@@ -67,7 +67,7 @@ const init = ()=> {
 		pressing = false;
 	}
 	const c = 0xffffff*Math.random();
-	for(let i = 0; i < 16; i ++){
+	for(let i = 0; i < 36; i ++){
 		const w = new WORMS.Nasty2(
 			30,
 			{
@@ -75,8 +75,8 @@ const init = ()=> {
 				tailLength:20,
 				thickness:i==0?20:15
 			},
-			i==0?0xffffff*Math.random():0x000000,
-			i==0?0x000000:0xffffff*Math.random()
+			i!=0?0xffffff*Math.random():0x000000,
+			i!=0?0x000000:0xffffff*Math.random()
 		);
 		worms.push(w);
 		stage.addChild(w);
@@ -105,8 +105,8 @@ const draw = ()=> {
 			let pos:UTILS.VecPos;
 			if(i!=0){
 				pos = worms[0].getTailVecPos().clone();
-				pos.pos.x += Math.random()*200-100;
-				pos.pos.y += Math.random()*200-100;
+				pos.pos.x += Math.random()*300-150;
+				pos.pos.y += Math.random()*300-150;
 				pos.add(Math.PI);
 			}else{
 				const p = 0.5;
@@ -130,13 +130,13 @@ const draw = ()=> {
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
 
-			///*
+			/*
 			g.clear();
 			const L = r.getLength();
 			const h = r.head();
 			const t = r.tail();
 			const gc = 0xffffff*Math.random();
-			g.lineStyle(1, gc, 0.5);
+			g.lineStyle(1, gc, 0.8);
 			g.drawCircle(h.x, h.y, 10);
 			g.drawCircle(t.x, t.y, 10);
 			g.moveTo(h.x, h.y);
