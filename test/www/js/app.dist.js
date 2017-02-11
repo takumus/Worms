@@ -120,12 +120,13 @@
 	            tailLength: t.getLength() * 0.4,
 	            thickness: 10
 	        }, 0xffffff, 0xffffff);
-	        w = new WORMS.Simple(t.getLength(), 10, 0xffffff, 0xffffff);
-	        t.reverse();
-	        var r = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(stageWidth / 2, stageHeight * 2, Math.random() * Matthew.D_PI), new UTILS.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.random() * Matthew.PI), 80, 80, 2);
-	        var r2 = ROUTES.RouteGenerator.getMinimumRoute(r.getTailVecPos().add(Math.PI), t.getHeadVecPos(), 80, 80, 2);
+	        w = new WORMS.Simple(t.getLength(), 20, 0, 0xffffff);
+	        if (Math.random() < 0.5)
+	            t.reverse();
+	        var r = ROUTES.RouteGenerator.getMinimumRoute(new UTILS.VecPos(stageWidth / 2, stageHeight * 2, Math.random() * Matthew.D_PI), new UTILS.VecPos(stageWidth * Math.random(), stageHeight * Math.random(), Math.random() * Matthew.PI), 80 * Math.random() + 100, 80 * Math.random() + 100, 2);
+	        var r2 = ROUTES.RouteGenerator.getMinimumRoute(r.getTailVecPos().add(Math.PI), t.getHeadVecPos(), 80 * Math.random() + 100, 80 * Math.random() + 100, 2);
 	        r.pushLine(r2);
-	        r.wave(10, 0.1);
+	        //r.wave(10, 0.1);
 	        r.pushLine(t);
 	        w.setRoute(r);
 	        worms.push(w);
