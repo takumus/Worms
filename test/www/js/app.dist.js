@@ -159,6 +159,20 @@
 	            r.wave(16, wave, true);
 	            w.addRouteFromCurrent(r);
 	            w.setStep(0);
+	            ///*
+	            g.clear();
+	            var L = r.getLength();
+	            var h = r.head();
+	            var t = r.tail();
+	            var gc = 0xffffff;
+	            g.lineStyle(1, gc, 0.2);
+	            g.drawCircle(h.x, h.y, 10);
+	            g.drawCircle(t.x, t.y, 10);
+	            g.moveTo(h.x, h.y);
+	            for (var n = 1; n < L; n++) {
+	                var p = r.at(n);
+	                g.lineTo(p.x, p.y);
+	            }
 	        }
 	        w.addStep(i != 0 ? 2 : 1.5);
 	        var add = Math.sin(w.getHeadVecPos().r) * 2;

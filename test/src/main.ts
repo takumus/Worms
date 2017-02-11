@@ -130,13 +130,13 @@ const draw = ()=> {
 			w.addRouteFromCurrent(r);
 			w.setStep(0);
 
-			/*
+			///*
 			g.clear();
 			const L = r.getLength();
 			const h = r.head();
 			const t = r.tail();
-			const gc = 0xffffff*Math.random();
-			g.lineStyle(1, gc, 0.8);
+			const gc = 0xffffff;
+			g.lineStyle(1, gc, 0.2);
 			g.drawCircle(h.x, h.y, 10);
 			g.drawCircle(t.x, t.y, 10);
 			g.moveTo(h.x, h.y);
