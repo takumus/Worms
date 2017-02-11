@@ -67,7 +67,7 @@ const init = ()=> {
 		pressing = false;
 	}
 	const c = 0xffffff*Math.random();
-	for(let i = 0; i < 36; i ++){
+	for(let i = 0; i < 18; i ++){
 		const w = new WORMS.Nasty2(
 			30,
 			{

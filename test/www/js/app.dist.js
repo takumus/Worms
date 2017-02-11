@@ -113,7 +113,7 @@
 	        pressing = false;
 	    };
 	    var c = 0xffffff * Math.random();
-	    for (var i = 0; i < 36; i++) {
+	    for (var i = 0; i < 18; i++) {
 	        var w = new WORMS.Nasty2(30, {
 	            headLength: 10,
 	            tailLength: 20,
