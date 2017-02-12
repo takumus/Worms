@@ -59,16 +59,19 @@
 	    waveFreq: 0.12,
 	    waveAmp: 16,
 	    thickness: 15,
-	    length: 30
+	    length: 30,
+	    speed: 1.8
 	};
 	var childProps = {
 	    waveFreq: 0.2,
 	    waveAmp: 10,
-	    thickness: 10,
-	    length: 20
+	    thickness: 13,
+	    length: 25,
+	    speed: 1.9
 	};
 	var globalProps = {
-	    guide: false
+	    guide: false,
+	    speed: 1
 	};
 	var init = function () {
 	    {
@@ -76,30 +79,37 @@
 	        var parent_1 = gui.addFolder("Parent worm");
 	        parent_1.add(parentProps, 'waveFreq', 0, 1);
 	        parent_1.add(parentProps, 'waveAmp', 0, 100);
-	        parent_1.add(parentProps, 'thickness', 0, 100).onChange(function () {
+	        parent_1.add(parentProps, 'thickness', 1, 100).onChange(function () {
 	            worms[0].getOption().thickness = parentProps.thickness;
 	        });
-	        /*parent.add(parentProps, 'length', 0, 100).onChange(()=>{
+	        parent_1.add(parentProps, 'length', 2, 100).onChange(function () {
 	            worms[0].setLength(parentProps.length);
-	        });*/
+	            worms[0].getOption().headLength = parentProps.length * 0.3;
+	            worms[0].getOption().tailLength = parentProps.length * 0.7;
+	        });
+	        parent_1.add(parentProps, 'speed', 0.1, 10);
 	        parent_1.open();
 	        var child = gui.addFolder("Child worm");
 	        child.add(childProps, 'waveFreq', 0, 1);
 	        child.add(childProps, 'waveAmp', 0, 100);
-	        child.add(childProps, 'thickness', 0, 100).onChange(function () {
+	        child.add(childProps, 'thickness', 1, 100).onChange(function () {
 	            for (var i = 1; i < worms.length; i++) {
 	                worms[i].getOption().thickness = childProps.thickness;
 	            }
 	        });
-	        /*child.add(childProps, 'length', 0, 100).onChange(()=>{
-	            for(let i = 1; i < worms.length; i ++){
+	        child.add(childProps, 'length', 2, 100).onChange(function () {
+	            for (var i = 1; i < worms.length; i++) {
 	                worms[i].setLength(childProps.length);
+	                worms[i].getOption().headLength = childProps.length * 0.3;
+	                worms[i].getOption().tailLength = childProps.length * 0.7;
 	            }
-	        });*/
+	        });
+	        child.add(childProps, 'speed', 0.1, 10);
 	        child.open();
 	        gui.add(globalProps, 'guide').onChange(function () {
 	            wormsGuideContainer.visible = globalProps.guide;
 	        });
+	        gui.add(globalProps, 'speed', 0, 10);
 	    }
 	    wormsGuideContainer.visible = false;
 	    //window.devicePixelRatio;
@@ -132,8 +142,8 @@
 	    });
 	    stage.addChild(wormsGuideContainer);
 	    for (var i = 0; i < 18; i++) {
-	        var l = i == 0 ? 30 : 20;
-	        var t = i == 0 ? 15 : 10;
+	        var l = i == 0 ? parentProps.length : childProps.length;
+	        var t = i == 0 ? parentProps.thickness : childProps.thickness;
 	        var w = new WORMS.Nasty2(l, {
 	            headLength: l * 0.3,
 	            tailLength: l * 0.7,
@@ -175,7 +185,7 @@
 	                pos = new UTILS.VecPos(pressing ? target.x : stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), pressing ? target.y : stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Math.atan2(dy, dx));
 	            }
 	            //w.reverse();
-	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i == 0 ? 200 : 50 * Math.random() + 70, i == 0 ? 200 : 50 * Math.random() + 70, 5);
+	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i == 0 ? 200 : 50 * Math.random() + 60, i == 0 ? 200 : 50 * Math.random() + 60, 5);
 	            //r.pop();
 	            r.wave(i == 0 ? parentProps.waveAmp : childProps.waveAmp, i == 0 ? parentProps.waveFreq : childProps.waveFreq, i != 0);
 	            w.addRouteFromCurrent(r);
@@ -197,7 +207,7 @@
 	            }
 	            pressing = false;
 	        }
-	        w.addStep(i != 0 ? 2 : 1.5);
+	        w.addStep((i != 0 ? childProps.speed : parentProps.speed) * globalProps.speed);
 	        var add = Math.sin(w.getHeadVecPos().r) * 2;
 	        //w.addStep(add > 0?add:0);
 	        w.render();
