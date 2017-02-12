@@ -43,7 +43,8 @@ namespace WORMS{
             this.line = line;
         }
         public addStep(step:number):boolean{
-            const p = 1 / this.line.getLength() * step;
+            const length = this.line.getLength() - this.length;
+            const p = step / length;
             return this.setStep(this.step + p);
         }
         public setStep(step:number):boolean{
