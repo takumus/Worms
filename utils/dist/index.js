@@ -101,6 +101,12 @@
 	        return Circle;
 	    }());
 	    UTILS.Circle = Circle;
+	    function def(value, defValue) {
+	        if (typeof value == "undefined")
+	            return defValue;
+	        return value;
+	    }
+	    UTILS.def = def;
 	})(UTILS || (UTILS = {}));
 	var Matthew;
 	(function (Matthew) {

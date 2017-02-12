@@ -50,6 +50,10 @@ namespace UTILS{
             this.tr = Matthew.normalize(tr);
         }
     }
+    export function def<T>(value:T, defValue:T):T{
+        if(typeof value == "undefined") return defValue;
+        return value;
+    }
 }
 namespace Matthew{
     export const PI:number = Math.PI;

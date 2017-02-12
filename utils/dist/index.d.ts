@@ -21,6 +21,7 @@ declare namespace UTILS {
         tr: number;
         constructor(x: number, y: number, r: number, d: number, tr: number);
     }
+    function def<T>(value: T, defValue: T): T;
 }
 declare namespace Matthew {
     const PI: number;
