@@ -71,7 +71,8 @@
 	};
 	var globalProps = {
 	    guide: false,
-	    speed: 1
+	    speed: 1,
+	    color: 2392462
 	};
 	var init = function () {
 	    {
@@ -79,10 +80,10 @@
 	        var parent_1 = gui.addFolder("Parent worm");
 	        parent_1.add(parentProps, 'waveFreq', 0, 1);
 	        parent_1.add(parentProps, 'waveAmp', 0, 100);
-	        parent_1.add(parentProps, 'thickness', 1, 100).onChange(function () {
+	        parent_1.add(parentProps, 'thickness', 1, 200).onChange(function () {
 	            worms[0].getOption().thickness = parentProps.thickness;
 	        });
-	        parent_1.add(parentProps, 'length', 2, 100).onChange(function () {
+	        parent_1.add(parentProps, 'length', 2, 200).onChange(function () {
 	            worms[0].setLength(parentProps.length);
 	            worms[0].getOption().headLength = parentProps.length * 0.3;
 	            worms[0].getOption().tailLength = parentProps.length * 0.7;
@@ -92,12 +93,12 @@
 	        var child = gui.addFolder("Child worm");
 	        child.add(childProps, 'waveFreq', 0, 1);
 	        child.add(childProps, 'waveAmp', 0, 100);
-	        child.add(childProps, 'thickness', 1, 100).onChange(function () {
+	        child.add(childProps, 'thickness', 1, 200).onChange(function () {
 	            for (var i = 1; i < worms.length; i++) {
 	                worms[i].getOption().thickness = childProps.thickness;
 	            }
 	        });
-	        child.add(childProps, 'length', 2, 100).onChange(function () {
+	        child.add(childProps, 'length', 2, 200).onChange(function () {
 	            for (var i = 1; i < worms.length; i++) {
 	                worms[i].setLength(childProps.length);
 	                worms[i].getOption().headLength = childProps.length * 0.3;
@@ -110,6 +111,7 @@
 	            wormsGuideContainer.visible = globalProps.guide;
 	        });
 	        gui.add(globalProps, 'speed', 0, 10);
+	        gui.addColor(globalProps, 'color');
 	    }
 	    wormsGuideContainer.visible = false;
 	    //window.devicePixelRatio;
@@ -126,12 +128,6 @@
 	        pressing = true;
 	        prevMouse.x = mouse.x = e.clientX;
 	        prevMouse.y = mouse.y = e.clientY;
-	        var c = 0xffffff * Math.random();
-	        for (var i = 0; i < worms.length; i++) {
-	            var opt = worms[i].getOption();
-	            opt.fillColor = i != 0 ? c : 0x000000;
-	            opt.borderColor = i != 0 ? 0x000000 : c;
-	        }
 	    });
 	    window.addEventListener("mousemove", function (e) {
 	        mouse.x = e.clientX;
@@ -148,8 +144,8 @@
 	            headLength: l * 0.3,
 	            tailLength: l * 0.7,
 	            thickness: t,
-	            fillColor: i != 0 ? 0xffffff * Math.random() : 0x000000,
-	            borderColor: i != 0 ? 0x000000 : 0xffffff * Math.random(),
+	            fillColor: i != 0 ? globalProps.color : 0x000000,
+	            borderColor: i != 0 ? 0x000000 : globalProps.color,
 	            borderThickness: i != 0 ? 0 : 2
 	        });
 	        worms.push(w);
@@ -170,6 +166,9 @@
 	    for (var i = 0; i < worms.length; i++) {
 	        var w = worms[i];
 	        var g = wormsGuide[i];
+	        var opt = w.getOption();
+	        opt.fillColor = i != 0 ? globalProps.color : 0x000000;
+	        opt.borderColor = i != 0 ? 0x000000 : globalProps.color;
 	        if (w.getStep() == 1 || i == 0 && pressing && !w.getRoute().tail().equals(target)) {
 	            var pos = void 0;
 	            if (i != 0) {
