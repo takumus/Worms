@@ -28,49 +28,48 @@ const globalProps = {
 	speed:1,
 	color:2392462
 }
-const init = ()=> {
-	{
-		const gui = new dat.GUI();
-		const parent = gui.addFolder("Parent worm");
-		parent.add(parentProps, 'waveFreq', 0, 1);
-		parent.add(parentProps, 'waveAmp', 0, 100);
-		parent.add(parentProps, 'thickness', 1, 200).onChange(()=>{
-			worms[0].getOption().thickness = parentProps.thickness;
-		});
-		parent.add(parentProps, 'length', 2, 200).onChange(()=>{
-			worms[0].setLength(parentProps.length);
-			worms[0].getOption().headLength = parentProps.length*0.3;
-			worms[0].getOption().tailLength = parentProps.length*0.7;
-		});
-		parent.add(parentProps, 'speed', 0.1, 10);
+function initGUI():void{
+	const gui = new dat.GUI();
+	const parent = gui.addFolder("Parent worm");
+	parent.add(parentProps, 'waveFreq', 0, 1);
+	parent.add(parentProps, 'waveAmp', 0, 100);
+	parent.add(parentProps, 'thickness', 1, 200).onChange(()=>{
+		worms[0].getOption().thickness = parentProps.thickness;
+	});
+	parent.add(parentProps, 'length', 2, 200).onChange(()=>{
+		worms[0].setLength(parentProps.length);
+		worms[0].getOption().headLength = parentProps.length*0.3;
+		worms[0].getOption().tailLength = parentProps.length*0.7;
+	});
+	parent.add(parentProps, 'speed', 0.1, 10);
 
-		parent.open();
-		const child = gui.addFolder("Child worm");
-		child.add(childProps, 'waveFreq', 0, 1);
-		child.add(childProps, 'waveAmp', 0, 100);
-		child.add(childProps, 'thickness', 1, 200).onChange(()=>{
-			for(let i = 1; i < worms.length; i ++){
-				worms[i].getOption().thickness = childProps.thickness;
-			}
-		});
-		child.add(childProps, 'length', 2, 200).onChange(()=>{
-			for(let i = 1; i < worms.length; i ++){
-				worms[i].setLength(childProps.length);
-				worms[i].getOption().headLength = childProps.length*0.3;
-				worms[i].getOption().tailLength = childProps.length*0.7;
-			}
-		});
-		child.add(childProps, 'speed', 0.1, 10);
-		child.open();
+	parent.open();
+	const child = gui.addFolder("Child worm");
+	child.add(childProps, 'waveFreq', 0, 1);
+	child.add(childProps, 'waveAmp', 0, 100);
+	child.add(childProps, 'thickness', 1, 200).onChange(()=>{
+		for(let i = 1; i < worms.length; i ++){
+			worms[i].getOption().thickness = childProps.thickness;
+		}
+	});
+	child.add(childProps, 'length', 2, 200).onChange(()=>{
+		for(let i = 1; i < worms.length; i ++){
+			worms[i].setLength(childProps.length);
+			worms[i].getOption().headLength = childProps.length*0.3;
+			worms[i].getOption().tailLength = childProps.length*0.7;
+		}
+	});
+	child.add(childProps, 'speed', 0.1, 10);
+	child.open();
 
-		gui.add(globalProps, 'guide').onChange(()=>{
-			wormsGuideContainer.visible = globalProps.guide;
-		});
-		gui.add(globalProps, 'speed', 0, 10);
-		gui.addColor(globalProps, 'color');
-	}
-	wormsGuideContainer.visible = false;
-	//window.devicePixelRatio;
+	gui.add(globalProps, 'guide').onChange(()=>{
+		wormsGuideContainer.visible = globalProps.guide;
+	});
+	gui.add(globalProps, 'speed', 0, 10);
+	gui.addColor(globalProps, 'color');
+	wormsGuideContainer.visible = globalProps.guide;
+}
+function initPIXI():void{
 	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2, transparent:false});
 	canvas = <HTMLCanvasElement>document.getElementById("content");
 	canvas.appendChild(renderer.view);
@@ -78,6 +77,10 @@ const init = ()=> {
 	renderer.view.style.height = "100%";
 	window.addEventListener("resize", resize);
 	window.addEventListener('orientationchange', resize);
+}
+function init():void{
+	initGUI();
+	initPIXI();
 	window.addEventListener("mousedown", (e)=>{
 		if((<HTMLElement>e.target).tagName != "CANVAS") return;
 		pressing = true;
@@ -91,26 +94,31 @@ const init = ()=> {
 	window.addEventListener("mouseup", ()=>{
 		pressing = false;
 	});
-
 	stage.addChild(wormsGuideContainer);
+	//generate worms
 	for(let i = 0; i < 18; i ++){
-		const l = i==0?parentProps.length:childProps.length;
-		const t = i==0?parentProps.thickness:childProps.thickness;
+		const length = i==0 ? parentProps.length : childProps.length;
+		const headLength = length * 0.3;
+		const tailLength = length * 0.7;
+		const thickness = i==0 ? parentProps.thickness : childProps.thickness;
+		const fillColor = i!=0 ? globalProps.color : 0x000000;
+		const borderColor = i!=0 ? 0x000000 : globalProps.color;
+		const borderThickness = i!=0 ? 0 : 2;
 		const w = new WORMS.Nasty2(
-			l,
+			length, 
 			{
-				headLength:l*0.3,
-				tailLength:l*0.7,
-				thickness:t,
-				fillColor:i!=0?globalProps.color:0x000000,
-				borderColor:i!=0?0x000000:globalProps.color,
-				borderThickness:i!=0?0:2
+				headLength : headLength,
+				tailLength : tailLength,
+				thickness : thickness,
+				fillColor : fillColor,
+				borderColor : borderColor,
+				borderThickness : borderThickness
 			}
 		);
-		worms.push(w);
-		stage.addChild(w);
 		w.blendMode = PIXI.BLEND_MODES.ADD;
 		w.setStep(1);
+		worms.push(w);
+		stage.addChild(w);
 		const g = new PIXI.Graphics();
 		wormsGuide.push(g);
 		wormsGuideContainer.addChild(g);
@@ -118,83 +126,85 @@ const init = ()=> {
 	draw();
 	resize();
 }
-const draw = ()=> {
+function draw():void{
 	requestAnimationFrame(draw);
-	const target = mouse;
-	const mouseRadian = Math.atan2(target.y - prevMouse.y, target.x - prevMouse.x);
 	for(let i = 0; i < worms.length; i ++){
 		const w = worms[i];
 		const g = wormsGuide[i];
 		const opt = w.getOption();
 		opt.fillColor = i!=0?globalProps.color:0x000000;
 		opt.borderColor = i!=0?0x000000:globalProps.color;
-		if(w.getStep() == 1 || i == 0 && pressing && !w.getRoute().tail().equals(target)){
-			let pos:UTILS.VecPos;
+		if(w.getStep() == 1 || (i == 0 && pressing)){
+			let vpos:UTILS.VecPos;
+			let route:ROUTES.Line;
 			if(i!=0){
-				pos = worms[0].getTailVecPos().clone();
-				pos.pos.x += Math.random()*300-150;
-				pos.pos.y += Math.random()*300-150;
-				
-				pos.add(Math.PI);
-			}else{
-				const p = 0.5;
-				const dx = mouse.x - w.getHeadVecPos().pos.x;
-				const dy = mouse.y - w.getHeadVecPos().pos.y;
-				pos = new UTILS.VecPos(
-					pressing?target.x:stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
-					pressing?target.y:stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
-					Math.atan2(dy, dx)
+				//child
+				vpos = worms[0].getTailVecPos().clone();
+				vpos.pos.x += Math.random()*300-150;
+				vpos.pos.y += Math.random()*300-150;
+				vpos.add(Math.PI);
+				route = ROUTES.RouteGenerator.getMinimumRoute(
+					w.getHeadVecPos(),
+					vpos,
+					50*Math.random()+60,
+					50*Math.random()+60,
+					5
 				);
+				route.wave(childProps.waveAmp, childProps.waveFreq, true);
+			}else{
+				//parent
+				if(pressing){
+					const dx = mouse.x - w.getHeadVecPos().pos.x;
+					const dy = mouse.y - w.getHeadVecPos().pos.y;
+					vpos = new UTILS.VecPos(
+						mouse.x,
+						mouse.y,
+						Math.atan2(dy, dx)
+					);
+				}else{
+					const p = 0.5;
+					vpos = new UTILS.VecPos(
+						stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
+						stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
+						Matthew.D_PI * Math.random()
+					);
+				}
+				route = ROUTES.RouteGenerator.getMinimumRoute(
+					w.getHeadVecPos(),
+					vpos,
+					200,
+					200,
+					5
+				);
+				route.wave(parentProps.waveAmp, parentProps.waveFreq, true);
 			}
-			//w.reverse();
-			const r = ROUTES.RouteGenerator.getMinimumRoute(
-				w.getHeadVecPos(),
-				pos,
-				i==0?200:50*Math.random()+60,
-				i==0?200:50*Math.random()+60,
-				5
-			);
-			//r.pop();
-			
-			r.wave(i==0?parentProps.waveAmp:childProps.waveAmp, i==0?parentProps.waveFreq:childProps.waveFreq, i!=0);
-			w.addRouteFromCurrent(r);
+			w.addRouteFromCurrent(route);
 			w.setStep(0);
 
-			g.clear();
-			if(guide){
-				const L = r.getLength();
-				const h = r.head();
-				const t = r.tail();
-				const gc = i!=0?0x333333:0x999999;
-				g.lineStyle(1, gc);
+			if(globalProps.guide){
+				const h = route.head();
+				const t = route.tail();
+				g.clear();
+				g.lineStyle(1, i!=0?0x333333:0x999999);
 				g.drawCircle(h.x, h.y, 10);
 				g.drawCircle(t.x, t.y, 10);
 				g.moveTo(h.x, h.y);
-				for(let n = 1; n < L; n ++){
-					const p = r.at(n);
+				for(let n = 1; n < route.getLength(); n ++){
+					const p = route.at(n);
 					g.lineTo(p.x, p.y);
 				}
 			}
 			pressing = false;
 		}
-		w.addStep((i!=0?childProps.speed:parentProps.speed) * globalProps.speed);
-		const add = Math.sin(w.getHeadVecPos().r)*2;
-		//w.addStep(add > 0?add:0);
+		w.addStep((i!=0 ? childProps.speed : parentProps.speed) * globalProps.speed);
 		w.render();
 	}
-	TWEEN.update();
 	renderer.render(stage);
-
-	//stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
-	//stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
 }
-const resize = () => {
-	const width:number = canvas.offsetWidth;
-	const height:number = canvas.offsetHeight;
-	stageWidth = width;
-	stageHeight = height;
-	renderer.resize(width, height);
+function resize():void{
+	stageWidth = canvas.offsetWidth;
+	stageHeight = canvas.offsetHeight;
+	renderer.resize(stageWidth, stageHeight);
 }
 window.onload = init;
 //100コミット
-console.log("call function 'setWave(freq)' to set wave frequency.");

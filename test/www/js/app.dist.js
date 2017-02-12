@@ -74,47 +74,46 @@
 	    speed: 1,
 	    color: 2392462
 	};
-	var init = function () {
-	    {
-	        var gui = new dat.GUI();
-	        var parent_1 = gui.addFolder("Parent worm");
-	        parent_1.add(parentProps, 'waveFreq', 0, 1);
-	        parent_1.add(parentProps, 'waveAmp', 0, 100);
-	        parent_1.add(parentProps, 'thickness', 1, 200).onChange(function () {
-	            worms[0].getOption().thickness = parentProps.thickness;
-	        });
-	        parent_1.add(parentProps, 'length', 2, 200).onChange(function () {
-	            worms[0].setLength(parentProps.length);
-	            worms[0].getOption().headLength = parentProps.length * 0.3;
-	            worms[0].getOption().tailLength = parentProps.length * 0.7;
-	        });
-	        parent_1.add(parentProps, 'speed', 0.1, 10);
-	        parent_1.open();
-	        var child = gui.addFolder("Child worm");
-	        child.add(childProps, 'waveFreq', 0, 1);
-	        child.add(childProps, 'waveAmp', 0, 100);
-	        child.add(childProps, 'thickness', 1, 200).onChange(function () {
-	            for (var i = 1; i < worms.length; i++) {
-	                worms[i].getOption().thickness = childProps.thickness;
-	            }
-	        });
-	        child.add(childProps, 'length', 2, 200).onChange(function () {
-	            for (var i = 1; i < worms.length; i++) {
-	                worms[i].setLength(childProps.length);
-	                worms[i].getOption().headLength = childProps.length * 0.3;
-	                worms[i].getOption().tailLength = childProps.length * 0.7;
-	            }
-	        });
-	        child.add(childProps, 'speed', 0.1, 10);
-	        child.open();
-	        gui.add(globalProps, 'guide').onChange(function () {
-	            wormsGuideContainer.visible = globalProps.guide;
-	        });
-	        gui.add(globalProps, 'speed', 0, 10);
-	        gui.addColor(globalProps, 'color');
-	    }
-	    wormsGuideContainer.visible = false;
-	    //window.devicePixelRatio;
+	function initGUI() {
+	    var gui = new dat.GUI();
+	    var parent = gui.addFolder("Parent worm");
+	    parent.add(parentProps, 'waveFreq', 0, 1);
+	    parent.add(parentProps, 'waveAmp', 0, 100);
+	    parent.add(parentProps, 'thickness', 1, 200).onChange(function () {
+	        worms[0].getOption().thickness = parentProps.thickness;
+	    });
+	    parent.add(parentProps, 'length', 2, 200).onChange(function () {
+	        worms[0].setLength(parentProps.length);
+	        worms[0].getOption().headLength = parentProps.length * 0.3;
+	        worms[0].getOption().tailLength = parentProps.length * 0.7;
+	    });
+	    parent.add(parentProps, 'speed', 0.1, 10);
+	    parent.open();
+	    var child = gui.addFolder("Child worm");
+	    child.add(childProps, 'waveFreq', 0, 1);
+	    child.add(childProps, 'waveAmp', 0, 100);
+	    child.add(childProps, 'thickness', 1, 200).onChange(function () {
+	        for (var i = 1; i < worms.length; i++) {
+	            worms[i].getOption().thickness = childProps.thickness;
+	        }
+	    });
+	    child.add(childProps, 'length', 2, 200).onChange(function () {
+	        for (var i = 1; i < worms.length; i++) {
+	            worms[i].setLength(childProps.length);
+	            worms[i].getOption().headLength = childProps.length * 0.3;
+	            worms[i].getOption().tailLength = childProps.length * 0.7;
+	        }
+	    });
+	    child.add(childProps, 'speed', 0.1, 10);
+	    child.open();
+	    gui.add(globalProps, 'guide').onChange(function () {
+	        wormsGuideContainer.visible = globalProps.guide;
+	    });
+	    gui.add(globalProps, 'speed', 0, 10);
+	    gui.addColor(globalProps, 'color');
+	    wormsGuideContainer.visible = globalProps.guide;
+	}
+	function initPIXI() {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true, resolution: 2, transparent: false });
 	    canvas = document.getElementById("content");
 	    canvas.appendChild(renderer.view);
@@ -122,6 +121,10 @@
 	    renderer.view.style.height = "100%";
 	    window.addEventListener("resize", resize);
 	    window.addEventListener('orientationchange', resize);
+	}
+	function init() {
+	    initGUI();
+	    initPIXI();
 	    window.addEventListener("mousedown", function (e) {
 	        if (e.target.tagName != "CANVAS")
 	            return;
@@ -137,95 +140,97 @@
 	        pressing = false;
 	    });
 	    stage.addChild(wormsGuideContainer);
+	    //generate worms
 	    for (var i = 0; i < 18; i++) {
-	        var l = i == 0 ? parentProps.length : childProps.length;
-	        var t = i == 0 ? parentProps.thickness : childProps.thickness;
-	        var w = new WORMS.Nasty2(l, {
-	            headLength: l * 0.3,
-	            tailLength: l * 0.7,
-	            thickness: t,
-	            fillColor: i != 0 ? globalProps.color : 0x000000,
-	            borderColor: i != 0 ? 0x000000 : globalProps.color,
-	            borderThickness: i != 0 ? 0 : 2
+	        var length_1 = i == 0 ? parentProps.length : childProps.length;
+	        var headLength = length_1 * 0.3;
+	        var tailLength = length_1 * 0.7;
+	        var thickness = i == 0 ? parentProps.thickness : childProps.thickness;
+	        var fillColor = i != 0 ? globalProps.color : 0x000000;
+	        var borderColor = i != 0 ? 0x000000 : globalProps.color;
+	        var borderThickness = i != 0 ? 0 : 2;
+	        var w = new WORMS.Nasty2(length_1, {
+	            headLength: headLength,
+	            tailLength: tailLength,
+	            thickness: thickness,
+	            fillColor: fillColor,
+	            borderColor: borderColor,
+	            borderThickness: borderThickness
 	        });
-	        worms.push(w);
-	        stage.addChild(w);
 	        w.blendMode = PIXI.BLEND_MODES.ADD;
 	        w.setStep(1);
+	        worms.push(w);
+	        stage.addChild(w);
 	        var g = new PIXI.Graphics();
 	        wormsGuide.push(g);
 	        wormsGuideContainer.addChild(g);
 	    }
 	    draw();
 	    resize();
-	};
-	var draw = function () {
+	}
+	function draw() {
 	    requestAnimationFrame(draw);
-	    var target = mouse;
-	    var mouseRadian = Math.atan2(target.y - prevMouse.y, target.x - prevMouse.x);
 	    for (var i = 0; i < worms.length; i++) {
 	        var w = worms[i];
 	        var g = wormsGuide[i];
 	        var opt = w.getOption();
 	        opt.fillColor = i != 0 ? globalProps.color : 0x000000;
 	        opt.borderColor = i != 0 ? 0x000000 : globalProps.color;
-	        if (w.getStep() == 1 || i == 0 && pressing && !w.getRoute().tail().equals(target)) {
-	            var pos = void 0;
+	        if (w.getStep() == 1 || (i == 0 && pressing)) {
+	            var vpos = void 0;
+	            var route = void 0;
 	            if (i != 0) {
-	                pos = worms[0].getTailVecPos().clone();
-	                pos.pos.x += Math.random() * 300 - 150;
-	                pos.pos.y += Math.random() * 300 - 150;
-	                pos.add(Math.PI);
+	                //child
+	                vpos = worms[0].getTailVecPos().clone();
+	                vpos.pos.x += Math.random() * 300 - 150;
+	                vpos.pos.y += Math.random() * 300 - 150;
+	                vpos.add(Math.PI);
+	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, 50 * Math.random() + 60, 50 * Math.random() + 60, 5);
+	                route.wave(childProps.waveAmp, childProps.waveFreq, true);
 	            }
 	            else {
-	                var p = 0.5;
-	                var dx = mouse.x - w.getHeadVecPos().pos.x;
-	                var dy = mouse.y - w.getHeadVecPos().pos.y;
-	                pos = new UTILS.VecPos(pressing ? target.x : stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), pressing ? target.y : stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Math.atan2(dy, dx));
+	                //parent
+	                if (pressing) {
+	                    var dx = mouse.x - w.getHeadVecPos().pos.x;
+	                    var dy = mouse.y - w.getHeadVecPos().pos.y;
+	                    vpos = new UTILS.VecPos(mouse.x, mouse.y, Math.atan2(dy, dx));
+	                }
+	                else {
+	                    var p = 0.5;
+	                    vpos = new UTILS.VecPos(stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Matthew.D_PI * Math.random());
+	                }
+	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, 200, 200, 5);
+	                route.wave(parentProps.waveAmp, parentProps.waveFreq, true);
 	            }
-	            //w.reverse();
-	            var r = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), pos, i == 0 ? 200 : 50 * Math.random() + 60, i == 0 ? 200 : 50 * Math.random() + 60, 5);
-	            //r.pop();
-	            r.wave(i == 0 ? parentProps.waveAmp : childProps.waveAmp, i == 0 ? parentProps.waveFreq : childProps.waveFreq, i != 0);
-	            w.addRouteFromCurrent(r);
+	            w.addRouteFromCurrent(route);
 	            w.setStep(0);
-	            g.clear();
-	            if (guide) {
-	                var L = r.getLength();
-	                var h = r.head();
-	                var t = r.tail();
-	                var gc = i != 0 ? 0x333333 : 0x999999;
-	                g.lineStyle(1, gc);
+	            if (globalProps.guide) {
+	                var h = route.head();
+	                var t = route.tail();
+	                g.clear();
+	                g.lineStyle(1, i != 0 ? 0x333333 : 0x999999);
 	                g.drawCircle(h.x, h.y, 10);
 	                g.drawCircle(t.x, t.y, 10);
 	                g.moveTo(h.x, h.y);
-	                for (var n = 1; n < L; n++) {
-	                    var p = r.at(n);
+	                for (var n = 1; n < route.getLength(); n++) {
+	                    var p = route.at(n);
 	                    g.lineTo(p.x, p.y);
 	                }
 	            }
 	            pressing = false;
 	        }
 	        w.addStep((i != 0 ? childProps.speed : parentProps.speed) * globalProps.speed);
-	        var add = Math.sin(w.getHeadVecPos().r) * 2;
-	        //w.addStep(add > 0?add:0);
 	        w.render();
 	    }
-	    TWEEN.update();
 	    renderer.render(stage);
-	    //stage.x = -w.getCurrentLine().getTailVecPos().pos.x + stageWidth/2;
-	    //stage.y = -w.getCurrentLine().getTailVecPos().pos.y + stageHeight/2;
-	};
-	var resize = function () {
-	    var width = canvas.offsetWidth;
-	    var height = canvas.offsetHeight;
-	    stageWidth = width;
-	    stageHeight = height;
-	    renderer.resize(width, height);
-	};
+	}
+	function resize() {
+	    stageWidth = canvas.offsetWidth;
+	    stageHeight = canvas.offsetHeight;
+	    renderer.resize(stageWidth, stageHeight);
+	}
 	window.onload = init;
-	//100コミット
-	console.log("call function 'setWave(freq)' to set wave frequency.");
+	//100コミット 
 
 
 /***/ }
