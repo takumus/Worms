@@ -50,7 +50,9 @@ const init = ()=> {
 		prevMouse.y = mouse.y = y;
 		const c = 0xffffff*Math.random()
 		for(let i = 0; i < worms.length; i ++){
-			worms[i].setColor(i!=0?c:0x000000, i!=0?0x000000:c);
+			const opt = worms[i].getOption();
+			opt.fillColor = i!=0?c:0x000000;
+			opt.borderColor = i!=0?0x000000:c;
 		}
 	}
 	const move = (x:number, y:number)=>{
@@ -73,10 +75,11 @@ const init = ()=> {
 			{
 				headLength:10,
 				tailLength:20,
-				thickness:i==0?20:15
-			},
-			i!=0?0xffffff*Math.random():0x000000,
-			i!=0?0x000000:0xffffff*Math.random()
+				thickness:i==0?20:15,
+				fillColor:i!=0?0xffffff*Math.random():0x000000,
+				borderColor:i!=0?0x000000:0xffffff*Math.random(),
+				borderThickness:i!=0?0:2
+			}
 		);
 		worms.push(w);
 		stage.addChild(w);
@@ -86,7 +89,7 @@ const init = ()=> {
 		wormsGraphic.push(g);
 	}
 	wormsGraphic.forEach((g)=>{
-		stage.addChild(g);
+		stage.addChildAt(g, 0);
 	})
 	stage.addChild(new PIXI.Text("タッチ中はついてくる。", {fill:0xffffff, fontSize:60}));
 	draw();
@@ -105,15 +108,18 @@ const draw = ()=> {
 			let pos:UTILS.VecPos;
 			if(i!=0){
 				pos = worms[0].getTailVecPos().clone();
-				pos.pos.x += Math.random()*300-150;
-				pos.pos.y += Math.random()*300-150;
+				pos.pos.x += Math.random()*200-100;
+				pos.pos.y += Math.random()*200-100;
+				
 				pos.add(Math.PI);
 			}else{
 				const p = 0.5;
+				const dx = mouse.x - w.getHeadVecPos().pos.x;
+				const dy = mouse.y - w.getHeadVecPos().pos.y;
 				pos = new UTILS.VecPos(
 					pressing?target.x:stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
 					pressing?target.y:stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
-					Math.PI*2*Math.random()
+					Math.atan2(dy, dx)
 				);
 			}
 			//w.reverse();
@@ -135,8 +141,8 @@ const draw = ()=> {
 			const L = r.getLength();
 			const h = r.head();
 			const t = r.tail();
-			const gc = 0xffffff;
-			g.lineStyle(1, gc, 0.2);
+			const gc = i!=0?0x333333:0x999999;
+			g.lineStyle(1, gc);
 			g.drawCircle(h.x, h.y, 10);
 			g.drawCircle(t.x, t.y, 10);
 			g.moveTo(h.x, h.y);
