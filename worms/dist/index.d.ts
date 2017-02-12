@@ -44,18 +44,19 @@ declare namespace WORMS {
 }
 declare namespace WORMS {
     interface NastyOption {
-        headLength: number;
-        tailLength: number;
+        headLength?: number;
+        tailLength?: number;
         thickness: number;
+        fillColor?: number;
+        borderColor?: number;
+        borderThickness?: number;
     }
     class Nasty2 extends Base {
         private body;
-        private colors;
-        private options;
-        private headLength;
-        private tailLength;
-        constructor(length: number, options: NastyOption, fillColor?: number, borderColor?: number);
-        setColor(fillColor: number, borderColor: number): void;
+        private _option;
+        constructor(length: number, option?: NastyOption);
+        setOption(option: NastyOption): void;
+        getOption(): NastyOption;
         render(): void;
     }
 }

@@ -275,25 +275,26 @@
 	(function (WORMS) {
 	    var Nasty2 = (function (_super) {
 	        __extends(Nasty2, _super);
-	        function Nasty2(length, options, fillColor, borderColor) {
-	            if (fillColor === void 0) { fillColor = 0xffffff; }
-	            if (borderColor === void 0) { borderColor = 0x000000; }
+	        function Nasty2(length, option) {
+	            if (option === void 0) { option = { thickness: 10 }; }
 	            var _this = _super.call(this, length) || this;
-	            _this.options = options;
-	            _this.headLength = options.headLength;
-	            _this.tailLength = options.tailLength;
 	            _this.body = [];
 	            for (var i = 0; i < length; i++) {
 	                _this.body.push(new BodyPos());
 	            }
-	            _this.setColor(fillColor, borderColor);
+	            _this.setOption(option);
 	            return _this;
 	        }
-	        Nasty2.prototype.setColor = function (fillColor, borderColor) {
-	            this.colors = {
-	                fill: fillColor,
-	                border: borderColor
-	            };
+	        Nasty2.prototype.setOption = function (option) {
+	            this._option = option;
+	            option.headLength = UTILS.def(option.headLength, 0);
+	            option.tailLength = UTILS.def(option.tailLength, 0);
+	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
+	            option.borderColor = UTILS.def(option.borderColor, 0x0000ff);
+	            option.borderThickness = UTILS.def(option.borderThickness, 5);
+	        };
+	        Nasty2.prototype.getOption = function () {
+	            return this._option;
 	        };
 	        Nasty2.prototype.render = function () {
 	            var bbone = this.bone.at(0);
@@ -310,13 +311,13 @@
 	                var vx = this.bone.at(i - 1).x - nbone.x;
 	                var vy = this.bone.at(i - 1).y - nbone.y;
 	                var radian = Matthew.H_PI;
-	                if (i < this.headLength) {
-	                    radian = i / this.headLength * Matthew.H_PI;
+	                if (i < this._option.headLength) {
+	                    radian = i / this._option.headLength * Matthew.H_PI;
 	                }
-	                else if (i > L - this.tailLength) {
-	                    radian = (i - (L - this.tailLength)) / this.tailLength * Matthew.H_PI + Matthew.H_PI;
+	                else if (i > L - this._option.tailLength) {
+	                    radian = (i - (L - this._option.tailLength)) / this._option.tailLength * Matthew.H_PI + Matthew.H_PI;
 	                }
-	                var r = Math.sin(radian) * this.options.thickness;
+	                var r = Math.sin(radian) * this._option.thickness;
 	                var vl = vx * vx + vy * vy;
 	                var vr = Math.sqrt(vl);
 	                vx = vx / vr * r;
@@ -329,8 +330,8 @@
 	            ebody.left.x = ebone.x;
 	            ebody.left.y = ebone.y;
 	            this.clear();
-	            this.lineStyle(3, this.colors.border);
-	            this.beginFill(this.colors.fill);
+	            this.lineStyle(this._option.borderThickness, this._option.borderColor);
+	            this.beginFill(this._option.fillColor);
 	            this.moveTo(bbody.left.x, bbody.left.y);
 	            for (var i = 1; i < this.body.length; i++) {
 	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
