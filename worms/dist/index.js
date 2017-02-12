@@ -92,7 +92,8 @@
 	            this.line = line;
 	        };
 	        Base.prototype.addStep = function (step) {
-	            var p = 1 / this.line.getLength() * step;
+	            var length = this.line.getLength() - this.length;
+	            var p = step / length;
 	            return this.setStep(this.step + p);
 	        };
 	        Base.prototype.setStep = function (step) {
