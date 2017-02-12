@@ -7,12 +7,12 @@ namespace WORMS{
         private step:number = 0;
         constructor(length:number){
             super();
-            this.length = Math.floor(length);
             this.routeIndex = 0;
             this.bone = new ROUTES.Line();
-            this.setlength(length);
+            this.setLength(length);
         }
-        public setlength(length:number){
+        public setLength(length:number){
+            this.length = Math.floor(length);
             this.bone.clear();
             for(let i = 0; i < length; i ++){
                 this.bone.push(new UTILS.Pos());

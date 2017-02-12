@@ -7,7 +7,7 @@ declare namespace WORMS {
         private routeIndex;
         private step;
         constructor(length: number);
-        setlength(length: number): void;
+        setLength(length: number): void;
         push(x: number, y: number): void;
         render(): void;
         addRouteFromCurrent(line: ROUTES.Line): void;
@@ -55,6 +55,7 @@ declare namespace WORMS {
         private body;
         private _option;
         constructor(length: number, option?: NastyOption);
+        setLength(length: number): void;
         setOption(option: NastyOption): void;
         getOption(): NastyOption;
         render(): void;

@@ -56,13 +56,13 @@
 	        function Base(length) {
 	            var _this = _super.call(this) || this;
 	            _this.step = 0;
-	            _this.length = Math.floor(length);
 	            _this.routeIndex = 0;
 	            _this.bone = new ROUTES.Line();
-	            _this.setlength(length);
+	            _this.setLength(length);
 	            return _this;
 	        }
-	        Base.prototype.setlength = function (length) {
+	        Base.prototype.setLength = function (length) {
+	            this.length = Math.floor(length);
 	            this.bone.clear();
 	            for (var i = 0; i < length; i++) {
 	                this.bone.push(new UTILS.Pos());
@@ -278,13 +278,16 @@
 	        function Nasty2(length, option) {
 	            if (option === void 0) { option = { thickness: 10 }; }
 	            var _this = _super.call(this, length) || this;
-	            _this.body = [];
-	            for (var i = 0; i < length; i++) {
-	                _this.body.push(new BodyPos());
-	            }
 	            _this.setOption(option);
 	            return _this;
 	        }
+	        Nasty2.prototype.setLength = function (length) {
+	            _super.prototype.setLength.call(this, length);
+	            this.body = [];
+	            for (var i = 0; i < length; i++) {
+	                this.body.push(new BodyPos());
+	            }
+	        };
 	        Nasty2.prototype.setOption = function (option) {
 	            this._option = option;
 	            option.headLength = UTILS.def(option.headLength, 0);

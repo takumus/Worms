@@ -13,12 +13,14 @@ namespace WORMS{
         private _option:NastyOption;
         constructor(length:number, option:NastyOption = {thickness:10}){
             super(length);
-
+            this.setOption(option);
+        }
+        public setLength(length:number){
+            super.setLength(length);
             this.body = [];
             for(let i = 0; i < length; i ++){
                 this.body.push(new BodyPos());
             }
-            this.setOption(option);
         }
         public setOption(option:NastyOption):void{
             this._option = option;
