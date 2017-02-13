@@ -15,8 +15,8 @@ const props = {
 		waveAmp:16,
 		thickness:15,
 		length:30,
-		radius:150,
-		radiusRandom:150,
+		radius:100,
+		radiusRandom:100,
 		speed:1.8
 	},
 	child:{
@@ -184,7 +184,7 @@ function draw():void{
 						5
 					);
 				}else{
-					const p = 0.1;
+					const p = 0.4;
 					vpos = new UTILS.VecPos(
 						stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
 						stageHeight*(1-p)/2 + stageHeight*p*Math.random(),

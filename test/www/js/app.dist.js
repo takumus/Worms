@@ -61,8 +61,8 @@
 	        waveAmp: 16,
 	        thickness: 15,
 	        length: 30,
-	        radius: 150,
-	        radiusRandom: 150,
+	        radius: 100,
+	        radiusRandom: 100,
 	        speed: 1.8
 	    },
 	    child: {
@@ -212,7 +212,7 @@
 	                    route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), new UTILS.VecPos(mouse.x, mouse.y, Math.atan2(dy, dx)), props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius, 5);
 	                }
 	                else {
-	                    var p = 0.1;
+	                    var p = 0.4;
 	                    vpos = new UTILS.VecPos(stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Matthew.D_PI * Math.random());
 	                    var routes = ROUTES.RouteGenerator.getAllRoute(w.getHeadVecPos(), vpos, props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius);
 	                    route = routes[Math.floor(routes.length * Math.random())].generateRoute(5);
