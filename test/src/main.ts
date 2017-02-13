@@ -16,7 +16,7 @@ const props = {
 		thickness:15,
 		length:30,
 		radius:150,
-		radiusRandom:50,
+		radiusRandom:150,
 		speed:1.8
 	},
 	child:{
@@ -112,7 +112,7 @@ function init():void{
 	});
 	stage.addChild(wormsGuideContainer);
 	//generate worms
-	for(let i = 0; i < 18; i ++){
+	for(let i = 0; i < 20; i ++){
 		const length = i==0 ? props.parent.length : props.child.length;
 		const headLength = length * 0.3;
 		const tailLength = length * 0.7;
@@ -172,43 +172,46 @@ function draw():void{
 				if(pressing){
 					const dx = mouse.x - w.getHeadVecPos().pos.x;
 					const dy = mouse.y - w.getHeadVecPos().pos.y;
-					vpos = new UTILS.VecPos(
-						mouse.x,
-						mouse.y,
-						Math.atan2(dy, dx)
+					route = ROUTES.RouteGenerator.getMinimumRoute(
+						w.getHeadVecPos(),
+						new UTILS.VecPos(
+							mouse.x,
+							mouse.y,
+							Math.atan2(dy, dx)
+						),
+						props.parent.radiusRandom*Math.random()+props.parent.radius,
+						props.parent.radiusRandom*Math.random()+props.parent.radius,
+						5
 					);
 				}else{
-					const p = 0.8;
+					const p = 0.1;
 					vpos = new UTILS.VecPos(
 						stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
 						stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
 						Matthew.D_PI * Math.random()
 					);
+					const routes = ROUTES.RouteGenerator.getAllRoute(
+						w.getHeadVecPos(),
+						vpos,
+						props.parent.radiusRandom*Math.random()+props.parent.radius,
+						props.parent.radiusRandom*Math.random()+props.parent.radius,
+					);
+					route = routes[Math.floor(routes.length*Math.random())].generateRoute(5);
 				}
-				route = ROUTES.RouteGenerator.getMinimumRoute(
-					w.getHeadVecPos(),
-					vpos,
-					props.parent.radiusRandom*Math.random()+props.parent.radius,
-					props.parent.radiusRandom*Math.random()+props.parent.radius,
-					5
-				);
 				route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 			}
 			w.addRouteFromCurrent(route);
 			w.setStep(0);
-
-			if(props.global.guide){
-				const h = route.head();
-				const t = route.tail();
-				g.clear();
-				g.lineStyle(1, i!=0?0x333333:0x999999);
-				g.drawCircle(h.x, h.y, 10);
-				g.drawCircle(t.x, t.y, 10);
-				g.moveTo(h.x, h.y);
-				for(let n = 1; n < route.getLength(); n ++){
-					const p = route.at(n);
-					g.lineTo(p.x, p.y);
-				}
+			const h = route.head();
+			const t = route.tail();
+			g.clear();
+			g.lineStyle(1, i!=0?0x666666:0xCCCCCC);
+			g.drawCircle(h.x, h.y, 2);
+			g.drawCircle(t.x, t.y, 2);
+			g.moveTo(h.x, h.y);
+			for(let n = 1; n < route.getLength(); n ++){
+				const p = route.at(n);
+				g.lineTo(p.x, p.y);
 			}
 			pressing = false;
 		}

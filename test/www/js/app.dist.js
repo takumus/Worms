@@ -62,7 +62,7 @@
 	        thickness: 15,
 	        length: 30,
 	        radius: 150,
-	        radiusRandom: 50,
+	        radiusRandom: 150,
 	        speed: 1.8
 	    },
 	    child: {
@@ -157,7 +157,7 @@
 	    });
 	    stage.addChild(wormsGuideContainer);
 	    //generate worms
-	    for (var i = 0; i < 18; i++) {
+	    for (var i = 0; i < 20; i++) {
 	        var length_1 = i == 0 ? props.parent.length : props.child.length;
 	        var headLength = length_1 * 0.3;
 	        var tailLength = length_1 * 0.7;
@@ -209,29 +209,28 @@
 	                if (pressing) {
 	                    var dx = mouse.x - w.getHeadVecPos().pos.x;
 	                    var dy = mouse.y - w.getHeadVecPos().pos.y;
-	                    vpos = new UTILS.VecPos(mouse.x, mouse.y, Math.atan2(dy, dx));
+	                    route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), new UTILS.VecPos(mouse.x, mouse.y, Math.atan2(dy, dx)), props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius, 5);
 	                }
 	                else {
-	                    var p = 0.8;
+	                    var p = 0.1;
 	                    vpos = new UTILS.VecPos(stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Matthew.D_PI * Math.random());
+	                    var routes = ROUTES.RouteGenerator.getAllRoute(w.getHeadVecPos(), vpos, props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius);
+	                    route = routes[Math.floor(routes.length * Math.random())].generateRoute(5);
 	                }
-	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius, 5);
 	                route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 	            }
 	            w.addRouteFromCurrent(route);
 	            w.setStep(0);
-	            if (props.global.guide) {
-	                var h = route.head();
-	                var t = route.tail();
-	                g.clear();
-	                g.lineStyle(1, i != 0 ? 0x333333 : 0x999999);
-	                g.drawCircle(h.x, h.y, 10);
-	                g.drawCircle(t.x, t.y, 10);
-	                g.moveTo(h.x, h.y);
-	                for (var n = 1; n < route.getLength(); n++) {
-	                    var p = route.at(n);
-	                    g.lineTo(p.x, p.y);
-	                }
+	            var h = route.head();
+	            var t = route.tail();
+	            g.clear();
+	            g.lineStyle(1, i != 0 ? 0x666666 : 0xCCCCCC);
+	            g.drawCircle(h.x, h.y, 2);
+	            g.drawCircle(t.x, t.y, 2);
+	            g.moveTo(h.x, h.y);
+	            for (var n = 1; n < route.getLength(); n++) {
+	                var p = route.at(n);
+	                g.lineTo(p.x, p.y);
 	            }
 	            pressing = false;
 	        }
