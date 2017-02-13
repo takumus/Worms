@@ -9,65 +9,71 @@ const wormsGuide:Array<PIXI.Graphics> = [];
 const wormsGuideContainer:PIXI.Container = new PIXI.Container();
 let pressing = false;
 let guide:boolean = true;
-const parentProps = {
-	waveFreq:0.12,
-	waveAmp:16,
-	thickness:15,
-	length:30,
-	speed:1.8
-};
-const childProps = {
-	waveFreq:0.2,
-	waveAmp:10,
-	thickness:13,
-	length:25,
-	speed:1.9
-};
-const globalProps = {
-	guide:false,
-	speed:1,
-	color:2392462
+const props = {
+	parent:{
+		waveFreq:0.12,
+		waveAmp:16,
+		thickness:15,
+		length:30,
+		speed:1.8
+	},
+	child:{
+		waveFreq:0.2,
+		waveAmp:10,
+		thickness:13,
+		length:25,
+		speed:1.9
+	},
+	global:{
+		guide:false,
+		speed:1,
+		color:2392462
+	}
 }
+const defaultProps = {};
 function initGUI():void{
 	const gui = new dat.GUI();
 	const parent = gui.addFolder("Parent worm");
-	parent.add(parentProps, 'waveFreq', 0, 1);
-	parent.add(parentProps, 'waveAmp', 0, 100);
-	parent.add(parentProps, 'thickness', 1, 200).onChange(()=>{
-		worms[0].getOption().thickness = parentProps.thickness;
+	parent.add(props.parent, 'waveFreq', 0, 0.5);
+	parent.add(props.parent, 'waveAmp', 0, 100);
+	parent.add(props.parent, 'thickness', 1, 400).onChange(()=>{
+		worms[0].getOption().thickness = props.parent.thickness;
 	});
-	parent.add(parentProps, 'length', 2, 200).onChange(()=>{
-		worms[0].setLength(parentProps.length);
-		worms[0].getOption().headLength = parentProps.length*0.3;
-		worms[0].getOption().tailLength = parentProps.length*0.7;
+	parent.add(props.parent, 'length', 2, 200).onChange(()=>{
+		worms[0].setLength(props.parent.length);
+		worms[0].getOption().headLength = props.parent.length*0.3;
+		worms[0].getOption().tailLength = props.parent.length*0.7;
 	});
-	parent.add(parentProps, 'speed', 0.1, 10);
-
+	parent.add(props.parent, 'speed', 0.1, 10);
 	parent.open();
+
 	const child = gui.addFolder("Child worm");
-	child.add(childProps, 'waveFreq', 0, 1);
-	child.add(childProps, 'waveAmp', 0, 100);
-	child.add(childProps, 'thickness', 1, 200).onChange(()=>{
+	child.add(props.child, 'waveFreq', 0, 0.5);
+	child.add(props.child, 'waveAmp', 0, 100);
+	child.add(props.child, 'thickness', 1, 200).onChange(()=>{
 		for(let i = 1; i < worms.length; i ++){
-			worms[i].getOption().thickness = childProps.thickness;
+			worms[i].getOption().thickness = props.child.thickness;
 		}
 	});
-	child.add(childProps, 'length', 2, 200).onChange(()=>{
+	child.add(props.child, 'length', 2, 200).onChange(()=>{
 		for(let i = 1; i < worms.length; i ++){
-			worms[i].setLength(childProps.length);
-			worms[i].getOption().headLength = childProps.length*0.3;
-			worms[i].getOption().tailLength = childProps.length*0.7;
+			worms[i].setLength(props.child.length);
+			worms[i].getOption().headLength = props.child.length*0.3;
+			worms[i].getOption().tailLength = props.child.length*0.7;
 		}
 	});
-	child.add(childProps, 'speed', 0.1, 10);
+	child.add(props.child, 'speed', 0.1, 20);
 	child.open();
 
-	gui.add(globalProps, 'guide').onChange(()=>{
-		wormsGuideContainer.visible = globalProps.guide;
+	gui.add(props.global, 'guide').onChange(()=>{
+		wormsGuideContainer.visible = props.global.guide;
 	});
-	gui.add(globalProps, 'speed', 0, 10);
-	gui.addColor(globalProps, 'color');
-	wormsGuideContainer.visible = globalProps.guide;
+	gui.add(props.global, 'speed', 0, 10);
+	gui.addColor(props.global, 'color');
+	gui.add({reset:()=>{
+		gui.revert(gui);
+	}}, "reset");
+	wormsGuideContainer.visible = props.global.guide;
 }
 function initPIXI():void{
 	renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution:2, transparent:false});
@@ -97,12 +103,12 @@ function init():void{
 	stage.addChild(wormsGuideContainer);
 	//generate worms
 	for(let i = 0; i < 18; i ++){
-		const length = i==0 ? parentProps.length : childProps.length;
+		const length = i==0 ? props.parent.length : props.child.length;
 		const headLength = length * 0.3;
 		const tailLength = length * 0.7;
-		const thickness = i==0 ? parentProps.thickness : childProps.thickness;
-		const fillColor = i!=0 ? globalProps.color : 0x000000;
-		const borderColor = i!=0 ? 0x000000 : globalProps.color;
+		const thickness = i==0 ? props.parent.thickness : props.child.thickness;
+		const fillColor = i!=0 ? props.global.color : 0x000000;
+		const borderColor = i!=0 ? 0x000000 : props.global.color;
 		const borderThickness = i!=0 ? 0 : 2;
 		const w = new WORMS.Nasty2(
 			length, 
@@ -132,8 +138,8 @@ function draw():void{
 		const w = worms[i];
 		const g = wormsGuide[i];
 		const opt = w.getOption();
-		opt.fillColor = i!=0?globalProps.color:0x000000;
-		opt.borderColor = i!=0?0x000000:globalProps.color;
+		opt.fillColor = i!=0?props.global.color:0x000000;
+		opt.borderColor = i!=0?0x000000:props.global.color;
 		if(w.getStep() == 1 || (i == 0 && pressing)){
 			let vpos:UTILS.VecPos;
 			let route:ROUTES.Line;
@@ -150,7 +156,7 @@ function draw():void{
 					50*Math.random()+60,
 					5
 				);
-				route.wave(childProps.waveAmp, childProps.waveFreq, true);
+				route.wave(props.child.waveAmp, props.child.waveFreq, true);
 			}else{
 				//parent
 				if(pressing){
@@ -162,7 +168,7 @@ function draw():void{
 						Math.atan2(dy, dx)
 					);
 				}else{
-					const p = 0.5;
+					const p = 0.8;
 					vpos = new UTILS.VecPos(
 						stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
 						stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
@@ -176,12 +182,12 @@ function draw():void{
 					200,
 					5
 				);
-				route.wave(parentProps.waveAmp, parentProps.waveFreq, true);
+				route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 			}
 			w.addRouteFromCurrent(route);
 			w.setStep(0);
 
-			if(globalProps.guide){
+			if(props.global.guide){
 				const h = route.head();
 				const t = route.tail();
 				g.clear();
@@ -196,7 +202,7 @@ function draw():void{
 			}
 			pressing = false;
 		}
-		w.addStep((i!=0 ? childProps.speed : parentProps.speed) * globalProps.speed);
+		w.addStep((i!=0 ? props.child.speed : props.parent.speed) * props.global.speed);
 		w.render();
 	}
 	renderer.render(stage);
@@ -206,5 +212,6 @@ function resize():void{
 	stageHeight = canvas.offsetHeight;
 	renderer.resize(stageWidth, stageHeight);
 }
+
 window.onload = init;
 //100コミット
