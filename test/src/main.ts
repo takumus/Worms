@@ -26,6 +26,7 @@ const props = {
 		length:25,
 		radius:50,
 		radiusRandom:60,
+		targetOffset:200,
 		speed:1.9
 	},
 	global:{
@@ -70,6 +71,7 @@ function initGUI():void{
 			worms[i].getOption().tailLength = props.child.length*0.7;
 		}
 	});
+	child.add(props.child, 'targetOffset', 0, 500);
 	const childTurn = child.addFolder("turn");
 	childTurn.add(props.child, 'radius', 0, 500);
 	childTurn.add(props.child, 'radiusRandom', 0, 500);
@@ -156,8 +158,8 @@ function draw():void{
 			if(i!=0){
 				//child
 				vpos = worms[0].getTailVecPos().clone();
-				vpos.pos.x += Math.random()*200-100;
-				vpos.pos.y += Math.random()*200-100;
+				vpos.pos.x += Math.random()*props.child.targetOffset-props.child.targetOffset/2;
+				vpos.pos.y += Math.random()*props.child.targetOffset-props.child.targetOffset/2;
 				vpos.add(Math.PI);
 				route = ROUTES.RouteGenerator.getMinimumRoute(
 					w.getHeadVecPos(),

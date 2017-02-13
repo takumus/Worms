@@ -72,6 +72,7 @@
 	        length: 25,
 	        radius: 50,
 	        radiusRandom: 60,
+	        targetOffset: 200,
 	        speed: 1.9
 	    },
 	    global: {
@@ -115,6 +116,7 @@
 	            worms[i].getOption().tailLength = props.child.length * 0.7;
 	        }
 	    });
+	    child.add(props.child, 'targetOffset', 0, 500);
 	    var childTurn = child.addFolder("turn");
 	    childTurn.add(props.child, 'radius', 0, 500);
 	    childTurn.add(props.child, 'radiusRandom', 0, 500);
@@ -198,8 +200,8 @@
 	            if (i != 0) {
 	                //child
 	                vpos = worms[0].getTailVecPos().clone();
-	                vpos.pos.x += Math.random() * 200 - 100;
-	                vpos.pos.y += Math.random() * 200 - 100;
+	                vpos.pos.x += Math.random() * props.child.targetOffset - props.child.targetOffset / 2;
+	                vpos.pos.y += Math.random() * props.child.targetOffset - props.child.targetOffset / 2;
 	                vpos.add(Math.PI);
 	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, props.child.radiusRandom * Math.random() + props.child.radius, props.child.radiusRandom * Math.random() + props.child.radius, 5);
 	                route.wave(props.child.waveAmp, props.child.waveFreq, true);
