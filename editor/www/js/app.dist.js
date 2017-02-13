@@ -96,7 +96,7 @@
 	    __extends(Editor, _super);
 	    function Editor() {
 	        var _this = _super.call(this) || this;
-	        _this.res = 5;
+	        _this.res = 2;
 	        _this.lines = [];
 	        _this.LINE_COLOR = 0x0000ff;
 	        _this.EDITING_LINE_COLOR = 0xff0000;
@@ -109,7 +109,7 @@
 	        _this.wormsContainer = new PIXI.Container();
 	        _this.addChild(_this.wormsContainer);
 	        _this.addChild(_this.drawerCanvas);
-	        _this.addChild(_this.lineCanvas);
+	        //this.addChild(this.lineCanvas);
 	        _this.addChild(_this.editingLineCanvas);
 	        _this.initMouse();
 	        _this.nextPos = new UTILS.Pos();
@@ -131,7 +131,7 @@
 	            //this.end();
 	        });
 	        window.addEventListener("keydown", function (e) {
-	            if (e.keyCode == 17) {
+	            if (e.keyCode == 17 || e.keyCode == 18) {
 	                _this.next();
 	            }
 	            else if (e.keyCode == 13) {
@@ -140,6 +140,7 @@
 	            else if (e.keyCode == 27) {
 	                _this.end();
 	            }
+	            //console.log(e.keyCode);
 	        });
 	    };
 	    Editor.prototype.begin = function (x, y) {
@@ -170,7 +171,12 @@
 	                }
 	            }
 	            this.lines.push(this.editingLine.clone());
-	            var w = new WORMS.Simple(this.editingLine.getLength(), 30, 0xffffff, 0x000000);
+	            var wormLength = this.editingLine.getLength();
+	            var w = new WORMS.Nasty2(wormLength, {
+	                headLength: wormLength * 0.5,
+	                tailLength: wormLength * 0.5,
+	                thickness: 5
+	            }, 0x000000, 0x000000);
 	            w.setRoute(this.editingLine);
 	            w.setStep(0);
 	            w.render();
@@ -188,6 +194,7 @@
 	        this.prevPos.x = this.nextPos.x;
 	        this.prevPos.y = this.nextPos.y;
 	        this.editingLine.push(this.nextPos.clone());
+	        this.update();
 	    };
 	    Editor.prototype.update = function () {
 	        if (!this.pressing)
@@ -203,7 +210,7 @@
 	        this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
 	        this.drawerCanvas.lineStyle(1, this.DRAWER_CIRCLE_COLOR);
 	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 1);
-	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 1);
+	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 5);
 	    };
 	    return Editor;
 	}(PIXI.Container));

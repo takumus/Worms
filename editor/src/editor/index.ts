@@ -4,7 +4,7 @@ export default class Editor extends PIXI.Container{
     private lineCanvas:PIXI.Graphics;
     private editingLineCanvas:PIXI.Graphics;
     private wormsContainer:PIXI.Container;
-    private res:number = 5;
+    private res:number = 2;
     private nextPos:UTILS.Pos;
     private prevPos:UTILS.Pos;
     private pressing:boolean;
@@ -23,7 +23,7 @@ export default class Editor extends PIXI.Container{
         this.wormsContainer = new PIXI.Container();
         this.addChild(this.wormsContainer);
         this.addChild(this.drawerCanvas);
-        this.addChild(this.lineCanvas);
+        //this.addChild(this.lineCanvas);
         this.addChild(this.editingLineCanvas);
         this.initMouse();
         this.nextPos = new UTILS.Pos();
@@ -44,13 +44,14 @@ export default class Editor extends PIXI.Container{
             //this.end();
         });
         window.addEventListener("keydown", (e)=>{
-            if(e.keyCode == 17){
+            if(e.keyCode == 17 || e.keyCode == 18){
                 this.next();
             }else if(e.keyCode == 13){
                 console.log(JSON.stringify(this.lines));
             }else if(e.keyCode == 27){
                 this.end();
             }
+            //console.log(e.keyCode);
         });
     }
     private begin(x:number, y:number):void{
@@ -78,7 +79,17 @@ export default class Editor extends PIXI.Container{
                 }
             }
             this.lines.push(this.editingLine.clone());
-            const w = new WORMS.Simple(this.editingLine.getLength(), 30, 0xffffff, 0x000000);
+            const wormLength = this.editingLine.getLength();
+            const w = new WORMS.Nasty2(
+                wormLength,
+                {
+                    headLength:wormLength*0.5,
+                    tailLength:wormLength*0.5,
+                    thickness:5
+                },
+                0x000000,
+                0x000000
+            );
             w.setRoute(this.editingLine);
             w.setStep(0);
             w.render();
@@ -95,6 +106,7 @@ export default class Editor extends PIXI.Container{
         this.prevPos.x = this.nextPos.x;
         this.prevPos.y = this.nextPos.y;
         this.editingLine.push(this.nextPos.clone());
+        this.update();
     }
     public update():void{
         if(!this.pressing) return;
@@ -112,6 +124,6 @@ export default class Editor extends PIXI.Container{
 
         this.drawerCanvas.lineStyle(1, this.DRAWER_CIRCLE_COLOR);
         this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 1);
-        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 1);
+        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 5);
     }
 }
