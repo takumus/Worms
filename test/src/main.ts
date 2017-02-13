@@ -156,8 +156,8 @@ function draw():void{
 			if(i!=0){
 				//child
 				vpos = worms[0].getTailVecPos().clone();
-				vpos.pos.x += Math.random()*300-150;
-				vpos.pos.y += Math.random()*300-150;
+				vpos.pos.x += Math.random()*200-100;
+				vpos.pos.y += Math.random()*200-100;
 				vpos.add(Math.PI);
 				route = ROUTES.RouteGenerator.getMinimumRoute(
 					w.getHeadVecPos(),
@@ -184,7 +184,7 @@ function draw():void{
 						5
 					);
 				}else{
-					const p = 0.4;
+					const p = 0.7;
 					vpos = new UTILS.VecPos(
 						stageWidth*(1-p)/2 + stageWidth*p*Math.random(),
 						stageHeight*(1-p)/2 + stageHeight*p*Math.random(),
@@ -205,9 +205,10 @@ function draw():void{
 			const h = route.head();
 			const t = route.tail();
 			g.clear();
+			g.beginFill(i!=0?0x666666:0xCCCCCC)
+			g.drawCircle(t.x, t.y, 4);
+			g.endFill();
 			g.lineStyle(1, i!=0?0x666666:0xCCCCCC);
-			g.drawCircle(h.x, h.y, 2);
-			g.drawCircle(t.x, t.y, 2);
 			g.moveTo(h.x, h.y);
 			for(let n = 1; n < route.getLength(); n ++){
 				const p = route.at(n);

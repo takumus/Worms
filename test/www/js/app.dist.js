@@ -198,8 +198,8 @@
 	            if (i != 0) {
 	                //child
 	                vpos = worms[0].getTailVecPos().clone();
-	                vpos.pos.x += Math.random() * 300 - 150;
-	                vpos.pos.y += Math.random() * 300 - 150;
+	                vpos.pos.x += Math.random() * 200 - 100;
+	                vpos.pos.y += Math.random() * 200 - 100;
 	                vpos.add(Math.PI);
 	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, props.child.radiusRandom * Math.random() + props.child.radius, props.child.radiusRandom * Math.random() + props.child.radius, 5);
 	                route.wave(props.child.waveAmp, props.child.waveFreq, true);
@@ -212,7 +212,7 @@
 	                    route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), new UTILS.VecPos(mouse.x, mouse.y, Math.atan2(dy, dx)), props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius, 5);
 	                }
 	                else {
-	                    var p = 0.4;
+	                    var p = 0.7;
 	                    vpos = new UTILS.VecPos(stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Matthew.D_PI * Math.random());
 	                    var routes = ROUTES.RouteGenerator.getAllRoute(w.getHeadVecPos(), vpos, props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius);
 	                    route = routes[Math.floor(routes.length * Math.random())].generateRoute(5);
@@ -224,9 +224,10 @@
 	            var h = route.head();
 	            var t = route.tail();
 	            g.clear();
+	            g.beginFill(i != 0 ? 0x666666 : 0xCCCCCC);
+	            g.drawCircle(t.x, t.y, 4);
+	            g.endFill();
 	            g.lineStyle(1, i != 0 ? 0x666666 : 0xCCCCCC);
-	            g.drawCircle(h.x, h.y, 2);
-	            g.drawCircle(t.x, t.y, 2);
 	            g.moveTo(h.x, h.y);
 	            for (var n = 1; n < route.getLength(); n++) {
 	                var p = route.at(n);
