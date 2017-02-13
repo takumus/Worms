@@ -61,6 +61,8 @@
 	        waveAmp: 16,
 	        thickness: 15,
 	        length: 30,
+	        radius: 150,
+	        radiusRandom: 50,
 	        speed: 1.8
 	    },
 	    child: {
@@ -68,6 +70,8 @@
 	        waveAmp: 10,
 	        thickness: 13,
 	        length: 25,
+	        radius: 50,
+	        radiusRandom: 60,
 	        speed: 1.9
 	    },
 	    global: {
@@ -80,6 +84,7 @@
 	function initGUI() {
 	    var gui = new dat.GUI();
 	    var parent = gui.addFolder("Parent worm");
+	    parent.add(props.parent, 'speed', 0.1, 10);
 	    parent.add(props.parent, 'waveFreq', 0, 0.5);
 	    parent.add(props.parent, 'waveAmp', 0, 100);
 	    parent.add(props.parent, 'thickness', 1, 400).onChange(function () {
@@ -90,9 +95,12 @@
 	        worms[0].getOption().headLength = props.parent.length * 0.3;
 	        worms[0].getOption().tailLength = props.parent.length * 0.7;
 	    });
-	    parent.add(props.parent, 'speed', 0.1, 10);
+	    var parentTurn = parent.addFolder("turn");
+	    parentTurn.add(props.parent, 'radius', 0, 500);
+	    parentTurn.add(props.parent, 'radiusRandom', 0, 500);
 	    parent.open();
 	    var child = gui.addFolder("Child worm");
+	    child.add(props.child, 'speed', 0.1, 20);
 	    child.add(props.child, 'waveFreq', 0, 0.5);
 	    child.add(props.child, 'waveAmp', 0, 100);
 	    child.add(props.child, 'thickness', 1, 200).onChange(function () {
@@ -107,7 +115,9 @@
 	            worms[i].getOption().tailLength = props.child.length * 0.7;
 	        }
 	    });
-	    child.add(props.child, 'speed', 0.1, 20);
+	    var childTurn = child.addFolder("turn");
+	    childTurn.add(props.child, 'radius', 0, 500);
+	    childTurn.add(props.child, 'radiusRandom', 0, 500);
 	    child.open();
 	    gui.add(props.global, 'guide').onChange(function () {
 	        wormsGuideContainer.visible = props.global.guide;
@@ -191,7 +201,7 @@
 	                vpos.pos.x += Math.random() * 300 - 150;
 	                vpos.pos.y += Math.random() * 300 - 150;
 	                vpos.add(Math.PI);
-	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, 50 * Math.random() + 60, 50 * Math.random() + 60, 5);
+	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, props.child.radiusRandom * Math.random() + props.child.radius, props.child.radiusRandom * Math.random() + props.child.radius, 5);
 	                route.wave(props.child.waveAmp, props.child.waveFreq, true);
 	            }
 	            else {
@@ -205,7 +215,7 @@
 	                    var p = 0.8;
 	                    vpos = new UTILS.VecPos(stageWidth * (1 - p) / 2 + stageWidth * p * Math.random(), stageHeight * (1 - p) / 2 + stageHeight * p * Math.random(), Matthew.D_PI * Math.random());
 	                }
-	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, 200, 200, 5);
+	                route = ROUTES.RouteGenerator.getMinimumRoute(w.getHeadVecPos(), vpos, props.parent.radiusRandom * Math.random() + props.parent.radius, props.parent.radiusRandom * Math.random() + props.parent.radius, 5);
 	                route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 	            }
 	            w.addRouteFromCurrent(route);
