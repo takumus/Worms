@@ -128,7 +128,9 @@
 	    gui.add(props.global, 'speed', 0, 10);
 	    gui.addColor(props.global, 'color');
 	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(function () {
-	        for (var i = 0; i < worms.length; i++) {
+	        worms[0].getOption().headLength = props.parent.length * props.global.bodyBalance;
+	        worms[0].getOption().tailLength = props.parent.length * (1 - props.global.bodyBalance);
+	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
 	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
 	        }
