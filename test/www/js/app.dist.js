@@ -135,6 +135,15 @@
 	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
 	        }
 	    });
+	    gui.add({ data: function () {
+	            try {
+	                var newProps = JSON.parse(window.prompt("your data", JSON.stringify(props)));
+	                props = newProps;
+	                gui.updateDisplay();
+	            }
+	            catch (e) {
+	            }
+	        } }, "data");
 	    gui.add({ reset: function () {
 	            gui.revert(gui);
 	        } }, "reset");

@@ -9,7 +9,7 @@ const wormsGuide:Array<PIXI.Graphics> = [];
 const wormsGuideContainer:PIXI.Container = new PIXI.Container();
 let pressing = false;
 let guide:boolean = true;
-const props = {
+let props = {
 	parent:{
 		waveFreq:0.12,
 		waveAmp:16,
@@ -91,6 +91,15 @@ function initGUI():void{
 			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
 		}
 	});
+	gui.add({data:()=>{
+		try{
+			const newProps = JSON.parse(window.prompt("your data", JSON.stringify(props)));
+			props = newProps;
+			gui.updateDisplay();
+		}catch(e){
+
+		}
+	}}, "data");
 	gui.add({reset:()=>{
 		gui.revert(gui);
 	}}, "reset");
@@ -242,4 +251,5 @@ function resize():void{
 }
 
 window.onload = init;
+
 //100コミット
