@@ -94,7 +94,7 @@
 	        Base.prototype.addStep = function (step) {
 	            var length = this.line.getLength() - this.length;
 	            var p = step / length;
-	            if (p <= 0) {
+	            if (p < 0) {
 	                this.setStep(1);
 	                return false;
 	            }
@@ -108,7 +108,7 @@
 	            this.step = step;
 	            if (!this.line)
 	                return false;
-	            var beginIndex = this.length - 1;
+	            var beginIndex = this.length;
 	            var length = this.line.getLength() - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);

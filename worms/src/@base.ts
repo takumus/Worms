@@ -45,7 +45,7 @@ namespace WORMS{
         public addStep(step:number):boolean{
             const length = this.line.getLength() - this.length;
             const p = step / length;
-            if(p <= 0) {
+            if(p < 0) {
                 this.setStep(1);
                 return false;
             }
@@ -56,7 +56,7 @@ namespace WORMS{
             if(step > 1) step = 1;
             this.step = step;
             if(!this.line) return false;
-            const beginIndex = this.length - 1;
+            const beginIndex = this.length;
             const length = this.line.getLength() - beginIndex - 1;
             const posIndex = Math.floor(length * step);
             const offset = (length * step - posIndex);
