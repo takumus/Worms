@@ -3,8 +3,7 @@ declare namespace WORMS {
     class Base extends PIXI.Graphics {
         protected bone: ROUTES.Line;
         protected length: number;
-        private line;
-        private routeIndex;
+        private route;
         private step;
         constructor(length: number);
         setLength(length: number): void;

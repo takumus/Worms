@@ -56,7 +56,6 @@
 	        function Base(length) {
 	            var _this = _super.call(this) || this;
 	            _this.step = 0;
-	            _this.routeIndex = 0;
 	            _this.bone = new ROUTES.Line();
 	            _this.setLength(length);
 	            return _this;
@@ -89,10 +88,10 @@
 	        Base.prototype.setRoute = function (line) {
 	            if (line.getLength() < this.length)
 	                return;
-	            this.line = line;
+	            this.route = line;
 	        };
 	        Base.prototype.addStep = function (step) {
-	            var length = this.line.getLength() - this.length;
+	            var length = this.route.getLength() - this.length;
 	            var p = step / length;
 	            if (p < 0) {
 	                this.setStep(1);
@@ -106,17 +105,17 @@
 	            if (step > 1)
 	                step = 1;
 	            this.step = step;
-	            if (!this.line)
+	            if (!this.route)
 	                return false;
 	            var beginIndex = this.length;
-	            var length = this.line.getLength() - beginIndex - 1;
+	            var length = this.route.getLength() - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);
 	            for (var i = 0; i < this.bone.getLength(); i++) {
 	                var id = beginIndex - i + posIndex;
 	                var b = this.bone.at(i);
-	                var l = this.line.at(id);
-	                var nl = this.line.at(id + 1);
+	                var l = this.route.at(id);
+	                var nl = this.route.at(id + 1);
 	                if (!l)
 	                    continue;
 	                var dx = 0;
@@ -147,7 +146,7 @@
 	            return this.bone.getTailVecPos().add(Math.PI);
 	        };
 	        Base.prototype.getRoute = function () {
-	            return this.line;
+	            return this.route;
 	        };
 	        return Base;
 	    }(PIXI.Graphics));

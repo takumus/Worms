@@ -2,12 +2,10 @@ namespace WORMS{
     export class Base extends PIXI.Graphics{
         protected bone:ROUTES.Line;
         protected length:number;
-        private line:ROUTES.Line;
-        private routeIndex:number;
+        private route:ROUTES.Line;
         private step:number = 0;
         constructor(length:number){
             super();
-            this.routeIndex = 0;
             this.bone = new ROUTES.Line();
             this.setLength(length);
         }
@@ -40,10 +38,10 @@ namespace WORMS{
         }
         public setRoute(line:ROUTES.Line){
             if(line.getLength() < this.length) return;
-            this.line = line;
+            this.route = line;
         }
         public addStep(step:number):boolean{
-            const length = this.line.getLength() - this.length;
+            const length = this.route.getLength() - this.length;
             const p = step / length;
             if(p < 0) {
                 this.setStep(1);
@@ -55,16 +53,16 @@ namespace WORMS{
             if(step < 0) step = 0;
             if(step > 1) step = 1;
             this.step = step;
-            if(!this.line) return false;
+            if(!this.route) return false;
             const beginIndex = this.length;
-            const length = this.line.getLength() - beginIndex - 1;
+            const length = this.route.getLength() - beginIndex - 1;
             const posIndex = Math.floor(length * step);
             const offset = (length * step - posIndex);
             for(let i = 0; i < this.bone.getLength(); i ++){
                 const id = beginIndex-i + posIndex;
                 const b = this.bone.at(i);
-                const l = this.line.at(id);
-                const nl = this.line.at(id+1);
+                const l = this.route.at(id);
+                const nl = this.route.at(id+1);
                 if(!l) continue;
                 let dx = 0;
                 let dy = 0;
@@ -94,7 +92,7 @@ namespace WORMS{
             return this.bone.getTailVecPos().add(Math.PI);
         }
         public getRoute():ROUTES.Line{
-            return this.line;
+            return this.route;
         }
     }
 }
