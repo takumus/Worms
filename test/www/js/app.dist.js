@@ -137,7 +137,10 @@
 	    });
 	    gui.add({ data: function () {
 	            try {
-	                var newProps = JSON.parse(window.prompt("your data", JSON.stringify(props)));
+	                var newPropsStr = window.prompt("your data", JSON.stringify(props));
+	                if (!newPropsStr)
+	                    return;
+	                var newProps = JSON.parse(newPropsStr);
 	                props = newProps;
 	                gui.updateDisplay();
 	            }

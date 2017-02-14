@@ -93,7 +93,9 @@ function initGUI():void{
 	});
 	gui.add({data:()=>{
 		try{
-			const newProps = JSON.parse(window.prompt("your data", JSON.stringify(props)));
+			const newPropsStr =　window.prompt("your data", JSON.stringify(props));
+			if(!newPropsStr) return;
+			const newProps =  JSON.parse(newPropsStr);
 			props = newProps;
 			gui.updateDisplay();
 		}catch(e){
@@ -249,7 +251,6 @@ function resize():void{
 	stageHeight = canvas.offsetHeight;
 	renderer.resize(stageWidth, stageHeight);
 }
-
 window.onload = init;
 
 //100コミット
