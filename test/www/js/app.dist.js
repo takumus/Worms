@@ -86,63 +86,68 @@
 	function initGUI() {
 	    var gui = new dat.GUI();
 	    var parent = gui.addFolder("Parent worm");
-	    parent.add(props.parent, 'speed', 0.1, 10);
-	    parent.add(props.parent, 'waveFreq', 0, 0.5);
-	    parent.add(props.parent, 'waveAmp', 0, 100);
-	    parent.add(props.parent, 'thickness', 1, 400).onChange(function () {
+	    var parentThickness = function () {
 	        worms[0].getOption().thickness = props.parent.thickness;
-	    });
-	    parent.add(props.parent, 'length', 2, 200).onChange(function () {
+	    };
+	    var parentLength = function () {
 	        worms[0].setLength(props.parent.length);
 	        worms[0].getOption().headLength = props.parent.length * 0.3;
 	        worms[0].getOption().tailLength = props.parent.length * 0.7;
-	    });
-	    var parentTurn = parent.addFolder("turn");
-	    parentTurn.add(props.parent, 'radius', 0, 500);
-	    parentTurn.add(props.parent, 'radiusRandom', 0, 500);
-	    parent.open();
+	    };
 	    var child = gui.addFolder("Child worm");
-	    child.add(props.child, 'speed', 0.1, 20);
-	    child.add(props.child, 'waveFreq', 0, 0.5);
-	    child.add(props.child, 'waveAmp', 0, 100);
-	    child.add(props.child, 'thickness', 1, 200).onChange(function () {
+	    var childThickness = function () {
 	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].getOption().thickness = props.child.thickness;
 	        }
-	    });
-	    child.add(props.child, 'length', 2, 200).onChange(function () {
+	    };
+	    var childLength = function () {
 	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].setLength(props.child.length);
 	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
 	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
 	        }
-	    });
+	    };
+	    var guide = function () {
+	        wormsGuideContainer.visible = props.global.guide;
+	    };
+	    parent.add(props.parent, 'speed', 0.1, 10);
+	    parent.add(props.parent, 'waveFreq', 0, 0.5);
+	    parent.add(props.parent, 'waveAmp', 0, 100);
+	    parent.add(props.parent, 'thickness', 1, 400).onChange(parentThickness);
+	    parent.add(props.parent, 'length', 2, 200).onChange(parentLength);
+	    var parentTurn = parent.addFolder("turn");
+	    parentTurn.add(props.parent, 'radius', 0, 500);
+	    parentTurn.add(props.parent, 'radiusRandom', 0, 500);
+	    parent.open();
+	    child.add(props.child, 'speed', 0.1, 20);
+	    child.add(props.child, 'waveFreq', 0, 0.5);
+	    child.add(props.child, 'waveAmp', 0, 100);
+	    child.add(props.child, 'thickness', 1, 200).onChange(childThickness);
+	    child.add(props.child, 'length', 2, 200).onChange(childLength);
 	    child.add(props.child, 'targetOffset', 0, 500);
 	    var childTurn = child.addFolder("turn");
 	    childTurn.add(props.child, 'radius', 0, 500);
 	    childTurn.add(props.child, 'radiusRandom', 0, 500);
 	    child.open();
-	    gui.add(props.global, 'guide').onChange(function () {
-	        wormsGuideContainer.visible = props.global.guide;
-	    });
+	    gui.add(props.global, 'guide').onChange(guide);
 	    gui.add(props.global, 'speed', 0, 10);
 	    gui.addColor(props.global, 'color');
 	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(function () {
-	        worms[0].getOption().headLength = props.parent.length * props.global.bodyBalance;
-	        worms[0].getOption().tailLength = props.parent.length * (1 - props.global.bodyBalance);
-	        for (var i = 1; i < worms.length; i++) {
-	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
-	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
-	        }
+	        parentLength();
+	        childLength();
 	    });
 	    gui.add({ data: function () {
 	            try {
 	                var newPropsStr = window.prompt("your data", JSON.stringify(props));
 	                if (!newPropsStr)
 	                    return;
-	                var newProps = JSON.parse(newPropsStr);
-	                props = newProps;
+	                setProps(JSON.parse(newPropsStr));
 	                gui.updateDisplay();
+	                parentThickness();
+	                parentLength();
+	                childThickness();
+	                childLength();
+	                guide();
 	            }
 	            catch (e) {
 	            }
@@ -270,6 +275,13 @@
 	    stageWidth = canvas.offsetWidth;
 	    stageHeight = canvas.offsetHeight;
 	    renderer.resize(stageWidth, stageHeight);
+	}
+	function setProps(newProps) {
+	    Object.keys(newProps).forEach(function (k) {
+	        Object.keys(newProps[k]).forEach(function (kk) {
+	            props[k][kk] = newProps[k][kk];
+	        });
+	    });
 	}
 	window.onload = init;
 	//100コミット 

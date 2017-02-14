@@ -40,64 +40,67 @@ const defaultProps = {};
 function initGUI():void{
 	const gui = new dat.GUI();
 	const parent = gui.addFolder("Parent worm");
-	parent.add(props.parent, 'speed', 0.1, 10);
-	parent.add(props.parent, 'waveFreq', 0, 0.5);
-	parent.add(props.parent, 'waveAmp', 0, 100);
-	parent.add(props.parent, 'thickness', 1, 400).onChange(()=>{
+	const parentThickness = ()=>{
 		worms[0].getOption().thickness = props.parent.thickness;
-	});
-	parent.add(props.parent, 'length', 2, 200).onChange(()=>{
+	}
+	const parentLength = ()=>{
 		worms[0].setLength(props.parent.length);
 		worms[0].getOption().headLength = props.parent.length*0.3;
 		worms[0].getOption().tailLength = props.parent.length*0.7;
-	});
-	const parentTurn = parent.addFolder("turn");
-	parentTurn.add(props.parent, 'radius', 0, 500);
-	parentTurn.add(props.parent, 'radiusRandom', 0, 500);
-	parent.open();
-
+	}
 	const child = gui.addFolder("Child worm");
-	child.add(props.child, 'speed', 0.1, 20);
-	child.add(props.child, 'waveFreq', 0, 0.5);
-	child.add(props.child, 'waveAmp', 0, 100);
-	child.add(props.child, 'thickness', 1, 200).onChange(()=>{
+	const childThickness = ()=>{
 		for(let i = 1; i < worms.length; i ++){
 			worms[i].getOption().thickness = props.child.thickness;
 		}
-	});
-	child.add(props.child, 'length', 2, 200).onChange(()=>{
+	}
+	const childLength = ()=>{
 		for(let i = 1; i < worms.length; i ++){
 			worms[i].setLength(props.child.length);
 			worms[i].getOption().headLength = props.child.length*props.global.bodyBalance;
 			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
 		}
-	});
+	}
+	const guide = ()=>{
+		wormsGuideContainer.visible = props.global.guide;
+	}
+	parent.add(props.parent, 'speed', 0.1, 10);
+	parent.add(props.parent, 'waveFreq', 0, 0.5);
+	parent.add(props.parent, 'waveAmp', 0, 100);
+	parent.add(props.parent, 'thickness', 1, 400).onChange(parentThickness);
+	parent.add(props.parent, 'length', 2, 200).onChange(parentLength);
+	const parentTurn = parent.addFolder("turn");
+	parentTurn.add(props.parent, 'radius', 0, 500);
+	parentTurn.add(props.parent, 'radiusRandom', 0, 500);
+	parent.open();
+	child.add(props.child, 'speed', 0.1, 20);
+	child.add(props.child, 'waveFreq', 0, 0.5);
+	child.add(props.child, 'waveAmp', 0, 100);
+	child.add(props.child, 'thickness', 1, 200).onChange(childThickness);
+	child.add(props.child, 'length', 2, 200).onChange(childLength);
 	child.add(props.child, 'targetOffset', 0, 500);
 	const childTurn = child.addFolder("turn");
 	childTurn.add(props.child, 'radius', 0, 500);
 	childTurn.add(props.child, 'radiusRandom', 0, 500);
 	child.open();
-
-	gui.add(props.global, 'guide').onChange(()=>{
-		wormsGuideContainer.visible = props.global.guide;
-	});
+	gui.add(props.global, 'guide').onChange(guide);
 	gui.add(props.global, 'speed', 0, 10);
 	gui.addColor(props.global, 'color');
 	gui.add(props.global, 'bodyBalance', 0, 1).onChange(()=>{
-		worms[0].getOption().headLength = props.parent.length*props.global.bodyBalance;
-		worms[0].getOption().tailLength = props.parent.length*(1-props.global.bodyBalance);
-		for(let i = 1; i < worms.length; i ++){
-			worms[i].getOption().headLength = props.child.length*props.global.bodyBalance;
-			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
-		}
+		parentLength();
+		childLength();
 	});
 	gui.add({data:()=>{
 		try{
 			const newPropsStr =　window.prompt("your data", JSON.stringify(props));
 			if(!newPropsStr) return;
-			const newProps =  JSON.parse(newPropsStr);
-			props = newProps;
+			setProps(JSON.parse(newPropsStr));
 			gui.updateDisplay();
+			parentThickness();
+			parentLength();
+			childThickness();
+			childLength();
+			guide();
 		}catch(e){
 
 		}
@@ -250,6 +253,13 @@ function resize():void{
 	stageWidth = canvas.offsetWidth;
 	stageHeight = canvas.offsetHeight;
 	renderer.resize(stageWidth, stageHeight);
+}
+function setProps(newProps):void{
+	Object.keys(newProps).forEach((k)=>{
+		Object.keys(newProps[k]).forEach((kk)=>{
+			props[k][kk] = newProps[k][kk];
+		});
+	});
 }
 window.onload = init;
 
