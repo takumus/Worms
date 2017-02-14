@@ -78,7 +78,8 @@
 	    global: {
 	        guide: false,
 	        speed: 1,
-	        color: 2392462
+	        color: 0x519aa4,
+	        bodyBalance: 0.3
 	    }
 	};
 	var defaultProps = {};
@@ -112,8 +113,8 @@
 	    child.add(props.child, 'length', 2, 200).onChange(function () {
 	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].setLength(props.child.length);
-	            worms[i].getOption().headLength = props.child.length * 0.3;
-	            worms[i].getOption().tailLength = props.child.length * 0.7;
+	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
+	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
 	        }
 	    });
 	    child.add(props.child, 'targetOffset', 0, 500);
@@ -126,6 +127,12 @@
 	    });
 	    gui.add(props.global, 'speed', 0, 10);
 	    gui.addColor(props.global, 'color');
+	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(function () {
+	        for (var i = 0; i < worms.length; i++) {
+	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
+	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
+	        }
+	    });
 	    gui.add({ reset: function () {
 	            gui.revert(gui);
 	        } }, "reset");
@@ -161,8 +168,8 @@
 	    //generate worms
 	    for (var i = 0; i < 20; i++) {
 	        var length_1 = i == 0 ? props.parent.length : props.child.length;
-	        var headLength = length_1 * 0.3;
-	        var tailLength = length_1 * 0.7;
+	        var headLength = length_1 * props.global.bodyBalance;
+	        var tailLength = length_1 * (1 - props.global.bodyBalance);
 	        var thickness = i == 0 ? props.parent.thickness : props.child.thickness;
 	        var fillColor = i != 0 ? props.global.color : 0x000000;
 	        var borderColor = i != 0 ? 0x000000 : props.global.color;
@@ -223,16 +230,19 @@
 	            }
 	            w.addRouteFromCurrent(route);
 	            w.setStep(0);
-	            var h = route.head();
-	            var t = route.tail();
+	            var r = w.getRoute();
+	            var h = r.head();
+	            var t = r.tail();
+	            var c = i != 0 ? 0x666666 : 0xCCCCCC;
 	            g.clear();
-	            g.beginFill(i != 0 ? 0x666666 : 0xCCCCCC);
-	            g.drawCircle(t.x, t.y, 4);
+	            g.beginFill(c);
+	            g.drawCircle(t.x, t.y, 2);
 	            g.endFill();
-	            g.lineStyle(1, i != 0 ? 0x666666 : 0xCCCCCC);
+	            g.lineStyle(1, c, 0);
 	            g.moveTo(h.x, h.y);
-	            for (var n = 1; n < route.getLength(); n++) {
-	                var p = route.at(n);
+	            for (var n = 1; n < r.getLength(); n++) {
+	                var p = r.at(n);
+	                g.lineStyle(n / r.getLength() * 2, c);
 	                g.lineTo(p.x, p.y);
 	            }
 	            pressing = false;

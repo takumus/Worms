@@ -32,7 +32,8 @@ const props = {
 	global:{
 		guide:false,
 		speed:1,
-		color:2392462
+		color:0x519aa4,
+		bodyBalance:0.3
 	}
 }
 const defaultProps = {};
@@ -67,8 +68,8 @@ function initGUI():void{
 	child.add(props.child, 'length', 2, 200).onChange(()=>{
 		for(let i = 1; i < worms.length; i ++){
 			worms[i].setLength(props.child.length);
-			worms[i].getOption().headLength = props.child.length*0.3;
-			worms[i].getOption().tailLength = props.child.length*0.7;
+			worms[i].getOption().headLength = props.child.length*props.global.bodyBalance;
+			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
 		}
 	});
 	child.add(props.child, 'targetOffset', 0, 500);
@@ -82,6 +83,12 @@ function initGUI():void{
 	});
 	gui.add(props.global, 'speed', 0, 10);
 	gui.addColor(props.global, 'color');
+	gui.add(props.global, 'bodyBalance', 0, 1).onChange(()=>{
+		for(let i = 0; i < worms.length; i ++){
+			worms[i].getOption().headLength = props.child.length*props.global.bodyBalance;
+			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
+		}
+	});
 	gui.add({reset:()=>{
 		gui.revert(gui);
 	}}, "reset");
@@ -116,8 +123,8 @@ function init():void{
 	//generate worms
 	for(let i = 0; i < 20; i ++){
 		const length = i==0 ? props.parent.length : props.child.length;
-		const headLength = length * 0.3;
-		const tailLength = length * 0.7;
+		const headLength = length * props.global.bodyBalance;
+		const tailLength = length * (1-props.global.bodyBalance);
 		const thickness = i==0 ? props.parent.thickness : props.child.thickness;
 		const fillColor = i!=0 ? props.global.color : 0x000000;
 		const borderColor = i!=0 ? 0x000000 : props.global.color;
@@ -204,16 +211,19 @@ function draw():void{
 			}
 			w.addRouteFromCurrent(route);
 			w.setStep(0);
-			const h = route.head();
-			const t = route.tail();
+			const r = w.getRoute();
+			const h = r.head();
+			const t = r.tail();
+			const c = i!=0?0x666666:0xCCCCCC;
 			g.clear();
-			g.beginFill(i!=0?0x666666:0xCCCCCC)
-			g.drawCircle(t.x, t.y, 4);
+			g.beginFill(c)
+			g.drawCircle(t.x, t.y, 2);
 			g.endFill();
-			g.lineStyle(1, i!=0?0x666666:0xCCCCCC);
+			g.lineStyle(1, c, 0);
 			g.moveTo(h.x, h.y);
-			for(let n = 1; n < route.getLength(); n ++){
-				const p = route.at(n);
+			for(let n = 1; n < r.getLength(); n ++){
+				const p = r.at(n);
+				g.lineStyle(n/r.getLength()*2, c);
 				g.lineTo(p.x, p.y);
 			}
 			pressing = false;
