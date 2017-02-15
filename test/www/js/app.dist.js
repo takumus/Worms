@@ -185,7 +185,7 @@
 	    });
 	    stage.addChild(wormsGuideContainer);
 	    //generate worms
-	    for (var i = 0; i < 20; i++) {
+	    for (var i = 0; i < 40; i++) {
 	        var length_1 = i == 0 ? props.parent.length : props.child.length;
 	        var headLength = props.global.bodyBalance;
 	        var tailLength = 1 - props.global.bodyBalance;
