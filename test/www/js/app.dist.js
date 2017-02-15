@@ -91,8 +91,6 @@
 	    };
 	    var parentLength = function () {
 	        worms[0].setLength(props.parent.length);
-	        worms[0].getOption().headLength = props.parent.length * props.global.bodyBalance;
-	        worms[0].getOption().tailLength = props.parent.length * (1 - props.global.bodyBalance);
 	    };
 	    var child = gui.addFolder("Child worm");
 	    var childThickness = function () {
@@ -103,12 +101,16 @@
 	    var childLength = function () {
 	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].setLength(props.child.length);
-	            worms[i].getOption().headLength = props.child.length * props.global.bodyBalance;
-	            worms[i].getOption().tailLength = props.child.length * (1 - props.global.bodyBalance);
 	        }
 	    };
 	    var guide = function () {
 	        wormsGuideContainer.visible = props.global.guide;
+	    };
+	    var bodyBalance = function () {
+	        for (var i = 0; i < worms.length; i++) {
+	            worms[i].getOption().headLength = props.global.bodyBalance;
+	            worms[i].getOption().tailLength = 1 - props.global.bodyBalance;
+	        }
 	    };
 	    parent.add(props.parent, 'speed', 0.1, 10);
 	    parent.add(props.parent, 'waveFreq', 0, 0.5);
@@ -132,10 +134,7 @@
 	    gui.add(props.global, 'guide').onChange(guide);
 	    gui.add(props.global, 'speed', 0, 10);
 	    gui.addColor(props.global, 'color');
-	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(function () {
-	        parentLength();
-	        childLength();
-	    });
+	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(bodyBalance);
 	    gui.add({ data: function () {
 	            try {
 	                var newPropsStr = window.prompt("your data", JSON.stringify(props));
@@ -148,6 +147,7 @@
 	                childThickness();
 	                childLength();
 	                guide();
+	                bodyBalance();
 	            }
 	            catch (e) {
 	            }
@@ -187,8 +187,8 @@
 	    //generate worms
 	    for (var i = 0; i < 20; i++) {
 	        var length_1 = i == 0 ? props.parent.length : props.child.length;
-	        var headLength = length_1 * props.global.bodyBalance;
-	        var tailLength = length_1 * (1 - props.global.bodyBalance);
+	        var headLength = props.global.bodyBalance;
+	        var tailLength = 1 - props.global.bodyBalance;
 	        var thickness = i == 0 ? props.parent.thickness : props.child.thickness;
 	        var fillColor = i != 0 ? props.global.color : 0x000000;
 	        var borderColor = i != 0 ? 0x000000 : props.global.color;

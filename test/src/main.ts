@@ -45,8 +45,6 @@ function initGUI():void{
 	}
 	const parentLength = ()=>{
 		worms[0].setLength(props.parent.length);
-		worms[0].getOption().headLength = props.parent.length*props.global.bodyBalance;
-		worms[0].getOption().tailLength = props.parent.length*(1-props.global.bodyBalance);
 	}
 	const child = gui.addFolder("Child worm");
 	const childThickness = ()=>{
@@ -57,12 +55,16 @@ function initGUI():void{
 	const childLength = ()=>{
 		for(let i = 1; i < worms.length; i ++){
 			worms[i].setLength(props.child.length);
-			worms[i].getOption().headLength = props.child.length*props.global.bodyBalance;
-			worms[i].getOption().tailLength = props.child.length*(1-props.global.bodyBalance);
 		}
 	}
 	const guide = ()=>{
 		wormsGuideContainer.visible = props.global.guide;
+	}
+	const bodyBalance = ()=>{
+		for(let i = 0; i < worms.length; i ++){
+			worms[i].getOption().headLength = props.global.bodyBalance;
+			worms[i].getOption().tailLength = 1-props.global.bodyBalance;
+		}
 	}
 	parent.add(props.parent, 'speed', 0.1, 10);
 	parent.add(props.parent, 'waveFreq', 0, 0.5);
@@ -86,10 +88,7 @@ function initGUI():void{
 	gui.add(props.global, 'guide').onChange(guide);
 	gui.add(props.global, 'speed', 0, 10);
 	gui.addColor(props.global, 'color');
-	gui.add(props.global, 'bodyBalance', 0, 1).onChange(()=>{
-		parentLength();
-		childLength();
-	});
+	gui.add(props.global, 'bodyBalance', 0, 1).onChange(bodyBalance);
 	gui.add({data:()=>{
 		try{
 			const newPropsStr =　window.prompt("your data", JSON.stringify(props));
@@ -101,6 +100,7 @@ function initGUI():void{
 			childThickness();
 			childLength();
 			guide();
+			bodyBalance();
 		}catch(e){
 
 		}
@@ -139,8 +139,8 @@ function init():void{
 	//generate worms
 	for(let i = 0; i < 20; i ++){
 		const length = i==0 ? props.parent.length : props.child.length;
-		const headLength = length * props.global.bodyBalance;
-		const tailLength = length * (1-props.global.bodyBalance);
+		const headLength = props.global.bodyBalance;
+		const tailLength = 1-props.global.bodyBalance;
 		const thickness = i==0 ? props.parent.thickness : props.child.thickness;
 		const fillColor = i!=0 ? props.global.color : 0x000000;
 		const borderColor = i!=0 ? 0x000000 : props.global.color;

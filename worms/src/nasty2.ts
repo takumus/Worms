@@ -24,8 +24,8 @@ namespace WORMS{
         }
         public setOption(option:NastyOption):void{
             this._option = option;
-            option.headLength = UTILS.def<number>(option.headLength, 0);
-            option.tailLength = UTILS.def<number>(option.tailLength, 0);
+            option.headLength = UTILS.def<number>(option.headLength, 0.5);
+            option.tailLength = UTILS.def<number>(option.tailLength, 0.5);
             option.fillColor = UTILS.def<number>(option.fillColor, 0xff0000);
             option.borderColor = UTILS.def<number>(option.borderColor, 0x0000ff);
             option.borderThickness = UTILS.def<number>(option.borderThickness, 5);
@@ -48,10 +48,12 @@ namespace WORMS{
                 let vx = this.bone.at(i-1).x - nbone.x;
                 let vy = this.bone.at(i-1).y - nbone.y;
                 let radian:number = Matthew.H_PI;
-                if(i < this._option.headLength){
-                    radian = i/this._option.headLength*Matthew.H_PI;
-                }else if(i > L-this._option.tailLength){
-                    radian = (i-(L-this._option.tailLength))/this._option.tailLength*Matthew.H_PI + Matthew.H_PI;
+                const headLength = this.length * this._option.headLength;
+                const tailLength = this.length * this._option.tailLength;
+                if(i < headLength){
+                    radian = i/headLength*Matthew.H_PI;
+                }else if(i > L-tailLength){
+                    radian = (i-(L-tailLength))/tailLength*Matthew.H_PI + Matthew.H_PI;
                 }
                 const r = Math.sin(radian)*this._option.thickness;
                 const vl = vx*vx+vy*vy;

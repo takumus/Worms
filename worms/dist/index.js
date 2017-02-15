@@ -294,8 +294,8 @@
 	        };
 	        Nasty2.prototype.setOption = function (option) {
 	            this._option = option;
-	            option.headLength = UTILS.def(option.headLength, 0);
-	            option.tailLength = UTILS.def(option.tailLength, 0);
+	            option.headLength = UTILS.def(option.headLength, 0.5);
+	            option.tailLength = UTILS.def(option.tailLength, 0.5);
 	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
 	            option.borderColor = UTILS.def(option.borderColor, 0x0000ff);
 	            option.borderThickness = UTILS.def(option.borderThickness, 5);
@@ -318,11 +318,13 @@
 	                var vx = this.bone.at(i - 1).x - nbone.x;
 	                var vy = this.bone.at(i - 1).y - nbone.y;
 	                var radian = Matthew.H_PI;
-	                if (i < this._option.headLength) {
-	                    radian = i / this._option.headLength * Matthew.H_PI;
+	                var headLength = this.length * this._option.headLength;
+	                var tailLength = this.length * this._option.tailLength;
+	                if (i < headLength) {
+	                    radian = i / headLength * Matthew.H_PI;
 	                }
-	                else if (i > L - this._option.tailLength) {
-	                    radian = (i - (L - this._option.tailLength)) / this._option.tailLength * Matthew.H_PI + Matthew.H_PI;
+	                else if (i > L - tailLength) {
+	                    radian = (i - (L - tailLength)) / tailLength * Matthew.H_PI + Matthew.H_PI;
 	                }
 	                var r = Math.sin(radian) * this._option.thickness;
 	                var vl = vx * vx + vy * vy;
