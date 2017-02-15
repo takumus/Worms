@@ -91,8 +91,8 @@
 	    };
 	    var parentLength = function () {
 	        worms[0].setLength(props.parent.length);
-	        worms[0].getOption().headLength = props.parent.length * 0.3;
-	        worms[0].getOption().tailLength = props.parent.length * 0.7;
+	        worms[0].getOption().headLength = props.parent.length * props.global.bodyBalance;
+	        worms[0].getOption().tailLength = props.parent.length * (1 - props.global.bodyBalance);
 	    };
 	    var child = gui.addFolder("Child worm");
 	    var childThickness = function () {
