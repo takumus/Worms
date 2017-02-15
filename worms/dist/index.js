@@ -51,14 +51,11 @@
 	};
 	var WORMS;
 	(function (WORMS) {
-	    var Base = (function (_super) {
-	        __extends(Base, _super);
+	    var Base = (function () {
 	        function Base(length) {
-	            var _this = _super.call(this) || this;
-	            _this.step = 0;
-	            _this.bone = new ROUTES.Line();
-	            _this.setLength(length);
-	            return _this;
+	            this.step = 0;
+	            this.bone = new ROUTES.Line();
+	            this.setLength(length);
 	        }
 	        Base.prototype.setLength = function (length) {
 	            this.length = Math.floor(length);
@@ -149,80 +146,8 @@
 	            return this.route;
 	        };
 	        return Base;
-	    }(PIXI.Graphics));
-	    WORMS.Base = Base;
-	})(WORMS || (WORMS = {}));
-	///<reference path="@base.ts" />
-	var WORMS;
-	(function (WORMS) {
-	    var Nasty = (function (_super) {
-	        __extends(Nasty, _super);
-	        function Nasty(length, thickness, fillColor, borderColor) {
-	            if (fillColor === void 0) { fillColor = 0xffffff; }
-	            if (borderColor === void 0) { borderColor = 0x000000; }
-	            var _this = _super.call(this, length) || this;
-	            _this.thickness = thickness / 2;
-	            _this.body = [];
-	            for (var i = 0; i < length; i++) {
-	                _this.body.push(new BodyPos());
-	            }
-	            _this.setColor(fillColor, borderColor);
-	            return _this;
-	        }
-	        Nasty.prototype.setColor = function (fillColor, borderColor) {
-	            this.colors = {
-	                fill: fillColor,
-	                border: borderColor
-	            };
-	        };
-	        Nasty.prototype.render = function () {
-	            var bbone = this.bone.at(0);
-	            //ワームの外殻を生成
-	            var ebone = this.bone.at(this.bone.getLength() - 1);
-	            var bbody = this.body[0];
-	            var ebody = this.body[this.body.length - 1];
-	            bbody.left.x = bbone.x;
-	            bbody.left.y = bbone.y;
-	            for (var i = 1; i < this.bone.getLength() - 1; i++) {
-	                var nbone = this.bone.at(i);
-	                var nbody = this.body[i];
-	                var vx = this.bone.at(i - 1).x - nbone.x;
-	                var vy = this.bone.at(i - 1).y - nbone.y;
-	                var r = ((Math.sin(i / (this.bone.getLength() - 1) * (Math.PI)))) * this.thickness;
-	                var vl = vx * vx + vy * vy;
-	                var vr = Math.sqrt(vl);
-	                vx = vx / vr * r;
-	                vy = vy / vr * r;
-	                nbody.left.x = nbone.x + -vy;
-	                nbody.left.y = nbone.y + vx;
-	                nbody.right.x = nbone.x + vy;
-	                nbody.right.y = nbone.y + -vx;
-	            }
-	            ebody.left.x = ebone.x;
-	            ebody.left.y = ebone.y;
-	            this.clear();
-	            this.lineStyle(3, this.colors.border);
-	            this.beginFill(this.colors.fill);
-	            this.moveTo(bbody.left.x, bbody.left.y);
-	            for (var i = 1; i < this.body.length; i++) {
-	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
-	            }
-	            for (var i = this.body.length - 2; i >= 2; i--) {
-	                this.lineTo(this.body[i].right.x, this.body[i].right.y);
-	            }
-	            this.lineTo(bbody.left.x, bbody.left.y);
-	            this.endFill();
-	        };
-	        return Nasty;
-	    }(WORMS.Base));
-	    WORMS.Nasty = Nasty;
-	    var BodyPos = (function () {
-	        function BodyPos() {
-	            this.left = new UTILS.Pos();
-	            this.right = new UTILS.Pos();
-	        }
-	        return BodyPos;
 	    }());
+	    WORMS.Base = Base;
 	})(WORMS || (WORMS = {}));
 	///<reference path="@base.ts" />
 	var WORMS;
@@ -235,6 +160,9 @@
 	            var _this = _super.call(this, length) || this;
 	            _this.thickness = thickness;
 	            _this.setColor(fillColor, borderColor);
+	            _this.body = new PIXI.Sprite();
+	            _this.graphics = new PIXI.Graphics();
+	            _this.body.addChild(_this.graphics);
 	            return _this;
 	        }
 	        Simple.prototype.setColor = function (fillColor, borderColor) {
@@ -244,55 +172,55 @@
 	            };
 	        };
 	        Simple.prototype.render = function () {
-	            this.clear();
+	            this.graphics.clear();
 	            this.renderWith(this.colors.border, this.thickness);
 	            this.renderWith(this.colors.fill, this.thickness * 0.7);
 	        };
 	        Simple.prototype.renderWith = function (color, thickness) {
 	            var bbone = this.bone.at(0);
 	            var ebone = this.bone.at(this.bone.getLength() - 1);
-	            this.beginFill(color);
-	            this.drawCircle(bbone.x, bbone.y, thickness / 2);
-	            this.endFill();
-	            this.lineStyle(thickness, color);
-	            this.moveTo(bbone.x, bbone.y);
+	            this.graphics.beginFill(color);
+	            this.graphics.drawCircle(bbone.x, bbone.y, thickness / 2);
+	            this.graphics.endFill();
+	            this.graphics.lineStyle(thickness, color);
+	            this.graphics.moveTo(bbone.x, bbone.y);
 	            for (var i = 1; i < this.bone.getLength() - 1; i++) {
 	                var nbone = this.bone.at(i);
-	                this.lineTo(nbone.x, nbone.y);
+	                this.graphics.lineTo(nbone.x, nbone.y);
 	            }
-	            this.lineTo(ebone.x, ebone.y);
-	            this.lineStyle();
-	            this.beginFill(color);
-	            this.drawCircle(ebone.x, ebone.y, thickness / 2);
-	            this.endFill();
+	            this.graphics.lineTo(ebone.x, ebone.y);
+	            this.graphics.lineStyle();
+	            this.graphics.beginFill(color);
+	            this.graphics.drawCircle(ebone.x, ebone.y, thickness / 2);
+	            this.graphics.endFill();
 	        };
 	        return Simple;
 	    }(WORMS.Base));
 	    WORMS.Simple = Simple;
 	})(WORMS || (WORMS = {}));
 	///<reference path="@base.ts" />
-	///<reference path="nasty.ts" />
 	///<reference path="simple.ts" />
 	window["WORMS"] = WORMS;
 	///<reference path="@base.ts" />
 	var WORMS;
 	(function (WORMS) {
-	    var Nasty2 = (function (_super) {
-	        __extends(Nasty2, _super);
-	        function Nasty2(length, option) {
+	    var Nasty = (function (_super) {
+	        __extends(Nasty, _super);
+	        function Nasty(length, option) {
 	            if (option === void 0) { option = { thickness: 10 }; }
 	            var _this = _super.call(this, length) || this;
 	            _this.setOption(option);
+	            _this.graphics = new PIXI.Graphics();
 	            return _this;
 	        }
-	        Nasty2.prototype.setLength = function (length) {
+	        Nasty.prototype.setLength = function (length) {
 	            _super.prototype.setLength.call(this, length);
-	            this.body = [];
+	            this.bodyPos = [];
 	            for (var i = 0; i < length; i++) {
-	                this.body.push(new BodyPos());
+	                this.bodyPos.push(new BodyPos());
 	            }
 	        };
-	        Nasty2.prototype.setOption = function (option) {
+	        Nasty.prototype.setOption = function (option) {
 	            this._option = option;
 	            option.headLength = UTILS.def(option.headLength, 0.5);
 	            option.tailLength = UTILS.def(option.tailLength, 0.5);
@@ -300,21 +228,21 @@
 	            option.borderColor = UTILS.def(option.borderColor, 0x0000ff);
 	            option.borderThickness = UTILS.def(option.borderThickness, 5);
 	        };
-	        Nasty2.prototype.getOption = function () {
+	        Nasty.prototype.getOption = function () {
 	            return this._option;
 	        };
-	        Nasty2.prototype.render = function () {
+	        Nasty.prototype.render = function () {
 	            var bbone = this.bone.at(0);
 	            //ワームの外殻を生成
 	            var ebone = this.bone.at(this.bone.getLength() - 1);
-	            var bbody = this.body[0];
-	            var ebody = this.body[this.body.length - 1];
+	            var bbody = this.bodyPos[0];
+	            var ebody = this.bodyPos[this.bodyPos.length - 1];
 	            bbody.left.x = bbone.x;
 	            bbody.left.y = bbone.y;
 	            var L = this.bone.getLength() - 1;
 	            for (var i = 1; i < L; i++) {
 	                var nbone = this.bone.at(i);
-	                var nbody = this.body[i];
+	                var nbody = this.bodyPos[i];
 	                var vx = this.bone.at(i - 1).x - nbone.x;
 	                var vy = this.bone.at(i - 1).y - nbone.y;
 	                var radian = Matthew.H_PI;
@@ -338,22 +266,22 @@
 	            }
 	            ebody.left.x = ebone.x;
 	            ebody.left.y = ebone.y;
-	            this.clear();
-	            this.lineStyle(this._option.borderThickness, this._option.borderColor);
-	            this.beginFill(this._option.fillColor);
-	            this.moveTo(bbody.left.x, bbody.left.y);
-	            for (var i = 1; i < this.body.length; i++) {
-	                this.lineTo(this.body[i].left.x, this.body[i].left.y);
+	            this.graphics.clear();
+	            this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
+	            this.graphics.beginFill(this._option.fillColor);
+	            this.graphics.moveTo(bbody.left.x, bbody.left.y);
+	            for (var i = 1; i < this.bodyPos.length; i++) {
+	                this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
 	            }
-	            for (var i = this.body.length - 2; i >= 2; i--) {
-	                this.lineTo(this.body[i].right.x, this.body[i].right.y);
+	            for (var i = this.bodyPos.length - 2; i >= 2; i--) {
+	                this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
 	            }
-	            this.lineTo(bbody.left.x, bbody.left.y);
-	            this.endFill();
+	            this.graphics.lineTo(bbody.left.x, bbody.left.y);
+	            this.graphics.endFill();
 	        };
-	        return Nasty2;
+	        return Nasty;
 	    }(WORMS.Base));
-	    WORMS.Nasty2 = Nasty2;
+	    WORMS.Nasty = Nasty;
 	    var BodyPos = (function () {
 	        function BodyPos() {
 	            this.left = new UTILS.Pos();

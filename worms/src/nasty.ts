@@ -1,38 +1,63 @@
 ///<reference path="@base.ts" />
 namespace WORMS{
+    export interface NastyOption{
+        headLength?:number;
+        tailLength?:number;
+        thickness:number;
+        fillColor?:number;
+        borderColor?:number;
+        borderThickness?:number;
+    }
     export class Nasty extends Base{
-        private thickness:number;
-        private body:Array<BodyPos>;
-        private colors:{fill:number, border:number};
-        constructor(length:number, thickness:number, fillColor:number = 0xffffff, borderColor:number = 0x000000){
+        private bodyPos:Array<BodyPos>;
+        private _option:NastyOption;
+        public graphics:PIXI.Graphics;
+        constructor(length:number, option:NastyOption = {thickness:10}){
             super(length);
-            this.thickness = thickness/2;
-            this.body = [];
-            for(let i = 0; i < length; i ++){
-                this.body.push(new BodyPos());
-            }
-            this.setColor(fillColor, borderColor);
+            this.setOption(option);
+            this.graphics = new PIXI.Graphics();
         }
-        public setColor(fillColor:number, borderColor:number):void{
-            this.colors = {
-                fill : fillColor,
-                border : borderColor
+        public setLength(length:number){
+            super.setLength(length);
+            this.bodyPos = [];
+            for(let i = 0; i < length; i ++){
+                this.bodyPos.push(new BodyPos());
             }
+        }
+        public setOption(option:NastyOption):void{
+            this._option = option;
+            option.headLength = UTILS.def<number>(option.headLength, 0.5);
+            option.tailLength = UTILS.def<number>(option.tailLength, 0.5);
+            option.fillColor = UTILS.def<number>(option.fillColor, 0xff0000);
+            option.borderColor = UTILS.def<number>(option.borderColor, 0x0000ff);
+            option.borderThickness = UTILS.def<number>(option.borderThickness, 5);
+        }
+        public getOption():NastyOption{
+            return this._option;
         }
         public render(){
             const bbone = this.bone.at(0);
             //ワームの外殻を生成
             const ebone = this.bone.at(this.bone.getLength() - 1);
-            const bbody = this.body[0];
-            const ebody = this.body[this.body.length - 1];
+            const bbody = this.bodyPos[0];
+            const ebody = this.bodyPos[this.bodyPos.length - 1];
             bbody.left.x = bbone.x;
             bbody.left.y = bbone.y;
-            for(let i = 1; i < this.bone.getLength()  - 1; i ++){
+            const L = this.bone.getLength()  - 1;
+            for(let i = 1; i < L; i ++){
                 const nbone = this.bone.at(i);
-                const nbody = this.body[i];
+                const nbody = this.bodyPos[i];
                 let vx = this.bone.at(i-1).x - nbone.x;
                 let vy = this.bone.at(i-1).y - nbone.y;
-                const r = ((Math.sin(i/(this.bone.getLength()  - 1)*(Math.PI))))*this.thickness;
+                let radian:number = Matthew.H_PI;
+                const headLength = this.length * this._option.headLength;
+                const tailLength = this.length * this._option.tailLength;
+                if(i < headLength){
+                    radian = i/headLength*Matthew.H_PI;
+                }else if(i > L-tailLength){
+                    radian = (i-(L-tailLength))/tailLength*Matthew.H_PI + Matthew.H_PI;
+                }
+                const r = Math.sin(radian)*this._option.thickness;
                 const vl = vx*vx+vy*vy;
                 const vr = Math.sqrt(vl);
                 vx = vx / vr * r;
@@ -45,18 +70,18 @@ namespace WORMS{
             ebody.left.x = ebone.x;
             ebody.left.y = ebone.y;
             
-            this.clear();
-            this.lineStyle(3, this.colors.border);
-            this.beginFill(this.colors.fill);
-            this.moveTo(bbody.left.x, bbody.left.y);
-            for(let i = 1; i < this.body.length; i ++){
-                this.lineTo(this.body[i].left.x, this.body[i].left.y);
+            this.graphics.clear();
+            this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
+            this.graphics.beginFill(this._option.fillColor);
+            this.graphics.moveTo(bbody.left.x, bbody.left.y);
+            for(let i = 1; i < this.bodyPos.length; i ++){
+                this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
             }
-            for(let i = this.body.length - 2; i >= 2; i --){
-                this.lineTo(this.body[i].right.x, this.body[i].right.y);
+            for(let i = this.bodyPos.length - 2; i >= 2; i --){
+                this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
             }
-            this.lineTo(bbody.left.x, bbody.left.y);
-            this.endFill();
+            this.graphics.lineTo(bbody.left.x, bbody.left.y);
+            this.graphics.endFill();
         }
     }
     class BodyPos{

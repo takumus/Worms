@@ -1,6 +1,6 @@
 /// <reference types="pixi.js" />
 declare namespace WORMS {
-    class Base extends PIXI.Graphics {
+    class Base {
         protected bone: ROUTES.Line;
         protected length: number;
         private route;
@@ -22,19 +22,11 @@ declare namespace WORMS {
     }
 }
 declare namespace WORMS {
-    class Nasty extends Base {
-        private thickness;
-        private body;
-        private colors;
-        constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
-        setColor(fillColor: number, borderColor: number): void;
-        render(): void;
-    }
-}
-declare namespace WORMS {
     class Simple extends Base {
         private thickness;
         private colors;
+        body: PIXI.Sprite;
+        graphics: PIXI.Graphics;
         constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
         setColor(fillColor: number, borderColor: number): void;
         render(): void;
@@ -50,9 +42,10 @@ declare namespace WORMS {
         borderColor?: number;
         borderThickness?: number;
     }
-    class Nasty2 extends Base {
-        private body;
+    class Nasty extends Base {
+        private bodyPos;
         private _option;
+        graphics: PIXI.Graphics;
         constructor(length: number, option?: NastyOption);
         setLength(length: number): void;
         setOption(option: NastyOption): void;

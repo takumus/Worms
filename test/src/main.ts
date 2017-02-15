@@ -4,7 +4,7 @@ let canvas:HTMLCanvasElement;
 let stageWidth:number = 0, stageHeight:number = 0;
 const mouse:UTILS.Pos = new UTILS.Pos();
 const prevMouse:UTILS.Pos = new UTILS.Pos();
-const worms:Array<WORMS.Nasty2> = [];
+const worms:Array<WORMS.Nasty> = [];
 const wormsGuide:Array<PIXI.Graphics> = [];
 const wormsGuideContainer:PIXI.Container = new PIXI.Container();
 let pressing = false;
@@ -145,7 +145,7 @@ function init():void{
 		const fillColor = i!=0 ? props.global.color : 0x000000;
 		const borderColor = i!=0 ? 0x000000 : props.global.color;
 		const borderThickness = i!=0 ? 0 : 2;
-		const w = new WORMS.Nasty2(
+		const w = new WORMS.Nasty(
 			length, 
 			{
 				headLength : headLength,
@@ -156,10 +156,10 @@ function init():void{
 				borderThickness : borderThickness
 			}
 		);
-		w.blendMode = PIXI.BLEND_MODES.ADD;
+		w.graphics.blendMode = PIXI.BLEND_MODES.ADD;
 		w.setStep(1);
 		worms.push(w);
-		stage.addChild(w);
+		stage.addChild(w.graphics);
 		const g = new PIXI.Graphics();
 		wormsGuide.push(g);
 		wormsGuideContainer.addChild(g);

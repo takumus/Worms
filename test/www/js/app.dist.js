@@ -193,7 +193,7 @@
 	        var fillColor = i != 0 ? props.global.color : 0x000000;
 	        var borderColor = i != 0 ? 0x000000 : props.global.color;
 	        var borderThickness = i != 0 ? 0 : 2;
-	        var w = new WORMS.Nasty2(length_1, {
+	        var w = new WORMS.Nasty(length_1, {
 	            headLength: headLength,
 	            tailLength: tailLength,
 	            thickness: thickness,
@@ -201,10 +201,10 @@
 	            borderColor: borderColor,
 	            borderThickness: borderThickness
 	        });
-	        w.blendMode = PIXI.BLEND_MODES.ADD;
+	        w.graphics.blendMode = PIXI.BLEND_MODES.ADD;
 	        w.setStep(1);
 	        worms.push(w);
-	        stage.addChild(w);
+	        stage.addChild(w.graphics);
 	        var g = new PIXI.Graphics();
 	        wormsGuide.push(g);
 	        wormsGuideContainer.addChild(g);

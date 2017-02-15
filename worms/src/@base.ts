@@ -1,11 +1,10 @@
 namespace WORMS{
-    export class Base extends PIXI.Graphics{
+    export class Base{
         protected bone:ROUTES.Line;
         protected length:number;
         private route:ROUTES.Line;
         private step:number = 0;
         constructor(length:number){
-            super();
             this.bone = new ROUTES.Line();
             this.setLength(length);
         }
