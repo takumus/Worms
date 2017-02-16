@@ -56,6 +56,13 @@
 	            }
 	            this.length = this.data.length;
 	        }
+	        Line.prototype.addOffsetToAll = function (pos) {
+	            for (var i = 0; i < this.data.length; i++) {
+	                var p = this.data[i];
+	                p.x += pos.x;
+	                p.y += pos.y;
+	            }
+	        };
 	        Line.prototype.reverse = function () {
 	            this.data.reverse();
 	            return this;

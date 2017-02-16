@@ -10,6 +10,13 @@ namespace ROUTES{
 			}
 			this.length = this.data.length;
 		}
+		public addOffsetToAll(pos:UTILS.Pos):void{
+			for(let i = 0; i < this.data.length; i ++){
+				const p = this.data[i];
+				p.x += pos.x;
+				p.y += pos.y;
+			}
+		}
 		public reverse():Line{
 			this.data.reverse();
 			return this;

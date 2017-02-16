@@ -6,6 +6,7 @@ declare namespace ROUTES {
             x: number;
             y: number;
         }>);
+        addOffsetToAll(pos: UTILS.Pos): void;
         reverse(): Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
