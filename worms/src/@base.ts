@@ -53,7 +53,7 @@ namespace WORMS{
             if(step > 1) step = 1;
             this.step = step;
             if(!this.route) return false;
-            const beginIndex = this.length;
+            const beginIndex = this.length - 1;
             const length = this.route.getLength() - beginIndex - 1;
             const posIndex = Math.floor(length * step);
             const offset = (length * step - posIndex);

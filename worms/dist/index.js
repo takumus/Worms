@@ -104,7 +104,7 @@
 	            this.step = step;
 	            if (!this.route)
 	                return false;
-	            var beginIndex = this.length;
+	            var beginIndex = this.length - 1;
 	            var length = this.route.getLength() - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);
