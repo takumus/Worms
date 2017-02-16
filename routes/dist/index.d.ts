@@ -2,11 +2,14 @@ declare namespace ROUTES {
     class Line {
         protected data: Array<UTILS.Pos>;
         private length;
+        private prevOffset;
         constructor(data?: Array<UTILS.Pos> | Array<{
             x: number;
             y: number;
         }>);
-        addOffsetToAll(pos: UTILS.Pos): void;
+        setOffsetToAll(pos: UTILS.Pos): void;
+        getWidth(): number;
+        getHeight(): number;
         reverse(): Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;

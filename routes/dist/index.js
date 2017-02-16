@@ -55,13 +55,39 @@
 	                this.data.push(new UTILS.Pos(p.x, p.y));
 	            }
 	            this.length = this.data.length;
+	            this.prevOffset = new UTILS.Pos();
 	        }
-	        Line.prototype.addOffsetToAll = function (pos) {
-	            for (var i = 0; i < this.data.length; i++) {
-	                var p = this.data[i];
-	                p.x += pos.x;
-	                p.y += pos.y;
+	        Line.prototype.setOffsetToAll = function (pos) {
+	            for (var i = 0; i < this.length; i++) {
+	                var p = this.at(i);
+	                p.x += pos.x - this.prevOffset.x;
+	                p.y += pos.y - this.prevOffset.y;
 	            }
+	            this.prevOffset = pos.clone();
+	        };
+	        Line.prototype.getWidth = function () {
+	            var min = Number.MAX_VALUE;
+	            var max = Number.MIN_VALUE;
+	            for (var i = 0; i < this.length; i++) {
+	                var p = this.at(i);
+	                if (min > p.x)
+	                    min = p.x;
+	                else if (max < p.x)
+	                    max = p.x;
+	            }
+	            return max - min;
+	        };
+	        Line.prototype.getHeight = function () {
+	            var min = Number.MAX_VALUE;
+	            var max = Number.MIN_VALUE;
+	            for (var i = 0; i < this.length; i++) {
+	                var p = this.at(i);
+	                if (min > p.y)
+	                    min = p.y;
+	                else if (max < p.y)
+	                    max = p.y;
+	            }
+	            return max - min;
 	        };
 	        Line.prototype.reverse = function () {
 	            this.data.reverse();

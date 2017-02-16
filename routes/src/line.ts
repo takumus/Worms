@@ -2,6 +2,7 @@ namespace ROUTES{
 	export class Line{
 		protected data:Array<UTILS.Pos>;
 		private length:number;
+		private prevOffset:UTILS.Pos;
 		constructor(data:Array<UTILS.Pos>|Array<{x:number, y:number}> = []){
 			this.data = [];
 			for(let i = 0; i < data.length; i ++){
@@ -9,13 +10,35 @@ namespace ROUTES{
 				this.data.push(new UTILS.Pos(p.x, p.y));
 			}
 			this.length = this.data.length;
+			this.prevOffset = new UTILS.Pos();
 		}
-		public addOffsetToAll(pos:UTILS.Pos):void{
-			for(let i = 0; i < this.data.length; i ++){
-				const p = this.data[i];
-				p.x += pos.x;
-				p.y += pos.y;
+		public setOffsetToAll(pos:UTILS.Pos):void{
+			for(let i = 0; i < this.length; i ++){
+				const p = this.at(i);
+				p.x += pos.x - this.prevOffset.x;
+				p.y += pos.y - this.prevOffset.y;
 			}
+			this.prevOffset = pos.clone();
+		}
+		public getWidth():number{
+			let min = Number.MAX_VALUE;
+			let max = Number.MIN_VALUE;
+			for(let i = 0; i < this.length; i ++){
+				const p = this.at(i);
+				if(min > p.x) min = p.x;
+				else if(max < p.x) max = p.x;
+			}
+			return max - min;
+		}
+		public getHeight():number{
+			let min = Number.MAX_VALUE;
+			let max = Number.MIN_VALUE;
+			for(let i = 0; i < this.length; i ++){
+				const p = this.at(i);
+				if(min > p.y) min = p.y;
+				else if(max < p.y) max = p.y;
+			}
+			return max - min;
 		}
 		public reverse():Line{
 			this.data.reverse();
