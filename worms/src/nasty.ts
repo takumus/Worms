@@ -36,7 +36,6 @@ namespace WORMS{
             return this._option;
         }
         public render(){
-            console.log(this.length);
             const bbone = this.bone.at(0);
             //ワームの外殻を生成
             const ebone = this.bone.at(this.length - 1);

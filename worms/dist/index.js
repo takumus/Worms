@@ -248,7 +248,6 @@
 	            return this._option;
 	        };
 	        Nasty.prototype.render = function () {
-	            console.log(this.length);
 	            var bbone = this.bone.at(0);
 	            //ワームの外殻を生成
 	            var ebone = this.bone.at(this.length - 1);
