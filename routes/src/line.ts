@@ -2,8 +2,12 @@ namespace ROUTES{
 	export class Line{
 		protected data:Array<UTILS.Pos>;
 		private length:number;
-		constructor(data:Array<UTILS.Pos> = []){
-			this.data = data;
+		constructor(data:Array<UTILS.Pos>|Array<{x:number, y:number}> = []){
+			this.data = [];
+			for(let i = 0; i < data.length; i ++){
+				const p = data[i];
+				this.data.push(new UTILS.Pos(p.x, p.y));
+			}
 			this.length = this.data.length;
 		}
 		public reverse():Line{

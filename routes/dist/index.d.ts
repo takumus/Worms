@@ -2,7 +2,10 @@ declare namespace ROUTES {
     class Line {
         protected data: Array<UTILS.Pos>;
         private length;
-        constructor(data?: Array<UTILS.Pos>);
+        constructor(data?: Array<UTILS.Pos> | Array<{
+            x: number;
+            y: number;
+        }>);
         reverse(): Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;

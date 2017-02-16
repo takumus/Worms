@@ -49,7 +49,11 @@
 	    var Line = (function () {
 	        function Line(data) {
 	            if (data === void 0) { data = []; }
-	            this.data = data;
+	            this.data = [];
+	            for (var i = 0; i < data.length; i++) {
+	                var p = data[i];
+	                this.data.push(new UTILS.Pos(p.x, p.y));
+	            }
 	            this.length = this.data.length;
 	        }
 	        Line.prototype.reverse = function () {
