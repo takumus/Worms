@@ -194,13 +194,13 @@
 	        };
 	        Simple.prototype.renderWith = function (color, thickness) {
 	            var bbone = this.bone.at(0);
-	            var ebone = this.bone.at(this.bone.getLength() - 1);
+	            var ebone = this.bone.at(this.length - 1);
 	            this.graphics.beginFill(color);
 	            this.graphics.drawCircle(bbone.x, bbone.y, thickness / 2);
 	            this.graphics.endFill();
 	            this.graphics.lineStyle(thickness, color);
 	            this.graphics.moveTo(bbone.x, bbone.y);
-	            for (var i = 1; i < this.bone.getLength() - 1; i++) {
+	            for (var i = 1; i < this.length - 1; i++) {
 	                var nbone = this.bone.at(i);
 	                this.graphics.lineTo(nbone.x, nbone.y);
 	            }
