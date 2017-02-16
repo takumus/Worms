@@ -17,10 +17,10 @@ namespace WORMS{
             this.setOption(option);
             this.graphics = new PIXI.Graphics();
         }
-        public setLength(length:number){
-            super.setLength(length);
+        public setNextLength(length:number){
+            super.setNextLength(length);
             this.bodyPos = [];
-            for(let i = 0; i < length; i ++){
+            for(let i = 0; i < this.bone.getLength(); i ++){
                 this.bodyPos.push(new BodyPos());
             }
         }
@@ -36,14 +36,15 @@ namespace WORMS{
             return this._option;
         }
         public render(){
+            console.log(this.length);
             const bbone = this.bone.at(0);
             //ワームの外殻を生成
-            const ebone = this.bone.at(this.bone.getLength() - 1);
+            const ebone = this.bone.at(this.length - 1);
             const bbody = this.bodyPos[0];
-            const ebody = this.bodyPos[this.bodyPos.length - 1];
+            const ebody = this.bodyPos[this.length - 1];
             bbody.left.x = bbone.x;
             bbody.left.y = bbone.y;
-            const L = this.bone.getLength()  - 1;
+            const L = this.length  - 1;
             for(let i = 1; i < L; i ++){
                 const nbone = this.bone.at(i);
                 const nbody = this.bodyPos[i];
@@ -74,10 +75,10 @@ namespace WORMS{
             this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
             this.graphics.beginFill(this._option.fillColor);
             this.graphics.moveTo(bbody.left.x, bbody.left.y);
-            for(let i = 1; i < this.bodyPos.length; i ++){
+            for(let i = 1; i < this.length; i ++){
                 this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
             }
-            for(let i = this.bodyPos.length - 2; i >= 2; i --){
+            for(let i = this.length - 2; i >= 2; i --){
                 this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
             }
             this.graphics.lineTo(bbody.left.x, bbody.left.y);

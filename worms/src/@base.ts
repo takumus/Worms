@@ -1,7 +1,10 @@
 namespace WORMS{
     export class Base{
         protected bone:ROUTES.Line;
+        protected prevLength:number;
         protected length:number;
+        protected nextLength:number;
+        private diffLength:number;
         private route:ROUTES.Line;
         private step:number = 0;
         constructor(length:number){
@@ -9,9 +12,16 @@ namespace WORMS{
             this.setLength(length);
         }
         public setLength(length:number){
-            this.length = Math.floor(length);
+            this.prevLength = Math.floor(length);
+            this.setNextLength(length);
+        }
+        public setNextLength(length:number){
+            this.nextLength = Math.floor(length);
+            this.diffLength = this.nextLength - this.prevLength;
             this.bone.clear();
-            for(let i = 0; i < length; i ++){
+            const L = this.prevLength > this.nextLength ? this.prevLength:this.nextLength;
+            
+            for(let i = 0; i < L; i ++){
                 this.bone.push(new UTILS.Pos());
             }
             //re set bones
@@ -36,11 +46,12 @@ namespace WORMS{
             );
         }
         public setRoute(line:ROUTES.Line){
-            if(line.getLength() < this.length) return;
+            if(line.getLength() < this.prevLength) return;
+            this.setLength(this.length);
             this.route = line;
         }
         public addStep(step:number):boolean{
-            const length = this.route.getLength() - this.length;
+            const length = this.route.getLength() - this.prevLength;
             const p = step / length;
             if(p < 0) {
                 this.setStep(1);
@@ -51,9 +62,10 @@ namespace WORMS{
         public setStep(step:number):boolean{
             if(step < 0) step = 0;
             if(step > 1) step = 1;
+            this.length = Math.floor(step*this.diffLength + this.prevLength);
             this.step = step;
             if(!this.route) return false;
-            const beginIndex = this.length - 1;
+            const beginIndex = this.prevLength - 1;
             const length = this.route.getLength() - beginIndex - 1;
             const posIndex = Math.floor(length * step);
             const offset = (length * step - posIndex);
@@ -82,7 +94,12 @@ namespace WORMS{
         }
         public getCurrentLine():ROUTES.Line{
             //console.log(this.bone);
-            return this.bone.clone().reverse();
+            const line = new ROUTES.Line();
+            const current = this.bone.clone();
+            for(let i = 0; i < this.length; i ++){
+                line.push(current.at(i).clone());
+            }
+            return line.reverse();
         }
         public getHeadVecPos():UTILS.VecPos{
             return this.bone.getHeadVecPos().add(Math.PI);
@@ -92,6 +109,9 @@ namespace WORMS{
         }
         public getRoute():ROUTES.Line{
             return this.route;
+        }
+        public getLength():number{
+            return this.prevLength;
         }
     }
 }

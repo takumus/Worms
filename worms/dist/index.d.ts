@@ -2,11 +2,15 @@
 declare namespace WORMS {
     class Base {
         protected bone: ROUTES.Line;
+        protected prevLength: number;
         protected length: number;
+        protected nextLength: number;
+        private diffLength;
         private route;
         private step;
         constructor(length: number);
         setLength(length: number): void;
+        setNextLength(length: number): void;
         push(x: number, y: number): void;
         render(): void;
         addRouteFromCurrent(line: ROUTES.Line): void;
@@ -19,6 +23,7 @@ declare namespace WORMS {
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
         getRoute(): ROUTES.Line;
+        getLength(): number;
     }
 }
 declare namespace WORMS {
@@ -53,7 +58,7 @@ declare namespace WORMS {
         private _option;
         graphics: PIXI.Graphics;
         constructor(length: number, option?: NastyOption);
-        setLength(length: number): void;
+        setNextLength(length: number): void;
         setOption(option: NastyOption): void;
         getOption(): NastyOption;
         render(): void;

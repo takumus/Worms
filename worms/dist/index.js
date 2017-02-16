@@ -58,9 +58,15 @@
 	            this.setLength(length);
 	        }
 	        Base.prototype.setLength = function (length) {
-	            this.length = Math.floor(length);
+	            this.prevLength = Math.floor(length);
+	            this.setNextLength(length);
+	        };
+	        Base.prototype.setNextLength = function (length) {
+	            this.nextLength = Math.floor(length);
+	            this.diffLength = this.nextLength - this.prevLength;
 	            this.bone.clear();
-	            for (var i = 0; i < length; i++) {
+	            var L = this.prevLength > this.nextLength ? this.prevLength : this.nextLength;
+	            for (var i = 0; i < L; i++) {
 	                this.bone.push(new UTILS.Pos());
 	            }
 	            //re set bones
@@ -83,12 +89,13 @@
 	            this.setRoute(this.getCurrentLine().pushLine(line));
 	        };
 	        Base.prototype.setRoute = function (line) {
-	            if (line.getLength() < this.length)
+	            if (line.getLength() < this.prevLength)
 	                return;
+	            this.setLength(this.length);
 	            this.route = line;
 	        };
 	        Base.prototype.addStep = function (step) {
-	            var length = this.route.getLength() - this.length;
+	            var length = this.route.getLength() - this.prevLength;
 	            var p = step / length;
 	            if (p < 0) {
 	                this.setStep(1);
@@ -101,10 +108,11 @@
 	                step = 0;
 	            if (step > 1)
 	                step = 1;
+	            this.length = Math.floor(step * this.diffLength + this.prevLength);
 	            this.step = step;
 	            if (!this.route)
 	                return false;
-	            var beginIndex = this.length - 1;
+	            var beginIndex = this.prevLength - 1;
 	            var length = this.route.getLength() - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);
@@ -134,7 +142,12 @@
 	        };
 	        Base.prototype.getCurrentLine = function () {
 	            //console.log(this.bone);
-	            return this.bone.clone().reverse();
+	            var line = new ROUTES.Line();
+	            var current = this.bone.clone();
+	            for (var i = 0; i < this.length; i++) {
+	                line.push(current.at(i).clone());
+	            }
+	            return line.reverse();
 	        };
 	        Base.prototype.getHeadVecPos = function () {
 	            return this.bone.getHeadVecPos().add(Math.PI);
@@ -144,6 +157,9 @@
 	        };
 	        Base.prototype.getRoute = function () {
 	            return this.route;
+	        };
+	        Base.prototype.getLength = function () {
+	            return this.prevLength;
 	        };
 	        return Base;
 	    }());
@@ -213,10 +229,10 @@
 	            _this.graphics = new PIXI.Graphics();
 	            return _this;
 	        }
-	        Nasty.prototype.setLength = function (length) {
-	            _super.prototype.setLength.call(this, length);
+	        Nasty.prototype.setNextLength = function (length) {
+	            _super.prototype.setNextLength.call(this, length);
 	            this.bodyPos = [];
-	            for (var i = 0; i < length; i++) {
+	            for (var i = 0; i < this.bone.getLength(); i++) {
 	                this.bodyPos.push(new BodyPos());
 	            }
 	        };
@@ -232,14 +248,15 @@
 	            return this._option;
 	        };
 	        Nasty.prototype.render = function () {
+	            console.log(this.length);
 	            var bbone = this.bone.at(0);
 	            //ワームの外殻を生成
-	            var ebone = this.bone.at(this.bone.getLength() - 1);
+	            var ebone = this.bone.at(this.length - 1);
 	            var bbody = this.bodyPos[0];
-	            var ebody = this.bodyPos[this.bodyPos.length - 1];
+	            var ebody = this.bodyPos[this.length - 1];
 	            bbody.left.x = bbone.x;
 	            bbody.left.y = bbone.y;
-	            var L = this.bone.getLength() - 1;
+	            var L = this.length - 1;
 	            for (var i = 1; i < L; i++) {
 	                var nbone = this.bone.at(i);
 	                var nbody = this.bodyPos[i];
@@ -270,10 +287,10 @@
 	            this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
 	            this.graphics.beginFill(this._option.fillColor);
 	            this.graphics.moveTo(bbody.left.x, bbody.left.y);
-	            for (var i = 1; i < this.bodyPos.length; i++) {
+	            for (var i = 1; i < this.length; i++) {
 	                this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
 	            }
-	            for (var i = this.bodyPos.length - 2; i >= 2; i--) {
+	            for (var i = this.length - 2; i >= 2; i--) {
 	                this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
 	            }
 	            this.graphics.lineTo(bbody.left.x, bbody.left.y);
