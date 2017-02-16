@@ -1,28 +1,35 @@
 ///<reference path="@base.ts" />
 namespace WORMS{
+    export interface SimpleOption{
+        fillColor?:number,
+        thickness:number,
+        borderThickness?:number,
+        borderColor?:number
+    }
     export class Simple extends Base{
-        private thickness:number;
-        private colors:{fill:number, border:number};
         public body:PIXI.Sprite;
         public graphics:PIXI.Graphics;
-        constructor(length:number, thickness:number, fillColor:number = 0x000000, borderColor:number = 0xffffff){
+        private option:SimpleOption;
+        constructor(length:number, option:SimpleOption){
             super(length);
-            this.thickness = thickness;
-            this.setColor(fillColor, borderColor);
             this.body = new PIXI.Sprite();
             this.graphics = new PIXI.Graphics();
             this.body.addChild(this.graphics);
+            this.setOption(option);
         }
-        public setColor(fillColor:number, borderColor:number):void{
-            this.colors = {
-                fill : fillColor,
-                border : borderColor
-            }
+        public setOption(option:SimpleOption):void{
+            this.option = option;
+            option.fillColor = UTILS.def<number>(option.fillColor, 0xff0000);
+            option.borderColor = UTILS.def<number>(option.borderColor, 0x0000ff);
+            option.borderThickness = UTILS.def<number>(option.borderThickness, 5);
+        }
+        public getOption():SimpleOption{
+            return this.option;
         }
         public render(){
             this.graphics.clear();
-            this.renderWith(this.colors.border, this.thickness);
-            this.renderWith(this.colors.fill, this.thickness*0.7);
+            this.renderWith(this.option.borderColor, this.option.thickness + this.option.borderThickness*2);
+            this.renderWith(this.option.fillColor, this.option.thickness);
         }
         private renderWith(color:number, thickness:number):void{
             const bbone = this.bone.at(0);

@@ -22,13 +22,19 @@ declare namespace WORMS {
     }
 }
 declare namespace WORMS {
+    interface SimpleOption {
+        fillColor?: number;
+        thickness: number;
+        borderThickness?: number;
+        borderColor?: number;
+    }
     class Simple extends Base {
-        private thickness;
-        private colors;
         body: PIXI.Sprite;
         graphics: PIXI.Graphics;
-        constructor(length: number, thickness: number, fillColor?: number, borderColor?: number);
-        setColor(fillColor: number, borderColor: number): void;
+        private option;
+        constructor(length: number, option: SimpleOption);
+        setOption(option: SimpleOption): void;
+        getOption(): SimpleOption;
         render(): void;
         private renderWith(color, thickness);
     }

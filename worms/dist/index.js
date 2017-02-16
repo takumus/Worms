@@ -154,27 +154,27 @@
 	(function (WORMS) {
 	    var Simple = (function (_super) {
 	        __extends(Simple, _super);
-	        function Simple(length, thickness, fillColor, borderColor) {
-	            if (fillColor === void 0) { fillColor = 0x000000; }
-	            if (borderColor === void 0) { borderColor = 0xffffff; }
+	        function Simple(length, option) {
 	            var _this = _super.call(this, length) || this;
-	            _this.thickness = thickness;
-	            _this.setColor(fillColor, borderColor);
 	            _this.body = new PIXI.Sprite();
 	            _this.graphics = new PIXI.Graphics();
 	            _this.body.addChild(_this.graphics);
+	            _this.setOption(option);
 	            return _this;
 	        }
-	        Simple.prototype.setColor = function (fillColor, borderColor) {
-	            this.colors = {
-	                fill: fillColor,
-	                border: borderColor
-	            };
+	        Simple.prototype.setOption = function (option) {
+	            this.option = option;
+	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
+	            option.borderColor = UTILS.def(option.borderColor, 0x0000ff);
+	            option.borderThickness = UTILS.def(option.borderThickness, 5);
+	        };
+	        Simple.prototype.getOption = function () {
+	            return this.option;
 	        };
 	        Simple.prototype.render = function () {
 	            this.graphics.clear();
-	            this.renderWith(this.colors.border, this.thickness);
-	            this.renderWith(this.colors.fill, this.thickness * 0.7);
+	            this.renderWith(this.option.borderColor, this.option.thickness + this.option.borderThickness * 2);
+	            this.renderWith(this.option.fillColor, this.option.thickness);
 	        };
 	        Simple.prototype.renderWith = function (color, thickness) {
 	            var bbone = this.bone.at(0);
