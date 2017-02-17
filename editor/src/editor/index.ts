@@ -4,7 +4,7 @@ export default class Editor extends PIXI.Container{
     private lineCanvas:PIXI.Graphics;
     private editingLineCanvas:PIXI.Graphics;
     private wormsContainer:PIXI.Container;
-    private res:number = 2;
+    private res:number = 5;
     private nextPos:UTILS.Pos;
     private prevPos:UTILS.Pos;
     private pressing:boolean;
@@ -14,6 +14,7 @@ export default class Editor extends PIXI.Container{
     private EDITING_LINE_COLOR:number = 0xff0000;
     private DRAWER_COLOR:number = 0x00ff00;
     private DRAWER_CIRCLE_COLOR:number = 0x0000ff;
+    private shift:boolean;
     constructor(){
         super();
         this.mouse = new UTILS.Pos();
@@ -50,6 +51,14 @@ export default class Editor extends PIXI.Container{
                 console.log(JSON.stringify(this.lines));
             }else if(e.keyCode == 27){
                 this.end();
+            }else if(e.keyCode == 16){
+                this.shift = true;
+            }
+            //console.log(e.keyCode);
+        });
+        window.addEventListener("keyup", (e)=>{
+            if(e.keyCode == 16){
+                this.shift = false;
             }
             //console.log(e.keyCode);
         });
@@ -79,21 +88,30 @@ export default class Editor extends PIXI.Container{
                 }
             }
             this.lines.push(this.editingLine.clone());
-            const wormLength = this.editingLine.getLength();
-            const w = new WORMS.Nasty2(
+            const wormLength = this.editingLine.getLength()-1;
+            /*
+            const w = new WORMS.Nasty(
                 wormLength,
                 {
-                    headLength:wormLength*0.5,
-                    tailLength:wormLength*0.5,
-                    thickness:5
-                },
-                0x000000,
-                0x000000
-            );
+                    headLength:0.5,
+                    tailLength:0.5,
+                    thickness:5,
+                    borderThickness:0,
+                    borderColor:0x000000,
+                    fillColor:0x000000
+
+                }
+            );*/
+            const w = new WORMS.Simple(wormLength, {
+                thickness: 18,
+                borderColor:0,
+                borderThickness:8,
+                fillColor: 0xffffff
+            });
             w.setRoute(this.editingLine);
             w.setStep(0);
             w.render();
-            this.wormsContainer.addChild(w);
+            this.wormsContainer.addChild(w.graphics);
         }
         //this.editingLine = null;
     }
@@ -113,8 +131,17 @@ export default class Editor extends PIXI.Container{
         this.drawerCanvas.clear();
         this.drawerCanvas.lineStyle(1, this.DRAWER_COLOR);
 
-        const dx = this.mouse.x - this.prevPos.x;
-        const dy = this.mouse.y - this.prevPos.y;
+        let dx = this.mouse.x - this.prevPos.x;
+        let dy = this.mouse.y - this.prevPos.y;
+        if(this.shift){
+            if(dy*dy < dx*dx) {
+                dx = dx > 0?1:-1;
+                dy = 0;
+            }else{
+                dx = 0;
+                dy = dy > 0?1:-1;
+            }
+        }
         let d = Math.sqrt(dx*dx + dy*dy);
         this.nextPos.x = this.prevPos.x + dx / d * this.res;
         this.nextPos.y = this.prevPos.y + dy / d * this.res;
@@ -124,6 +151,6 @@ export default class Editor extends PIXI.Container{
 
         this.drawerCanvas.lineStyle(1, this.DRAWER_CIRCLE_COLOR);
         this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 1);
-        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 5);
+        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 1);
     }
 }

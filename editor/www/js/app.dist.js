@@ -96,7 +96,7 @@
 	    __extends(Editor, _super);
 	    function Editor() {
 	        var _this = _super.call(this) || this;
-	        _this.res = 2;
+	        _this.res = 5;
 	        _this.lines = [];
 	        _this.LINE_COLOR = 0x0000ff;
 	        _this.EDITING_LINE_COLOR = 0xff0000;
@@ -140,6 +140,15 @@
 	            else if (e.keyCode == 27) {
 	                _this.end();
 	            }
+	            else if (e.keyCode == 16) {
+	                _this.shift = true;
+	            }
+	            //console.log(e.keyCode);
+	        });
+	        window.addEventListener("keyup", function (e) {
+	            if (e.keyCode == 16) {
+	                _this.shift = false;
+	            }
 	            //console.log(e.keyCode);
 	        });
 	    };
@@ -171,16 +180,30 @@
 	                }
 	            }
 	            this.lines.push(this.editingLine.clone());
-	            var wormLength = this.editingLine.getLength();
-	            var w = new WORMS.Nasty2(wormLength, {
-	                headLength: wormLength * 0.5,
-	                tailLength: wormLength * 0.5,
-	                thickness: 5
-	            }, 0x000000, 0x000000);
+	            var wormLength = this.editingLine.getLength() - 1;
+	            /*
+	            const w = new WORMS.Nasty(
+	                wormLength,
+	                {
+	                    headLength:0.5,
+	                    tailLength:0.5,
+	                    thickness:5,
+	                    borderThickness:0,
+	                    borderColor:0x000000,
+	                    fillColor:0x000000
+
+	                }
+	            );*/
+	            var w = new WORMS.Simple(wormLength, {
+	                thickness: 18,
+	                borderColor: 0,
+	                borderThickness: 8,
+	                fillColor: 0xffffff
+	            });
 	            w.setRoute(this.editingLine);
 	            w.setStep(0);
 	            w.render();
-	            this.wormsContainer.addChild(w);
+	            this.wormsContainer.addChild(w.graphics);
 	        }
 	        //this.editingLine = null;
 	    };
@@ -203,6 +226,16 @@
 	        this.drawerCanvas.lineStyle(1, this.DRAWER_COLOR);
 	        var dx = this.mouse.x - this.prevPos.x;
 	        var dy = this.mouse.y - this.prevPos.y;
+	        if (this.shift) {
+	            if (dy * dy < dx * dx) {
+	                dx = dx > 0 ? 1 : -1;
+	                dy = 0;
+	            }
+	            else {
+	                dx = 0;
+	                dy = dy > 0 ? 1 : -1;
+	            }
+	        }
 	        var d = Math.sqrt(dx * dx + dy * dy);
 	        this.nextPos.x = this.prevPos.x + dx / d * this.res;
 	        this.nextPos.y = this.prevPos.y + dy / d * this.res;
@@ -210,7 +243,7 @@
 	        this.drawerCanvas.lineTo(this.mouse.x, this.mouse.y);
 	        this.drawerCanvas.lineStyle(1, this.DRAWER_CIRCLE_COLOR);
 	        this.drawerCanvas.drawCircle(this.prevPos.x, this.prevPos.y, 1);
-	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 5);
+	        this.drawerCanvas.drawCircle(this.nextPos.x, this.nextPos.y, 1);
 	    };
 	    return Editor;
 	}(PIXI.Container));

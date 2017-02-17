@@ -94,8 +94,6 @@ package {
 					var rr:Number = Math.sin(ri)*(20*Math.sin(Math.PI*(ii/(r.length))));
 					ri+=0.03;
 					var vpos:VecPos = r[ii];
-					vpos.pos.x = vpos.pos.x + Math.cos(vpos.r+Math.PI/2) * rr;
-					vpos.pos.y = vpos.pos.y + Math.sin(vpos.r+Math.PI/2) * rr;
 					//continue;
 					if (ii == 0) {
 						graphics.moveTo(vpos.pos.x, vpos.pos.y);
