@@ -9,14 +9,8 @@ gulp.task('webpack', function () {
     .pipe(gulp.dest('./dist'));
 });
  
-gulp.task('connect', function() {
-  connect.server({
-    root: [__dirname]
-  });
-});
- 
 gulp.task('watch', function () {
     gulp.watch('./src/**/*.ts', ['webpack']);
 });
  
-gulp.task('default', ['webpack','watch','connect']);
+gulp.task('default', ['webpack','watch']);
