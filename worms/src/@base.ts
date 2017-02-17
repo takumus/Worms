@@ -65,7 +65,9 @@ namespace WORMS{
         public setStep(step:number):boolean{
             if(step < 0) step = 0;
             if(step > 1) step = 1;
-            this.length = Math.floor(step*this.diffLength + this.prevLength);
+            let s = step*1.2;
+            s = s>1?1:s;
+            this.length = Math.floor(s*this.diffLength + this.prevLength);
             this.step = step;
             if(!this.route) return false;
             const beginIndex = this.prevLength - 1;
