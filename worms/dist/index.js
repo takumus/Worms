@@ -61,6 +61,9 @@
 	            this.prevLength = Math.floor(length);
 	            this.setNextLength(length);
 	        };
+	        Base.prototype.updateLength = function () {
+	            this.setLength(this.length);
+	        };
 	        Base.prototype.setNextLength = function (length) {
 	            this.nextLength = Math.floor(length);
 	            this.diffLength = this.nextLength - this.prevLength;

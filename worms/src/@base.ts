@@ -15,6 +15,9 @@ namespace WORMS{
             this.prevLength = Math.floor(length);
             this.setNextLength(length);
         }
+        public updateLength():void{
+            this.setLength(this.length);
+        }
         public setNextLength(length:number){
             this.nextLength = Math.floor(length);
             this.diffLength = this.nextLength - this.prevLength;

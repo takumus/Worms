@@ -10,6 +10,7 @@ declare namespace WORMS {
         private step;
         constructor(length: number);
         setLength(length: number): void;
+        updateLength(): void;
         setNextLength(length: number): void;
         push(x: number, y: number): void;
         render(): void;
