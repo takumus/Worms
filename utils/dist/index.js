@@ -107,6 +107,96 @@
 	        return value;
 	    }
 	    UTILS.def = def;
+	    var Color = (function () {
+	        function Color(color) {
+	            var _this = this;
+	            this.getColor = function () { return _this.color; };
+	            this.getR = function () { return _this.r; };
+	            this.getG = function () { return _this.g; };
+	            this.getB = function () { return _this.b; };
+	            this.getH = function () { return _this.h; };
+	            this.getS = function () { return _this.s; };
+	            this.getV = function () { return _this.v; };
+	            this.setColor(color);
+	        }
+	        Color.prototype.setColor = function (color) {
+	            var r = color >> 16 & 0xff;
+	            var g = color >> 8 & 0xff;
+	            var b = color & 0xff;
+	            this.color = color;
+	            this.setRGB(r, g, b);
+	        };
+	        /*
+	            setHSV and setRGB -> https://gist.github.com/mjackson/5311256
+	        */
+	        Color.prototype.setHSV = function (h, s, v) {
+	            var r, g, b;
+	            var i = Math.floor(h * 6);
+	            var f = h * 6 - i;
+	            var p = v * (1 - s);
+	            var q = v * (1 - f * s);
+	            var t = v * (1 - (1 - f) * s);
+	            switch (i % 6) {
+	                case 0:
+	                    r = v, g = t, b = p;
+	                    break;
+	                case 1:
+	                    r = q, g = v, b = p;
+	                    break;
+	                case 2:
+	                    r = p, g = v, b = t;
+	                    break;
+	                case 3:
+	                    r = p, g = q, b = v;
+	                    break;
+	                case 4:
+	                    r = t, g = p, b = v;
+	                    break;
+	                case 5:
+	                    r = v, g = p, b = q;
+	                    break;
+	            }
+	            this.r = r * 255;
+	            this.g = g * 255;
+	            this.b = b * 255;
+	            this.h = h;
+	            this.s = s;
+	            this.v = v;
+	        };
+	        Color.prototype.setRGB = function (r, g, b) {
+	            r /= 255, g /= 255, b /= 255;
+	            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+	            var h;
+	            var v = max;
+	            var d = max - min;
+	            var s = max == 0 ? 0 : d / max;
+	            if (max == min) {
+	                h = 0;
+	            }
+	            else {
+	                switch (max) {
+	                    case r:
+	                        h = (g - b) / d + (g < b ? 6 : 0);
+	                        break;
+	                    case g:
+	                        h = (b - r) / d + 2;
+	                        break;
+	                    case b:
+	                        h = (r - g) / d + 4;
+	                        break;
+	                }
+	                h /= 6;
+	            }
+	            this.h = h;
+	            this.s = s;
+	            this.v = v;
+	            this.r = r;
+	            this.g = g;
+	            this.b = b;
+	        };
+	        return Color;
+	    }());
+	    UTILS.Color = Color;
 	})(UTILS || (UTILS = {}));
 	var Matthew;
 	(function (Matthew) {

@@ -22,6 +22,26 @@ declare namespace UTILS {
         constructor(x: number, y: number, r: number, d: number, tr: number);
     }
     function def<T>(value: T, defValue: T): T;
+    class Color {
+        private color;
+        private h;
+        private s;
+        private v;
+        private r;
+        private g;
+        private b;
+        constructor(color: number);
+        setColor(color: number): void;
+        setHSV(h: number, s: number, v: number): void;
+        setRGB(r: number, g: number, b: number): void;
+        getColor: () => number;
+        getR: () => number;
+        getG: () => number;
+        getB: () => number;
+        getH: () => number;
+        getS: () => number;
+        getV: () => number;
+    }
 }
 declare namespace Matthew {
     const PI: number;
