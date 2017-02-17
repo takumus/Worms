@@ -62,8 +62,12 @@ namespace UTILS{
         private r:number;
         private g:number;
         private b:number;
-        constructor(color:number){
+        private old:Color;
+        constructor(color:number = 0){
             this.setColor(color);
+        }
+        public clone():Color{
+            return new Color(this.color);
         }
         public setColor(color:number):void{
             const r = color>>16&0xff;
@@ -75,7 +79,10 @@ namespace UTILS{
         /*
             setHSV and setRGB -> https://gist.github.com/mjackson/5311256
         */
-        public setHSV(h:number, s:number, v:number){
+        public setHSV(h:number = -1, s:number = -1, v:number = -1){
+            h = h<0?this.h:h;
+            s = s<0?this.s:s;
+            v = v<0?this.v:v;
             let r:number, g:number, b:number;
             const i = Math.floor(h * 6);
             const f = h * 6 - i;
@@ -96,8 +103,15 @@ namespace UTILS{
             this.h = h;
             this.s = s;
             this.v = v;
+            this.rgbToDecimal();
         }
-        public setRGB(r:number, g:number, b:number){
+        public setRGB(r:number = -1, g:number = -1, b:number = -1){
+            r = r<0?this.r:r;
+            g = g<0?this.g:g;
+            b = b<0?this.b:b;
+            this.r = r;
+            this.g = g;
+            this.b = b;
             r /= 255, g /= 255, b /= 255;
             const max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h:number;
@@ -117,9 +131,10 @@ namespace UTILS{
             this.h = h;
             this.s = s;
             this.v = v;
-            this.r = r;
-            this.g = g;
-            this.b = b;
+            this.rgbToDecimal();
+        }
+        private rgbToDecimal():void{
+            this.color = (this.r << 16) + (this.g << 8) + (this.b);
         }
         public getColor = () => this.color;
         public getR = () => this.r;
@@ -128,6 +143,29 @@ namespace UTILS{
         public getH = () => this.h;
         public getS = () => this.s;
         public getV = () => this.v;
+
+        public static transformRGB(color:Color, to:Color, p:number):void{
+            p = 1-p;
+            const r = color.getR() - to.getR();
+            const g = color.getG() - to.getG();
+            const b = color.getB() - to.getB();
+            color.setRGB(
+                to.getR() + r * p,
+                to.getG() + g * p,
+                to.getB() + b * p
+            );
+        }
+        public static transformHSV(color:Color, to:Color, p:number):void{
+            p = 1-p;
+            const h = color.getH() - to.getH();
+            const s = color.getS() - to.getS();
+            const v = color.getV() - to.getV();
+            color.setHSV(
+                to.getH() + h * p,
+                to.getS() + s * p,
+                to.getV() + v * p
+            )
+        }
     }
 }
 namespace Matthew{

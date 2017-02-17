@@ -109,6 +109,7 @@
 	    UTILS.def = def;
 	    var Color = (function () {
 	        function Color(color) {
+	            if (color === void 0) { color = 0; }
 	            var _this = this;
 	            this.getColor = function () { return _this.color; };
 	            this.getR = function () { return _this.r; };
@@ -119,6 +120,9 @@
 	            this.getV = function () { return _this.v; };
 	            this.setColor(color);
 	        }
+	        Color.prototype.clone = function () {
+	            return new Color(this.color);
+	        };
 	        Color.prototype.setColor = function (color) {
 	            var r = color >> 16 & 0xff;
 	            var g = color >> 8 & 0xff;
@@ -130,6 +134,12 @@
 	            setHSV and setRGB -> https://gist.github.com/mjackson/5311256
 	        */
 	        Color.prototype.setHSV = function (h, s, v) {
+	            if (h === void 0) { h = -1; }
+	            if (s === void 0) { s = -1; }
+	            if (v === void 0) { v = -1; }
+	            h = h < 0 ? this.h : h;
+	            s = s < 0 ? this.s : s;
+	            v = v < 0 ? this.v : v;
 	            var r, g, b;
 	            var i = Math.floor(h * 6);
 	            var f = h * 6 - i;
@@ -162,8 +172,18 @@
 	            this.h = h;
 	            this.s = s;
 	            this.v = v;
+	            this.rgbToDecimal();
 	        };
 	        Color.prototype.setRGB = function (r, g, b) {
+	            if (r === void 0) { r = -1; }
+	            if (g === void 0) { g = -1; }
+	            if (b === void 0) { b = -1; }
+	            r = r < 0 ? this.r : r;
+	            g = g < 0 ? this.g : g;
+	            b = b < 0 ? this.b : b;
+	            this.r = r;
+	            this.g = g;
+	            this.b = b;
 	            r /= 255, g /= 255, b /= 255;
 	            var max = Math.max(r, g, b), min = Math.min(r, g, b);
 	            var h;
@@ -190,9 +210,24 @@
 	            this.h = h;
 	            this.s = s;
 	            this.v = v;
-	            this.r = r;
-	            this.g = g;
-	            this.b = b;
+	            this.rgbToDecimal();
+	        };
+	        Color.prototype.rgbToDecimal = function () {
+	            this.color = (this.r << 16) + (this.g << 8) + (this.b);
+	        };
+	        Color.transformRGB = function (color, to, p) {
+	            p = 1 - p;
+	            var r = color.getR() - to.getR();
+	            var g = color.getG() - to.getG();
+	            var b = color.getB() - to.getB();
+	            color.setRGB(to.getR() + r * p, to.getG() + g * p, to.getB() + b * p);
+	        };
+	        Color.transformHSV = function (color, to, p) {
+	            p = 1 - p;
+	            var h = color.getH() - to.getH();
+	            var s = color.getS() - to.getS();
+	            var v = color.getV() - to.getV();
+	            color.setHSV(to.getH() + h * p, to.getS() + s * p, to.getV() + v * p);
 	        };
 	        return Color;
 	    }());

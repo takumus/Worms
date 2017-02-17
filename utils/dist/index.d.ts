@@ -30,10 +30,13 @@ declare namespace UTILS {
         private r;
         private g;
         private b;
-        constructor(color: number);
+        private old;
+        constructor(color?: number);
+        clone(): Color;
         setColor(color: number): void;
-        setHSV(h: number, s: number, v: number): void;
-        setRGB(r: number, g: number, b: number): void;
+        setHSV(h?: number, s?: number, v?: number): void;
+        setRGB(r?: number, g?: number, b?: number): void;
+        private rgbToDecimal();
         getColor: () => number;
         getR: () => number;
         getG: () => number;
@@ -41,6 +44,8 @@ declare namespace UTILS {
         getH: () => number;
         getS: () => number;
         getV: () => number;
+        static transformRGB(color: Color, to: Color, p: number): void;
+        static transformHSV(color: Color, to: Color, p: number): void;
     }
 }
 declare namespace Matthew {
