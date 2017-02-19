@@ -1,3 +1,10 @@
+declare namespace Matthew {
+    const PI: number;
+    const H_PI: number;
+    const D_PI: number;
+    function normalize(r: number): number;
+    function abs(v: number): number;
+}
 declare namespace UTILS {
     class Pos {
         x: number;
@@ -47,11 +54,4 @@ declare namespace UTILS {
         static transformRGB(color: Color, to: Color, p: number): void;
         static transformHSV(color: Color, to: Color, p: number): void;
     }
-}
-declare namespace Matthew {
-    const PI: number;
-    const H_PI: number;
-    const D_PI: number;
-    const normalize: (r: number) => number;
-    const abs: (v: number) => number;
 }

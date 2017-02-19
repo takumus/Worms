@@ -44,6 +44,23 @@
 /* 0 */
 /***/ function(module, exports) {
 
+	var Matthew;
+	(function (Matthew) {
+	    Matthew.PI = Math.PI;
+	    Matthew.H_PI = Math.PI / 2;
+	    Matthew.D_PI = Math.PI * 2;
+	    function normalize(r) {
+	        r = r % Matthew.D_PI;
+	        if (r < 0)
+	            return Matthew.D_PI + r;
+	        return r;
+	    }
+	    Matthew.normalize = normalize;
+	    function abs(v) {
+	        return v < 0 ? -v : v;
+	    }
+	    Matthew.abs = abs;
+	})(Matthew || (Matthew = {}));
 	var UTILS;
 	(function (UTILS) {
 	    var Pos = (function () {
@@ -102,7 +119,7 @@
 	    }());
 	    UTILS.Circle = Circle;
 	    function def(value, defValue) {
-	        if (typeof value == "undefined")
+	        if (typeof value === 'undefined')
 	            return defValue;
 	        return value;
 	    }
@@ -189,8 +206,8 @@
 	            var h;
 	            var v = max;
 	            var d = max - min;
-	            var s = max == 0 ? 0 : d / max;
-	            if (max == min) {
+	            var s = max === 0 ? 0 : d / max;
+	            if (max === min) {
 	                h = 0;
 	            }
 	            else {
@@ -233,23 +250,8 @@
 	    }());
 	    UTILS.Color = Color;
 	})(UTILS || (UTILS = {}));
-	var Matthew;
-	(function (Matthew) {
-	    Matthew.PI = Math.PI;
-	    Matthew.H_PI = Math.PI / 2;
-	    Matthew.D_PI = Math.PI * 2;
-	    Matthew.normalize = function (r) {
-	        r = r % Matthew.D_PI;
-	        if (r < 0)
-	            return Matthew.D_PI + r;
-	        return r;
-	    };
-	    Matthew.abs = function (v) {
-	        return v < 0 ? -v : v;
-	    };
-	})(Matthew || (Matthew = {}));
-	window["UTILS"] = UTILS;
-	window["Matthew"] = Matthew;
+	window['UTILS'] = UTILS;
+	window['Matthew'] = Matthew;
 
 
 /***/ }
