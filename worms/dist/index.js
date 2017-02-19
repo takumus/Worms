@@ -59,16 +59,16 @@
 	        }
 	        Base.prototype.setLength = function (length) {
 	            this.prevLength = Math.floor(length);
-	            this.setNextLength(length);
+	            this.allocLength(length);
 	        };
 	        Base.prototype.updateLength = function () {
 	            this.setLength(this.length);
 	        };
-	        Base.prototype.setNextLength = function (length) {
-	            this.nextLength = Math.floor(length);
-	            this.diffLength = this.nextLength - this.prevLength;
+	        Base.prototype.allocLength = function (length) {
+	            length = Math.floor(length);
+	            this.diffLength = length - this.prevLength;
 	            this.bone.clear();
-	            var L = this.prevLength > this.nextLength ? this.prevLength : this.nextLength;
+	            var L = this.prevLength > length ? this.prevLength : length;
 	            for (var i = 0; i < L; i++) {
 	                this.bone.push(new UTILS.Pos());
 	            }
@@ -88,14 +88,12 @@
 	        };
 	        Base.prototype.render = function () {
 	        };
-	        Base.prototype.addRouteFromCurrent = function (line) {
-	            this.setRoute(this.getCurrentLine().pushLine(line));
-	        };
-	        Base.prototype.setRoute = function (line) {
+	        Base.prototype.setRoute = function (line, nextLength) {
 	            if (line.getLength() < this.prevLength)
 	                return;
-	            this.setLength(this.length);
+	            this.step = 0;
 	            this.route = line;
+	            this.allocLength(UTILS.def(nextLength, this.length));
 	        };
 	        Base.prototype.addStep = function (step) {
 	            var length = this.route.getLength() - this.prevLength;
@@ -234,8 +232,8 @@
 	            _this.graphics = new PIXI.Graphics();
 	            return _this;
 	        }
-	        Nasty.prototype.setNextLength = function (length) {
-	            _super.prototype.setNextLength.call(this, length);
+	        Nasty.prototype.allocLength = function (length) {
+	            _super.prototype.allocLength.call(this, length);
 	            this.bodyPos = [];
 	            for (var i = 0; i < this.bone.getLength(); i++) {
 	                this.bodyPos.push(new BodyPos());

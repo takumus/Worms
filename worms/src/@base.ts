@@ -3,7 +3,6 @@ namespace WORMS{
         protected bone:ROUTES.Line;
         protected prevLength:number;
         protected length:number;
-        protected nextLength:number;
         private diffLength:number;
         private route:ROUTES.Line;
         private step:number = 0;
@@ -13,16 +12,16 @@ namespace WORMS{
         }
         public setLength(length:number){
             this.prevLength = Math.floor(length);
-            this.setNextLength(length);
+            this.allocLength(length);
         }
         public updateLength():void{
             this.setLength(this.length);
         }
-        public setNextLength(length:number){
-            this.nextLength = Math.floor(length);
-            this.diffLength = this.nextLength - this.prevLength;
+        protected allocLength(length:number){
+            length = Math.floor(length);
+            this.diffLength = length - this.prevLength;
             this.bone.clear();
-            const L = this.prevLength > this.nextLength ? this.prevLength:this.nextLength;
+            const L = this.prevLength > length ? this.prevLength:length;
             
             for(let i = 0; i < L; i ++){
                 this.bone.push(new UTILS.Pos());
@@ -43,15 +42,11 @@ namespace WORMS{
         }
         public render(){
         }
-        public addRouteFromCurrent(line:ROUTES.Line){
-            this.setRoute(
-                this.getCurrentLine().pushLine(line)
-            );
-        }
-        public setRoute(line:ROUTES.Line){
+        public setRoute(line:ROUTES.Line, nextLength?:number){
             if(line.getLength() < this.prevLength) return;
-            this.setLength(this.length);
+            this.step = 0;
             this.route = line;
+            this.allocLength(UTILS.def<number>(nextLength, this.length));
         }
         public addStep(step:number):boolean{
             const length = this.route.getLength() - this.prevLength;

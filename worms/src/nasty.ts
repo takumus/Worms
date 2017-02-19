@@ -17,8 +17,8 @@ namespace WORMS{
             this.setOption(option);
             this.graphics = new PIXI.Graphics();
         }
-        public setNextLength(length:number){
-            super.setNextLength(length);
+        protected allocLength(length:number){
+            super.allocLength(length);
             this.bodyPos = [];
             for(let i = 0; i < this.bone.getLength(); i ++){
                 this.bodyPos.push(new BodyPos());
