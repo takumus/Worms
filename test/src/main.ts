@@ -225,7 +225,7 @@ function draw():void{
 				}
 				route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 			}
-			w.addRouteFromCurrent(route);
+			w.setRoute(w.getCurrentLine().pushLine(route));
 			w.setStep(0);
 			const r = w.getRoute();
 			const h = r.head();

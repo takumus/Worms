@@ -247,7 +247,7 @@
 	                }
 	                route.wave(props.parent.waveAmp, props.parent.waveFreq, true);
 	            }
-	            w.addRouteFromCurrent(route);
+	            w.setRoute(w.getCurrentLine().pushLine(route));
 	            w.setStep(0);
 	            var r = w.getRoute();
 	            var h = r.head();
