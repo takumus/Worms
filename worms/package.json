@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/pixi.js": "^4.3.1",
-    "@types/tween.js": "0.0.31"
+    "@types/tween.js": "0.0.31",
+    "tslint": "^4.4.2"
   }
 }

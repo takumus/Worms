@@ -158,7 +158,7 @@
 	                var vy = this.at(i - 1).y - p.y;
 	                var np = new UTILS.Pos();
 	                var all = Math.sin(i / (this.length - 1) * Math.PI);
-	                //all * allで開始、終了を極端にする。(先端への影響を少なく)
+	                // all * allで開始、終了を極端にする。(先端への影響を少なく)
 	                var offset = all * Math.sin(rad) * amp;
 	                var vr = Math.sqrt(vx * vx + vy * vy);
 	                rad += freq;
@@ -182,7 +182,7 @@
 	        RouteGenerator.getMinimumRoute = function (vposB, vposE, rB, rE, res) {
 	            var routes = this.getAllRoute(vposB, vposE, rB, rE);
 	            var min = Number.MAX_VALUE;
-	            var route = null;
+	            var route;
 	            for (var i = 0; i < routes.length; i++) {
 	                var r = routes[i];
 	                if (r.getLength() < min) {
@@ -319,13 +319,13 @@
 	            return new ROUTES.Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	        };
 	        RouteGenerator.line = function (x1, y1, x2, y2) {
-	            //if(!this.graphics) return;
-	            //this.graphics.moveTo(x1, y1);
-	            //this.graphics.lineTo(x2, y2);
+	            // if(!this.graphics) return;
+	            // this.graphics.moveTo(x1, y1);
+	            // this.graphics.lineTo(x2, y2);
 	        };
 	        RouteGenerator.circle = function (x, y, r) {
-	            //if(!this.graphics) return;
-	            //this.graphics.drawCircle(x, y, r);
+	            // if(!this.graphics) return;
+	            // this.graphics.drawCircle(x, y, r);
 	        };
 	        return RouteGenerator;
 	    }());
@@ -358,7 +358,7 @@
 	            }
 	            line.pop();
 	            this.getLineRoot(new UTILS.Pos(_x, _y), new UTILS.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, line);
-	            //trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
+	            // trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
 	            var LL = Matthew.abs(this.c2rl) - c2rres;
 	            for (var r = 0; r < LL; r += c2rres) {
 	                tr = this.c2rb + r * this.c2.d;
@@ -398,10 +398,10 @@
 	    }());
 	    ROUTES.Route = Route;
 	})(ROUTES || (ROUTES = {}));
-	///<reference path="line.ts"/>
-	///<reference path="generator.ts"/>
-	///<reference path="route.ts"/>
-	window["ROUTES"] = ROUTES;
+	///<reference path='line.ts'/>
+	///<reference path='generator.ts'/>
+	///<reference path='route.ts'/>
+	window['ROUTES'] = ROUTES;
 
 
 /***/ }

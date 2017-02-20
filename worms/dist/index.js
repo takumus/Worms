@@ -72,11 +72,11 @@
 	            for (var i = 0; i < L; i++) {
 	                this.bone.push(new UTILS.Pos());
 	            }
-	            //re set bones
+	            // re set bones
 	            this.setStep(this.step);
 	        };
 	        Base.prototype.push = function (x, y) {
-	            //先頭に加えて、１つずつずらす。
+	            // 先頭に加えて、１つずつずらす。
 	            var i = this.bone.getLength() - 1;
 	            for (; i >= 1; i--) {
 	                this.bone.at(i).x = this.bone.at(i - 1).x;
@@ -144,7 +144,7 @@
 	            this.bone.reverse();
 	        };
 	        Base.prototype.getCurrentLine = function () {
-	            //console.log(this.bone);
+	            // console.log(this.bone);
 	            var line = new ROUTES.Line();
 	            var current = this.bone.clone();
 	            for (var i = 0; i < this.length; i++) {
@@ -168,7 +168,7 @@
 	    }());
 	    WORMS.Base = Base;
 	})(WORMS || (WORMS = {}));
-	///<reference path="@base.ts" />
+	///<reference path='@base.ts' />
 	var WORMS;
 	(function (WORMS) {
 	    var Simple = (function (_super) {
@@ -217,10 +217,10 @@
 	    }(WORMS.Base));
 	    WORMS.Simple = Simple;
 	})(WORMS || (WORMS = {}));
-	///<reference path="@base.ts" />
-	///<reference path="simple.ts" />
-	window["WORMS"] = WORMS;
-	///<reference path="@base.ts" />
+	///<reference path='@base.ts' />
+	///<reference path='simple.ts' />
+	window['WORMS'] = WORMS;
+	///<reference path='@base.ts' />
 	var WORMS;
 	(function (WORMS) {
 	    var Nasty = (function (_super) {
@@ -252,7 +252,7 @@
 	        };
 	        Nasty.prototype.render = function () {
 	            var bbone = this.bone.at(0);
-	            //ワームの外殻を生成
+	            // ワームの外殻を生成
 	            var ebone = this.bone.at(this.length - 1);
 	            var bbody = this.bodyPos[0];
 	            var ebody = this.bodyPos[this.length - 1];

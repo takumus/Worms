@@ -85,14 +85,14 @@
 	var defaultProps = {};
 	function initGUI() {
 	    var gui = new dat.GUI();
-	    var parent = gui.addFolder("Parent worm");
+	    var parent = gui.addFolder('Parent worm');
 	    var parentThickness = function () {
 	        worms[0].getOption().thickness = props.parent.thickness;
 	    };
 	    var parentLength = function () {
 	        worms[0].setLength(props.parent.length);
 	    };
-	    var child = gui.addFolder("Child worm");
+	    var child = gui.addFolder('Child worm');
 	    var childThickness = function () {
 	        for (var i = 1; i < worms.length; i++) {
 	            worms[i].getOption().thickness = props.child.thickness;
@@ -117,7 +117,7 @@
 	    parent.add(props.parent, 'waveAmp', 0, 100);
 	    parent.add(props.parent, 'thickness', 1, 400).onChange(parentThickness);
 	    parent.add(props.parent, 'length', 2, 200).onChange(parentLength);
-	    var parentTurn = parent.addFolder("turn");
+	    var parentTurn = parent.addFolder('turn');
 	    parentTurn.add(props.parent, 'radius', 0, 500);
 	    parentTurn.add(props.parent, 'radiusRandom', 0, 500);
 	    parent.open();
@@ -127,7 +127,7 @@
 	    child.add(props.child, 'thickness', 1, 200).onChange(childThickness);
 	    child.add(props.child, 'length', 2, 200).onChange(childLength);
 	    child.add(props.child, 'targetOffset', 0, 500);
-	    var childTurn = child.addFolder("turn");
+	    var childTurn = child.addFolder('turn');
 	    childTurn.add(props.child, 'radius', 0, 500);
 	    childTurn.add(props.child, 'radiusRandom', 0, 500);
 	    child.open();
@@ -137,7 +137,7 @@
 	    gui.add(props.global, 'bodyBalance', 0, 1).onChange(bodyBalance);
 	    gui.add({ data: function () {
 	            try {
-	                var newPropsStr = window.prompt("your data", JSON.stringify(props));
+	                var newPropsStr = window.prompt('your data', JSON.stringify(props));
 	                if (!newPropsStr)
 	                    return;
 	                setProps(JSON.parse(newPropsStr));
@@ -151,40 +151,40 @@
 	            }
 	            catch (e) {
 	            }
-	        } }, "data");
+	        } }, 'data');
 	    gui.add({ reset: function () {
 	            gui.revert(gui);
-	        } }, "reset");
+	        } }, 'reset');
 	    wormsGuideContainer.visible = props.global.guide;
 	}
 	function initPIXI() {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: true, resolution: 2, transparent: false });
-	    canvas = document.getElementById("content");
+	    canvas = document.getElementById('content');
 	    canvas.appendChild(renderer.view);
-	    renderer.view.style.width = "100%";
-	    renderer.view.style.height = "100%";
-	    window.addEventListener("resize", resize);
+	    renderer.view.style.width = '100%';
+	    renderer.view.style.height = '100%';
+	    window.addEventListener('resize', resize);
 	    window.addEventListener('orientationchange', resize);
 	}
 	function init() {
 	    initGUI();
 	    initPIXI();
-	    window.addEventListener("mousedown", function (e) {
-	        if (e.target.tagName != "CANVAS")
+	    window.addEventListener('mousedown', function (e) {
+	        if (e.target.tagName != 'CANVAS')
 	            return;
 	        pressing = true;
 	        prevMouse.x = mouse.x = e.clientX;
 	        prevMouse.y = mouse.y = e.clientY;
 	    });
-	    window.addEventListener("mousemove", function (e) {
+	    window.addEventListener('mousemove', function (e) {
 	        mouse.x = e.clientX;
 	        mouse.y = e.clientY;
 	    });
-	    window.addEventListener("mouseup", function () {
+	    window.addEventListener('mouseup', function () {
 	        pressing = false;
 	    });
 	    stage.addChild(wormsGuideContainer);
-	    //generate worms
+	    // generate worms
 	    for (var i = 0; i < 40; i++) {
 	        var length_1 = i == 0 ? props.parent.length : props.child.length;
 	        var headLength = props.global.bodyBalance;
@@ -224,7 +224,7 @@
 	            var vpos = void 0;
 	            var route = void 0;
 	            if (i != 0) {
-	                //child
+	                // child
 	                vpos = worms[0].getTailVecPos().clone();
 	                vpos.pos.x += Math.random() * props.child.targetOffset - props.child.targetOffset / 2;
 	                vpos.pos.y += Math.random() * props.child.targetOffset - props.child.targetOffset / 2;
@@ -233,7 +233,7 @@
 	                route.wave(props.child.waveAmp, props.child.waveFreq, true);
 	            }
 	            else {
-	                //parent
+	                // parent
 	                if (pressing) {
 	                    var dx = mouse.x - w.getHeadVecPos().pos.x;
 	                    var dy = mouse.y - w.getHeadVecPos().pos.y;
@@ -284,7 +284,7 @@
 	    });
 	}
 	window.onload = init;
-	//100コミット 
+	// 100コミット 
 
 
 /***/ }
