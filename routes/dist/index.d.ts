@@ -53,9 +53,10 @@ declare namespace ROUTES {
     }
 }
 declare namespace ROUTES {
-    class Debugger {
-        static graphics: PIXI.Graphics;
-        static render(line: Line): void;
-        static clear(): void;
+    class Debugger extends PIXI.Container {
+        private graphics;
+        constructor();
+        render(line: Line): void;
+        clear(): void;
     }
 }

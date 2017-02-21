@@ -44,6 +44,11 @@
 /* 0 */
 /***/ function(module, exports) {
 
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	var ROUTES;
 	(function (ROUTES) {
 	    var Line = (function () {
@@ -415,10 +420,15 @@
 	///<reference path='line.ts'/>
 	var ROUTES;
 	(function (ROUTES) {
-	    var Debugger = (function () {
+	    var Debugger = (function (_super) {
+	        __extends(Debugger, _super);
 	        function Debugger() {
+	            var _this = _super.call(this) || this;
+	            _this.graphics = new PIXI.Graphics();
+	            _this.addChild(_this.graphics);
+	            return _this;
 	        }
-	        Debugger.render = function (line) {
+	        Debugger.prototype.render = function (line) {
 	            var bp = line.head();
 	            var ep = line.tail();
 	            this.graphics.lineStyle(1, 0xCCCCCC);
@@ -430,12 +440,11 @@
 	            this.graphics.drawCircle(bp.x, bp.y, 5);
 	            this.graphics.drawCircle(ep.x, ep.y, 5);
 	        };
-	        Debugger.clear = function () {
+	        Debugger.prototype.clear = function () {
 	            this.graphics.clear();
 	        };
 	        return Debugger;
-	    }());
-	    Debugger.graphics = new PIXI.Graphics();
+	    }(PIXI.Container));
 	    ROUTES.Debugger = Debugger;
 	})(ROUTES || (ROUTES = {}));
 	///<reference path='line.ts'/>

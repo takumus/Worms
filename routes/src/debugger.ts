@@ -1,8 +1,12 @@
 ///<reference path='line.ts'/>
 namespace ROUTES {
-    export class Debugger {
-        public static graphics: PIXI.Graphics = new PIXI.Graphics();
-        public static render(line: Line): void {
+    export class Debugger extends PIXI.Container {
+        private graphics: PIXI.Graphics = new PIXI.Graphics();
+        constructor() {
+            super();
+            this.addChild(this.graphics);
+        }
+        public render(line: Line): void {
             const bp: UTILS.Pos = line.head();
             const ep: UTILS.Pos = line.tail();
             this.graphics.lineStyle(1, 0xCCCCCC);
@@ -14,7 +18,7 @@ namespace ROUTES {
             this.graphics.drawCircle(bp.x, bp.y, 5);
             this.graphics.drawCircle(ep.x, ep.y, 5);
         }
-        public static clear(): void {
+        public clear(): void {
             this.graphics.clear();
         }
     }
