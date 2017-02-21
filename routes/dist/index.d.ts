@@ -55,7 +55,12 @@ declare namespace ROUTES {
 declare namespace ROUTES {
     class Debugger extends PIXI.Container {
         private graphics;
+        private color;
+        private thickness;
+        private circle;
+        private gradient;
         constructor();
+        setOption(color?: number, thickness?: number, circle?: boolean, gradient?: boolean): void;
         render(line: Line): void;
         clear(): void;
     }

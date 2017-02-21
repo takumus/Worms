@@ -426,19 +426,34 @@
 	            var _this = _super.call(this) || this;
 	            _this.graphics = new PIXI.Graphics();
 	            _this.addChild(_this.graphics);
+	            _this.setOption();
 	            return _this;
 	        }
+	        Debugger.prototype.setOption = function (color, thickness, circle, gradient) {
+	            if (color === void 0) { color = 0xCCCCCC; }
+	            if (thickness === void 0) { thickness = 1; }
+	            if (circle === void 0) { circle = true; }
+	            if (gradient === void 0) { gradient = true; }
+	            this.color = color;
+	            this.thickness = thickness;
+	            this.circle = circle;
+	            this.gradient = gradient;
+	        };
 	        Debugger.prototype.render = function (line) {
 	            var bp = line.head();
 	            var ep = line.tail();
-	            this.graphics.lineStyle(1, 0xCCCCCC);
+	            this.graphics.lineStyle(this.thickness, this.color, this.gradient ? 0 : 1);
 	            this.graphics.moveTo(bp.x, bp.y);
 	            for (var i = 1; i < line.getLength(); i++) {
 	                var p = line.at(i);
+	                var a = i / (line.getLength() - 1);
+	                this.graphics.lineStyle(this.thickness, this.color, this.gradient ? a : 1);
 	                this.graphics.lineTo(p.x, p.y);
 	            }
-	            this.graphics.drawCircle(bp.x, bp.y, 5);
-	            this.graphics.drawCircle(ep.x, ep.y, 5);
+	            if (this.circle) {
+	                this.graphics.drawCircle(bp.x, bp.y, 5);
+	                this.graphics.drawCircle(ep.x, ep.y, 5);
+	            }
 	        };
 	        Debugger.prototype.clear = function () {
 	            this.graphics.clear();
