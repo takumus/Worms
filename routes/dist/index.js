@@ -413,8 +413,35 @@
 	    ROUTES.Route = Route;
 	})(ROUTES || (ROUTES = {}));
 	///<reference path='line.ts'/>
+	var ROUTES;
+	(function (ROUTES) {
+	    var Debugger = (function () {
+	        function Debugger() {
+	        }
+	        Debugger.render = function (line) {
+	            var bp = line.head();
+	            var ep = line.tail();
+	            this.graphics.lineStyle(1, 0xCCCCCC);
+	            this.graphics.moveTo(bp.x, bp.y);
+	            for (var i = 1; i < line.getLength(); i++) {
+	                var p = line.at(i);
+	                this.graphics.lineTo(p.x, p.y);
+	            }
+	            this.graphics.drawCircle(bp.x, bp.y, 5);
+	            this.graphics.drawCircle(ep.x, ep.y, 5);
+	        };
+	        Debugger.clear = function () {
+	            this.graphics.clear();
+	        };
+	        return Debugger;
+	    }());
+	    Debugger.graphics = new PIXI.Graphics();
+	    ROUTES.Debugger = Debugger;
+	})(ROUTES || (ROUTES = {}));
+	///<reference path='line.ts'/>
 	///<reference path='generator.ts'/>
 	///<reference path='route.ts'/>
+	///<reference path='debugger.ts'/>
 	window['ROUTES'] = ROUTES;
 
 

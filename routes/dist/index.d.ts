@@ -1,3 +1,4 @@
+/// <reference types="pixi.js" />
 declare namespace ROUTES {
     class Line {
         protected data: Array<UTILS.Pos>;
@@ -49,5 +50,12 @@ declare namespace ROUTES {
         generateRoute(res: number, line?: Line): Line;
         getLength(): number;
         private getLineRoot(bp, ep, res, line);
+    }
+}
+declare namespace ROUTES {
+    class Debugger {
+        static graphics: PIXI.Graphics;
+        static render(line: Line): void;
+        static clear(): void;
     }
 }
