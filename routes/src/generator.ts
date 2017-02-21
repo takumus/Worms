@@ -172,7 +172,23 @@ namespace ROUTES {
             this.circle(c2.pos.x, c2.pos.y, c2.r);
             return new Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
         }
-
+        public static getLine(bp: UTILS.Pos, ep: UTILS.Pos, res: number): Line {
+            const line: Line = new Line();
+            const tx = ep.x - bp.x;
+            const ty = ep.y - bp.y;
+            const r = Math.atan2(ty, tx);
+            const dx = Math.cos(r) * res;
+            const dy = Math.sin(r) * res;
+            const l = Math.sqrt(tx * tx + ty * ty) - res;
+            const L = l / res;
+            for (let i = 0; i < L; i++) {
+                line.push(new UTILS.Pos(
+                    dx * i + bp.x,
+                    dy * i + bp.y
+                ));
+            }
+            return line;
+        }
         private static line(x1: number, y1: number, x2: number, y2: number) {
             // if(!this.graphics) return;
             // this.graphics.moveTo(x1, y1);

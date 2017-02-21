@@ -318,6 +318,20 @@
 	            this.circle(c2.pos.x, c2.pos.y, c2.r);
 	            return new ROUTES.Route(c1, c2, c1.tr, c2r, c1dr * c1.d, c2dr * c2.d);
 	        };
+	        RouteGenerator.getLine = function (bp, ep, res) {
+	            var line = new ROUTES.Line();
+	            var tx = ep.x - bp.x;
+	            var ty = ep.y - bp.y;
+	            var r = Math.atan2(ty, tx);
+	            var dx = Math.cos(r) * res;
+	            var dy = Math.sin(r) * res;
+	            var l = Math.sqrt(tx * tx + ty * ty) - res;
+	            var L = l / res;
+	            for (var i = 0; i < L; i++) {
+	                line.push(new UTILS.Pos(dx * i + bp.x, dy * i + bp.y));
+	            }
+	            return line;
+	        };
 	        RouteGenerator.line = function (x1, y1, x2, y2) {
 	            // if(!this.graphics) return;
 	            // this.graphics.moveTo(x1, y1);

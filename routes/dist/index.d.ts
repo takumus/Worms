@@ -32,6 +32,7 @@ declare namespace ROUTES {
         static getMinimumRoute(vposB: UTILS.VecPos, vposE: UTILS.VecPos, rB: number, rE: number, res: number): Line;
         static getAllRoute(vposB: UTILS.VecPos, vposE: UTILS.VecPos, rB: number, rE: number): Array<Route>;
         private static getRoute(c1, c2);
+        static getLine(bp: UTILS.Pos, ep: UTILS.Pos, res: number): Line;
         private static line(x1, y1, x2, y2);
         private static circle(x, y, r);
     }
