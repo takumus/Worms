@@ -16,7 +16,7 @@
     "ts-loader": "^1.0.0",
     "tslint": "^4.4.2",
     "tslint-loader": "^3.4.2",
-    "typescript": "^2.0.7"
+    "typescript": "^2.2.1"
   },
   "dependencies": {
     "@types/pixi.js": "^4.3.1",

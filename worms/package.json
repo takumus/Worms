@@ -13,7 +13,7 @@
     "gulp-connect": "^5.0.0",
     "gulp-webpack": "^1.5.0",
     "ts-loader": "^1.0.0",
-    "typescript": "^2.0.7"
+    "typescript": "^2.2.1"
   },
   "dependencies": {
     "@types/pixi.js": "^4.3.1",
