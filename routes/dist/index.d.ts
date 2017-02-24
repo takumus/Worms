@@ -28,6 +28,7 @@ declare namespace ROUTES {
         clone(): Line;
         clear(): void;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
+        toString(): string;
     }
 }
 declare namespace ROUTES {

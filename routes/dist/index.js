@@ -192,6 +192,9 @@
 	            this.data = newData;
 	            return this;
 	        };
+	        Line.prototype.toString = function () {
+	            return JSON.stringify(this.data);
+	        };
 	        return Line;
 	    }());
 	    ROUTES.Line = Line;

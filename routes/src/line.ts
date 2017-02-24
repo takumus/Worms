@@ -145,5 +145,8 @@ namespace ROUTES {
             this.data = newData;
             return this;
         }
+        public toString(): string {
+            return JSON.stringify(this.data);
+        }
     }
 }
