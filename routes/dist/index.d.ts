@@ -3,12 +3,14 @@ declare namespace ROUTES {
     class Line {
         protected data: Array<UTILS.Pos>;
         private length;
-        private prevOffset;
+        private prevPositionOffset;
+        private prevScaleOffset;
         constructor(data?: Array<UTILS.Pos> | Array<{
             x: number;
             y: number;
         }>);
-        setOffsetToAll(pos: UTILS.Pos): void;
+        setPositionOffset(pos: UTILS.Pos): void;
+        setScaleOffset(scale: UTILS.Pos): void;
         getWidth(): number;
         getHeight(): number;
         reverse(): Line;

@@ -65,15 +65,26 @@
 	                this.data.push(new UTILS.Pos(p.x, p.y));
 	            }
 	            this.length = this.data.length;
-	            this.prevOffset = new UTILS.Pos();
+	            this.prevPositionOffset = new UTILS.Pos();
+	            this.prevScaleOffset = new UTILS.Pos();
 	        }
-	        Line.prototype.setOffsetToAll = function (pos) {
+	        Line.prototype.setPositionOffset = function (pos) {
 	            for (var i = 0; i < this.length; i++) {
 	                var p = this.at(i);
-	                p.x += pos.x - this.prevOffset.x;
-	                p.y += pos.y - this.prevOffset.y;
+	                p.x += pos.x - this.prevPositionOffset.x;
+	                p.y += pos.y - this.prevPositionOffset.y;
 	            }
-	            this.prevOffset = pos.clone();
+	            this.prevPositionOffset = pos.clone();
+	        };
+	        Line.prototype.setScaleOffset = function (scale) {
+	            for (var i = 0; i < this.length; i++) {
+	                var p = this.at(i);
+	                p.x /= this.prevScaleOffset.x;
+	                p.y /= this.prevScaleOffset.y;
+	                p.x *= scale.x;
+	                p.y *= scale.y;
+	            }
+	            this.prevScaleOffset = scale.clone();
 	        };
 	        Line.prototype.getWidth = function () {
 	            var min = Number.MAX_VALUE;

@@ -2,7 +2,8 @@ namespace ROUTES {
     export class Line {
         protected data: Array<UTILS.Pos>;
         private length: number;
-        private prevOffset: UTILS.Pos;
+        private prevPositionOffset: UTILS.Pos;
+        private prevScaleOffset: UTILS.Pos;
         constructor(data: Array<UTILS.Pos>|Array<{x: number, y: number}> = []) {
             this.data = [];
             for (let i = 0; i < data.length; i ++) {
@@ -10,15 +11,26 @@ namespace ROUTES {
                 this.data.push(new UTILS.Pos(p.x, p.y));
             }
             this.length = this.data.length;
-            this.prevOffset = new UTILS.Pos();
+            this.prevPositionOffset = new UTILS.Pos();
+            this.prevScaleOffset = new UTILS.Pos();
         }
-        public setOffsetToAll(pos: UTILS.Pos): void {
+        public setPositionOffset(pos: UTILS.Pos): void {
             for (let i = 0; i < this.length; i ++) {
                 const p = this.at(i);
-                p.x += pos.x - this.prevOffset.x;
-                p.y += pos.y - this.prevOffset.y;
+                p.x += pos.x - this.prevPositionOffset.x;
+                p.y += pos.y - this.prevPositionOffset.y;
             }
-            this.prevOffset = pos.clone();
+            this.prevPositionOffset = pos.clone();
+        }
+        public setScaleOffset(scale: UTILS.Pos): void {
+            for (let i = 0; i < this.length; i ++) {
+                const p = this.at(i);
+                p.x /= this.prevScaleOffset.x;
+                p.y /= this.prevScaleOffset.y;
+                p.x *= scale.x;
+                p.y *= scale.y;
+            }
+            this.prevScaleOffset = scale.clone();
         }
         public getWidth(): number {
             let min = Number.MAX_VALUE;
