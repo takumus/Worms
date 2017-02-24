@@ -49,6 +49,33 @@ export default class Editor extends PIXI.Container{
                 this.next();
             }else if(e.keyCode == 13){
                 console.log(JSON.stringify(this.lines));
+                let maxX = Number.MIN_VALUE;
+                let minX = Number.MAX_VALUE;
+                let maxY = Number.MIN_VALUE;
+                let minY = Number.MAX_VALUE;
+                for (let i = 0; i < this.lines.length; i ++) {
+                    const line = this.lines[i];
+                    for (let ii = 0; ii < line.getLength(); ii ++) {
+                        if (minX > line.at(ii).x) minX = line.at(ii).x;
+                        if (minY > line.at(ii).y) minY = line.at(ii).y;
+                        if (maxX < line.at(ii).x) maxX = line.at(ii).x;
+                        if (maxY < line.at(ii).y) maxY = line.at(ii).y;
+                    }
+                }
+                let width = maxX - minX;
+                let height = maxY - minY;
+                for (let i = 0; i < this.lines.length; i ++) {
+                    const line = this.lines[i];
+                    for (let ii = 0; ii < line.getLength(); ii ++) {
+                        line.at(ii).x -= minX + width / 2;
+                        line.at(ii).y -= minY + height / 2;
+                        line.at(ii).round(2);
+                    }
+                }
+                for (let i = 0; i < this.lines.length; i ++) {
+                    const line = this.lines[i];
+                    console.log(line.toString());
+                }
             }else if(e.keyCode == 27){
                 this.end();
             }else if(e.keyCode == 16){
@@ -103,10 +130,10 @@ export default class Editor extends PIXI.Container{
                 }
             );*/
             const w = new WORMS.Simple(wormLength, {
-                thickness: 18,
+                thickness: 2,
                 borderColor:0,
-                borderThickness:8,
-                fillColor: 0xffffff
+                borderThickness:0,
+                fillColor: 0xff0000
             });
             w.setRoute(this.editingLine);
             w.setStep(0);

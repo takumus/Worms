@@ -136,6 +136,37 @@
 	            }
 	            else if (e.keyCode == 13) {
 	                console.log(JSON.stringify(_this.lines));
+	                var maxX = Number.MIN_VALUE;
+	                var minX = Number.MAX_VALUE;
+	                var maxY = Number.MIN_VALUE;
+	                var minY = Number.MAX_VALUE;
+	                for (var i = 0; i < _this.lines.length; i++) {
+	                    var line = _this.lines[i];
+	                    for (var ii = 0; ii < line.getLength(); ii++) {
+	                        if (minX > line.at(ii).x)
+	                            minX = line.at(ii).x;
+	                        if (minY > line.at(ii).y)
+	                            minY = line.at(ii).y;
+	                        if (maxX < line.at(ii).x)
+	                            maxX = line.at(ii).x;
+	                        if (maxY < line.at(ii).y)
+	                            maxY = line.at(ii).y;
+	                    }
+	                }
+	                var width = maxX - minX;
+	                var height = maxY - minY;
+	                for (var i = 0; i < _this.lines.length; i++) {
+	                    var line = _this.lines[i];
+	                    for (var ii = 0; ii < line.getLength(); ii++) {
+	                        line.at(ii).x -= minX + width / 2;
+	                        line.at(ii).y -= minY + height / 2;
+	                        line.at(ii).round(2);
+	                    }
+	                }
+	                for (var i = 0; i < _this.lines.length; i++) {
+	                    var line = _this.lines[i];
+	                    console.log(line.toString());
+	                }
 	            }
 	            else if (e.keyCode == 27) {
 	                _this.end();
@@ -195,10 +226,10 @@
 	                }
 	            );*/
 	            var w = new WORMS.Simple(wormLength, {
-	                thickness: 18,
+	                thickness: 2,
 	                borderColor: 0,
-	                borderThickness: 8,
-	                fillColor: 0xffffff
+	                borderThickness: 0,
+	                fillColor: 0xff0000
 	            });
 	            w.setRoute(this.editingLine);
 	            w.setStep(0);
