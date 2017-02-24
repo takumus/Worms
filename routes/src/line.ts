@@ -76,7 +76,7 @@ namespace ROUTES {
             return this.data[id];
         }
         public push(pos: UTILS.Pos): void {
-            this.data.push(pos);
+            this.data.push(pos.clone());
             this.length = this.data.length;
         }
         public pop(): UTILS.Pos {
@@ -88,6 +88,7 @@ namespace ROUTES {
             return this.data.shift();
         }
         public pushLine(line: Line): Line {
+            line = line.clone();
             if (line.head().equals(this.tail())) line.shift();
             const L = line.data.length;
             for (let i = 0; i < L; i ++) {

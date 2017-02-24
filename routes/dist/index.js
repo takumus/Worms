@@ -44,11 +44,16 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var ROUTES;
 	(function (ROUTES) {
 	    var Line = (function () {
@@ -117,7 +122,7 @@
 	            return this.data[id];
 	        };
 	        Line.prototype.push = function (pos) {
-	            this.data.push(pos);
+	            this.data.push(pos.clone());
 	            this.length = this.data.length;
 	        };
 	        Line.prototype.pop = function () {
@@ -129,6 +134,7 @@
 	            return this.data.shift();
 	        };
 	        Line.prototype.pushLine = function (line) {
+	            line = line.clone();
 	            if (line.head().equals(this.tail()))
 	                line.shift();
 	            var L = line.data.length;
