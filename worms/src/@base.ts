@@ -112,5 +112,8 @@ namespace WORMS {
         public getLength(): number {
             return this.prevLength;
         }
+        public getCurrentLength(): number {
+            return this.length;
+        }
     }
 }

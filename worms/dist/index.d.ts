@@ -23,6 +23,7 @@ declare namespace WORMS {
         getTailVecPos(): UTILS.VecPos;
         getRoute(): ROUTES.Line;
         getLength(): number;
+        getCurrentLength(): number;
     }
 }
 declare namespace WORMS {

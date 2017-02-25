@@ -169,6 +169,9 @@
 	        Base.prototype.getLength = function () {
 	            return this.prevLength;
 	        };
+	        Base.prototype.getCurrentLength = function () {
+	            return this.length;
+	        };
 	        return Base;
 	    }());
 	    WORMS.Base = Base;
