@@ -3,51 +3,74 @@ namespace WORMS {
     export interface SimpleOption {
         fillColor?: number,
         thickness: number,
-        borderThickness?: number,
-        borderColor?: number
+        shadow?: boolean,
+        shadowColor?: number,
+        shadowPosition?: UTILS.Pos
     }
     export class Simple extends Base {
-        public body: PIXI.Sprite;
-        public graphics: PIXI.Graphics;
+        public bodyGraphics: PIXI.Graphics;
+        public shadowGraphics: PIXI.Graphics;
         private option: SimpleOption;
+        private visible: boolean;
         constructor(length: number, option: SimpleOption) {
             super(length);
-            this.body = new PIXI.Sprite();
-            this.graphics = new PIXI.Graphics();
-            this.body.addChild(this.graphics);
+            this.bodyGraphics = new PIXI.Graphics();
+            this.shadowGraphics = new PIXI.Graphics();
             this.setOption(option);
+            this.setVisible(true);
         }
         public setOption(option: SimpleOption): void {
             this.option = option;
             option.fillColor = UTILS.def<number>(option.fillColor, 0xff0000);
-            option.borderColor = UTILS.def<number>(option.borderColor, 0x0000ff);
-            option.borderThickness = UTILS.def<number>(option.borderThickness, 5);
+            option.shadow = UTILS.def<boolean>(option.shadow, false);
+            option.shadowColor = UTILS.def<number>(option.shadowColor, 0xCCCCCC);
+            option.shadowPosition = UTILS.def<UTILS.Pos>(option.shadowPosition, new UTILS.Pos());
         }
         public getOption(): SimpleOption {
             return this.option;
         }
         public render() {
-            this.graphics.clear();
-            this.renderWith(this.option.borderColor, this.option.thickness + this.option.borderThickness * 2);
-            this.renderWith(this.option.fillColor, this.option.thickness);
+            if (this.option.shadow) {
+                this.renderWith(
+                    this.shadowGraphics,
+                    this.option.shadowColor,
+                    this.option.thickness,
+                    this.option.shadowPosition.x,
+                    this.option.shadowPosition.y
+                );
+            }
+            this.renderWith(
+                this.bodyGraphics,
+                this.option.fillColor,
+                this.option.thickness,
+                0, 0
+            );
         }
-        private renderWith(color: number, thickness: number): void {
+        private renderWith(graphics: PIXI.Graphics, color: number, thickness: number, offsetX: number, offsetY: number): void {
+            graphics.clear();
             const bbone = this.bone.at(0);
             const ebone = this.bone.at(this.length - 1);
-            this.graphics.beginFill(color);
-            this.graphics.drawCircle(bbone.x, bbone.y, thickness / 2);
-            this.graphics.endFill();
-            this.graphics.lineStyle(thickness, color);
-            this.graphics.moveTo(bbone.x, bbone.y);
+            graphics.beginFill(color);
+            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
+            graphics.endFill();
+            graphics.lineStyle(thickness, color);
+            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
             for (let i = 1; i < this.length  - 1; i ++) {
                 const nbone = this.bone.at(i);
-                this.graphics.lineTo(nbone.x, nbone.y);
+                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
             }
-            this.graphics.lineTo(ebone.x, ebone.y);
-            this.graphics.lineStyle();
-            this.graphics.beginFill(color);
-            this.graphics.drawCircle(ebone.x, ebone.y, thickness / 2);
-            this.graphics.endFill();
+            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);
+            graphics.lineStyle();
+            graphics.beginFill(color);
+            graphics.drawCircle(ebone.x + offsetX, ebone.y + offsetY, thickness / 2);
+            graphics.endFill();
+        }
+        public setVisible(visible: boolean): void {
+            this.visible = visible;
+            this.bodyGraphics.visible = this.shadowGraphics.visible = visible;
+        }
+        public getVisible(): boolean {
+            return this.visible;
         }
     }
 }

@@ -29,18 +29,22 @@ declare namespace WORMS {
     interface SimpleOption {
         fillColor?: number;
         thickness: number;
-        borderThickness?: number;
-        borderColor?: number;
+        shadow?: boolean;
+        shadowColor?: number;
+        shadowPosition?: UTILS.Pos;
     }
     class Simple extends Base {
-        body: PIXI.Sprite;
-        graphics: PIXI.Graphics;
+        bodyGraphics: PIXI.Graphics;
+        shadowGraphics: PIXI.Graphics;
         private option;
+        private visible;
         constructor(length: number, option: SimpleOption);
         setOption(option: SimpleOption): void;
         getOption(): SimpleOption;
         render(): void;
-        private renderWith(color, thickness);
+        private renderWith(graphics, color, thickness, offsetX, offsetY);
+        setVisible(visible: boolean): void;
+        getVisible(): boolean;
     }
 }
 declare namespace WORMS {

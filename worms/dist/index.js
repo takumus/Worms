@@ -44,11 +44,16 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var WORMS;
 	(function (WORMS) {
 	    var Base = (function () {
@@ -175,43 +180,53 @@
 	        __extends(Simple, _super);
 	        function Simple(length, option) {
 	            var _this = _super.call(this, length) || this;
-	            _this.body = new PIXI.Sprite();
-	            _this.graphics = new PIXI.Graphics();
-	            _this.body.addChild(_this.graphics);
+	            _this.bodyGraphics = new PIXI.Graphics();
+	            _this.shadowGraphics = new PIXI.Graphics();
 	            _this.setOption(option);
+	            _this.setVisible(true);
 	            return _this;
 	        }
 	        Simple.prototype.setOption = function (option) {
 	            this.option = option;
 	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
-	            option.borderColor = UTILS.def(option.borderColor, 0x0000ff);
-	            option.borderThickness = UTILS.def(option.borderThickness, 5);
+	            option.shadow = UTILS.def(option.shadow, false);
+	            option.shadowColor = UTILS.def(option.shadowColor, 0xCCCCCC);
+	            option.shadowPosition = UTILS.def(option.shadowPosition, new UTILS.Pos());
 	        };
 	        Simple.prototype.getOption = function () {
 	            return this.option;
 	        };
 	        Simple.prototype.render = function () {
-	            this.graphics.clear();
-	            this.renderWith(this.option.borderColor, this.option.thickness + this.option.borderThickness * 2);
-	            this.renderWith(this.option.fillColor, this.option.thickness);
+	            if (this.option.shadow) {
+	                this.renderWith(this.shadowGraphics, this.option.shadowColor, this.option.thickness, this.option.shadowPosition.x, this.option.shadowPosition.y);
+	            }
+	            this.renderWith(this.bodyGraphics, this.option.fillColor, this.option.thickness, 0, 0);
 	        };
-	        Simple.prototype.renderWith = function (color, thickness) {
+	        Simple.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
+	            graphics.clear();
 	            var bbone = this.bone.at(0);
 	            var ebone = this.bone.at(this.length - 1);
-	            this.graphics.beginFill(color);
-	            this.graphics.drawCircle(bbone.x, bbone.y, thickness / 2);
-	            this.graphics.endFill();
-	            this.graphics.lineStyle(thickness, color);
-	            this.graphics.moveTo(bbone.x, bbone.y);
+	            graphics.beginFill(color);
+	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	            graphics.lineStyle(thickness, color);
+	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
 	            for (var i = 1; i < this.length - 1; i++) {
 	                var nbone = this.bone.at(i);
-	                this.graphics.lineTo(nbone.x, nbone.y);
+	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
 	            }
-	            this.graphics.lineTo(ebone.x, ebone.y);
-	            this.graphics.lineStyle();
-	            this.graphics.beginFill(color);
-	            this.graphics.drawCircle(ebone.x, ebone.y, thickness / 2);
-	            this.graphics.endFill();
+	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);
+	            graphics.lineStyle();
+	            graphics.beginFill(color);
+	            graphics.drawCircle(ebone.x + offsetX, ebone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	        };
+	        Simple.prototype.setVisible = function (visible) {
+	            this.visible = visible;
+	            this.bodyGraphics.visible = this.shadowGraphics.visible = visible;
+	        };
+	        Simple.prototype.getVisible = function () {
+	            return this.visible;
 	        };
 	        return Simple;
 	    }(WORMS.Base));
