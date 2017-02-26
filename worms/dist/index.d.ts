@@ -33,6 +33,7 @@ declare namespace WORMS {
         shadow?: boolean;
         shadowColor?: number;
         shadowPosition?: UTILS.Pos;
+        shadowThickness?: number;
     }
     class Simple extends Base {
         bodyGraphics: PIXI.Graphics;

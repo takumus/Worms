@@ -195,13 +195,14 @@
 	            option.shadow = UTILS.def(option.shadow, false);
 	            option.shadowColor = UTILS.def(option.shadowColor, 0xCCCCCC);
 	            option.shadowPosition = UTILS.def(option.shadowPosition, new UTILS.Pos());
+	            option.shadowThickness = UTILS.def(option.shadowThickness, option.thickness);
 	        };
 	        Simple.prototype.getOption = function () {
 	            return this.option;
 	        };
 	        Simple.prototype.render = function () {
 	            if (this.option.shadow) {
-	                this.renderWith(this.shadowGraphics, this.option.shadowColor, this.option.thickness, this.option.shadowPosition.x, this.option.shadowPosition.y);
+	                this.renderWith(this.shadowGraphics, this.option.shadowColor, this.option.shadowThickness, this.option.shadowPosition.x, this.option.shadowPosition.y);
 	            }
 	            this.renderWith(this.bodyGraphics, this.option.fillColor, this.option.thickness, 0, 0);
 	        };

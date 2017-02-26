@@ -5,7 +5,8 @@ namespace WORMS {
         thickness: number,
         shadow?: boolean,
         shadowColor?: number,
-        shadowPosition?: UTILS.Pos
+        shadowPosition?: UTILS.Pos,
+        shadowThickness?: number
     }
     export class Simple extends Base {
         public bodyGraphics: PIXI.Graphics;
@@ -25,6 +26,7 @@ namespace WORMS {
             option.shadow = UTILS.def<boolean>(option.shadow, false);
             option.shadowColor = UTILS.def<number>(option.shadowColor, 0xCCCCCC);
             option.shadowPosition = UTILS.def<UTILS.Pos>(option.shadowPosition, new UTILS.Pos());
+            option.shadowThickness = UTILS.def<number>(option.shadowThickness, option.thickness);
         }
         public getOption(): SimpleOption {
             return this.option;
@@ -34,7 +36,7 @@ namespace WORMS {
                 this.renderWith(
                     this.shadowGraphics,
                     this.option.shadowColor,
-                    this.option.thickness,
+                    this.option.shadowThickness,
                     this.option.shadowPosition.x,
                     this.option.shadowPosition.y
                 );
