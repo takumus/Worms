@@ -69,3 +69,23 @@ declare namespace WORMS {
         render(): void;
     }
 }
+declare namespace WORMS {
+    interface SimpleLightOption {
+        fillColor?: number;
+        thickness: number;
+    }
+    class SimpleLight extends Base {
+        static graphics: PIXI.Graphics;
+        private static worms;
+        private option;
+        private static _id;
+        id: number;
+        constructor(length: number, option: SimpleLightOption);
+        static render(): void;
+        setOption(option: SimpleLightOption): void;
+        getOption(): SimpleLightOption;
+        render(): void;
+        dispose(): void;
+        private renderWith(graphics, color, thickness, offsetX, offsetY);
+    }
+}

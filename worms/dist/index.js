@@ -328,6 +328,66 @@
 	        return BodyPos;
 	    }());
 	})(WORMS || (WORMS = {}));
+	///<reference path='@base.ts' />
+	var WORMS;
+	(function (WORMS) {
+	    var SimpleLight = (function (_super) {
+	        __extends(SimpleLight, _super);
+	        function SimpleLight(length, option) {
+	            var _this = _super.call(this, length) || this;
+	            _this.setOption(option);
+	            _this.id = SimpleLight._id;
+	            SimpleLight.worms[_this.id] = _this;
+	            SimpleLight._id++;
+	            return _this;
+	        }
+	        SimpleLight.render = function () {
+	            //console.log('render');
+	            for (var id in this.worms) {
+	                var worm = this.worms[id];
+	                worm.render();
+	                //console.log(worm.id);
+	            }
+	        };
+	        SimpleLight.prototype.setOption = function (option) {
+	            this.option = option;
+	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
+	        };
+	        SimpleLight.prototype.getOption = function () {
+	            return this.option;
+	        };
+	        SimpleLight.prototype.render = function () {
+	            this.renderWith(SimpleLight.graphics, this.option.fillColor, this.option.thickness, 0, 0);
+	        };
+	        SimpleLight.prototype.dispose = function () {
+	            this.option = null;
+	            SimpleLight.worms[this.id] = null;
+	            delete SimpleLight.worms[this.id];
+	        };
+	        SimpleLight.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
+	            var bbone = this.bone.at(0);
+	            var ebone = this.bone.at(this.length - 1);
+	            graphics.beginFill(color);
+	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	            graphics.lineStyle(thickness, color);
+	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
+	            for (var i = 1; i < this.length - 1; i++) {
+	                var nbone = this.bone.at(i);
+	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
+	            }
+	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);
+	            graphics.lineStyle();
+	            graphics.beginFill(color);
+	            graphics.drawCircle(ebone.x + offsetX, ebone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	        };
+	        return SimpleLight;
+	    }(WORMS.Base));
+	    SimpleLight.worms = {};
+	    SimpleLight._id = 0;
+	    WORMS.SimpleLight = SimpleLight;
+	})(WORMS || (WORMS = {}));
 
 
 /***/ }
