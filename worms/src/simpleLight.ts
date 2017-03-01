@@ -19,6 +19,7 @@ namespace WORMS {
         }
         public static render(): void {
             //console.log('render');
+            this.graphics.clear();
             for (const id in this.worms) {
                 const worm = this.worms[id];
                 worm.render();

@@ -343,6 +343,7 @@
 	        }
 	        SimpleLight.render = function () {
 	            //console.log('render');
+	            this.graphics.clear();
 	            for (var id in this.worms) {
 	                var worm = this.worms[id];
 	                worm.render();
