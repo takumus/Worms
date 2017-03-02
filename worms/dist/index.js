@@ -342,13 +342,15 @@
 	            return _this;
 	        }
 	        SimpleLight.render = function () {
-	            //console.log('render');
 	            this.graphics.clear();
 	            for (var id in this.worms) {
 	                var worm = this.worms[id];
 	                worm.render();
-	                //console.log(worm.id);
 	            }
+	        };
+	        SimpleLight.getWorms = function () {
+	            var _this = this;
+	            return Object.keys(this.worms).map(function (key) { return _this.worms[key]; });
 	        };
 	        SimpleLight.prototype.setOption = function (option) {
 	            this.option = option;

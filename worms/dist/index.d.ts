@@ -82,6 +82,7 @@ declare namespace WORMS {
         id: number;
         constructor(length: number, option: SimpleLightOption);
         static render(): void;
+        static getWorms(): SimpleLight[];
         setOption(option: SimpleLightOption): void;
         getOption(): SimpleLightOption;
         render(): void;

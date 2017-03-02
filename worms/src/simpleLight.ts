@@ -18,13 +18,14 @@ namespace WORMS {
             SimpleLight._id ++;
         }
         public static render(): void {
-            //console.log('render');
             this.graphics.clear();
             for (const id in this.worms) {
                 const worm = this.worms[id];
                 worm.render();
-                //console.log(worm.id);
             }
+        }
+        public static getWorms(): SimpleLight[] {
+            return Object.keys(this.worms).map((key) => this.worms[key]);
         }
         public setOption(option: SimpleLightOption): void {
             this.option = option;
