@@ -15,7 +15,14 @@ namespace WORMS {
             this.allocLength(length);
         }
         public updateLength(): void {
+            const pl = this.route.getLength() - this.prevLength;
             this.setLength(this.length);
+            const nl = this.route.getLength() - this.prevLength;
+            if (pl > 0 && nl > 0) {
+                const pdf = pl - pl * this.step;
+                const p = (nl - pdf) / nl;
+                this.setStep(p);
+            }
         }
         protected allocLength(length: number) {
             length = Math.floor(length);

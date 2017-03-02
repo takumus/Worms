@@ -67,7 +67,14 @@
 	            this.allocLength(length);
 	        };
 	        Base.prototype.updateLength = function () {
+	            var pl = this.route.getLength() - this.prevLength;
 	            this.setLength(this.length);
+	            var nl = this.route.getLength() - this.prevLength;
+	            if (pl > 0 && nl > 0) {
+	                var pdf = pl - pl * this.step;
+	                var p = (nl - pdf) / nl;
+	                this.setStep(p);
+	            }
 	        };
 	        Base.prototype.allocLength = function (length) {
 	            length = Math.floor(length);
