@@ -6,6 +6,7 @@ declare namespace Matthew {
     function abs(v: number): number;
 }
 declare namespace UTILS {
+    function shuffle<T>(array: T[]): T[];
     class Pos {
         x: number;
         y: number;
@@ -40,9 +41,9 @@ declare namespace UTILS {
         private old;
         constructor(color?: number);
         clone(): Color;
-        setColor(color: number): void;
-        setHSV(h?: number, s?: number, v?: number): void;
-        setRGB(r?: number, g?: number, b?: number): void;
+        setColor(color: number): Color;
+        setHSV(h?: number, s?: number, v?: number): Color;
+        setRGB(r?: number, g?: number, b?: number): Color;
         private rgbToDecimal();
         getColor: () => number;
         getR: () => number;

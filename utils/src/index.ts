@@ -13,6 +13,16 @@ namespace Matthew {
     }
 }
 namespace UTILS {
+    export function shuffle<T>(array: T[]): T[] {
+        let n = array.length, t, i;
+        while (n) {
+            i = Math.floor(Math.random() * n--);
+            t = array[n];
+            array[n] = array[i];
+            array[i] = t;
+        }
+        return array;
+    }
     export class Pos {
         public x: number = 0;
         public y: number = 0;
@@ -82,17 +92,18 @@ namespace UTILS {
         public clone(): Color {
             return new Color(this.color);
         }
-        public setColor(color: number): void {
+        public setColor(color: number): Color {
             const r = color >> 16 & 0xff;
             const g = color >> 8 & 0xff;
             const b = color & 0xff;
             this.color = color;
             this.setRGB(r, g, b);
+            return this;
         }
         /*
             setHSV and setRGB -> https://gist.github.com/mjackson/5311256
         */
-        public setHSV(h: number = -1, s: number = -1, v: number = -1) {
+        public setHSV(h: number = -1, s: number = -1, v: number = -1) : Color {
             h = h < 0 ? this.h : h;
             s = s < 0 ? this.s : s;
             v = v < 0 ? this.v : v;
@@ -117,8 +128,9 @@ namespace UTILS {
             this.s = s;
             this.v = v;
             this.rgbToDecimal();
+            return this;
         }
-        public setRGB(r: number = -1, g: number = -1, b: number = -1) {
+        public setRGB(r: number = -1, g: number = -1, b: number = -1): Color {
             r = r < 0 ? this.r : r;
             g = g < 0 ? this.g : g;
             b = b < 0 ? this.b : b;
@@ -145,8 +157,9 @@ namespace UTILS {
             this.s = s;
             this.v = v;
             this.rgbToDecimal();
+            return this;
         }
-        private rgbToDecimal(): void {
+        private rgbToDecimal(){
             this.color = (this.r << 16) + (this.g << 8) + (this.b);
         }
         public getColor = () => this.color;

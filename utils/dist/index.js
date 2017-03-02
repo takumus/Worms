@@ -63,6 +63,17 @@
 	})(Matthew || (Matthew = {}));
 	var UTILS;
 	(function (UTILS) {
+	    function shuffle(array) {
+	        var n = array.length, t, i;
+	        while (n) {
+	            i = Math.floor(Math.random() * n--);
+	            t = array[n];
+	            array[n] = array[i];
+	            array[i] = t;
+	        }
+	        return array;
+	    }
+	    UTILS.shuffle = shuffle;
 	    var Pos = (function () {
 	        function Pos(x, y) {
 	            if (x === void 0) { x = 0; }
@@ -146,6 +157,7 @@
 	            var b = color & 0xff;
 	            this.color = color;
 	            this.setRGB(r, g, b);
+	            return this;
 	        };
 	        /*
 	            setHSV and setRGB -> https://gist.github.com/mjackson/5311256
@@ -190,6 +202,7 @@
 	            this.s = s;
 	            this.v = v;
 	            this.rgbToDecimal();
+	            return this;
 	        };
 	        Color.prototype.setRGB = function (r, g, b) {
 	            if (r === void 0) { r = -1; }
@@ -228,6 +241,7 @@
 	            this.s = s;
 	            this.v = v;
 	            this.rgbToDecimal();
+	            return this;
 	        };
 	        Color.prototype.rgbToDecimal = function () {
 	            this.color = (this.r << 16) + (this.g << 8) + (this.b);
