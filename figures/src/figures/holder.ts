@@ -1,6 +1,6 @@
 namespace WF {
     export class Holder {
-        public worms: WF.FigureWorm[];
+        public worms: WORMS.Base[];
         public figure: Figure;
         public animating: boolean;
         constructor() {
@@ -21,7 +21,7 @@ namespace WF {
             this.clear();
             for (let i = 0; i < this.figure.getLength(); i ++) {
                 const l = this.figure.at(i);
-                const w = new WF.FigureWorm(l.getLength(), {thickness: 30});
+                const w = createWorm(l.getLength());
                 w.setRoute(l);
                 this.worms.push(w);
             }
@@ -41,7 +41,7 @@ namespace WF {
             }
             this.worms.forEach((worm) => this.setStep(worm, step));
         }
-        public setStep(worm: WF.FigureWorm, step: number): void {
+        public setStep(worm: WORMS.Base, step: number): void {
             worm.setStep(step);
         }
     }

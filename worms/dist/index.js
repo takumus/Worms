@@ -179,6 +179,10 @@
 	        Base.prototype.getCurrentLength = function () {
 	            return this.length;
 	        };
+	        Base.prototype.dispose = function () {
+	            this.bone = null;
+	            this.route = null;
+	        };
 	        return Base;
 	    }());
 	    WORMS.Base = Base;

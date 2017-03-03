@@ -122,5 +122,9 @@ namespace WORMS {
         public getCurrentLength(): number {
             return this.length;
         }
+        public dispose(): void {
+            this.bone = null;
+            this.route = null;
+        }
     }
 }

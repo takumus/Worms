@@ -19,6 +19,7 @@ declare namespace WF {
         dispose(): void;
         private renderWith(graphics, color, thickness, offsetX, offsetY);
     }
+    function createWorm(length: number): WORMS.Base;
 }
 declare namespace WF {
     class Figure {
@@ -38,7 +39,7 @@ declare namespace WF {
 }
 declare namespace WF {
     class Holder {
-        worms: WF.FigureWorm[];
+        worms: WORMS.Base[];
         figure: Figure;
         animating: boolean;
         constructor();
@@ -46,20 +47,32 @@ declare namespace WF {
         generate(): void;
         clear(): void;
         setStepToAll(step: number): void;
-        setStep(worm: WF.FigureWorm, step: number): void;
+        setStep(worm: WORMS.Base, step: number): void;
     }
 }
 declare namespace WF {
-    interface holderMasterOption {
+    interface WaveOption {
+        enabled: boolean;
+        amplitude: number;
+        frequency: number;
+    }
+    interface RadiusOption {
+        begin: number;
+        end: number;
+    }
+    interface TransformOption {
+        resolution: number;
+        radius: number | RadiusOption;
+        wave?: WaveOption;
     }
     class HolderMaster {
         holders: Holder[];
         private step;
         private animating;
         private autoTweening;
-        transformMe(me: Holder[]): boolean;
-        transform(from: Holder[], to: Holder[]): boolean;
-        private setRoute(worm, target);
+        transformMe(me: Holder[], option: TransformOption): boolean;
+        transform(from: Holder[], to: Holder[], option: TransformOption): boolean;
+        private setRoute(worm, target, option);
         endMovement(): void;
         autoTween(time: number, complete?: () => void): void;
         setStep(step: number): void;

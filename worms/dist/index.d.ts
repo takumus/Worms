@@ -24,6 +24,7 @@ declare namespace WORMS {
         getRoute(): ROUTES.Line;
         getLength(): number;
         getCurrentLength(): number;
+        dispose(): void;
     }
 }
 declare namespace WORMS {

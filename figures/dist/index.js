@@ -115,6 +115,10 @@
 	    FigureWorm.worms = {};
 	    FigureWorm._id = 0;
 	    WF.FigureWorm = FigureWorm;
+	    function createWorm(length) {
+	        return new FigureWorm(length, { thickness: 30 });
+	    }
+	    WF.createWorm = createWorm;
 	})(WF || (WF = {}));
 	var WF;
 	(function (WF) {
@@ -176,7 +180,7 @@
 	            this.clear();
 	            for (var i = 0; i < this.figure.getLength(); i++) {
 	                var l = this.figure.at(i);
-	                var w = new WF.FigureWorm(l.getLength(), { thickness: 30 });
+	                var w = WF.createWorm(l.getLength());
 	                w.setRoute(l);
 	                this.worms.push(w);
 	            }
@@ -209,11 +213,15 @@
 	    var HolderMaster = (function () {
 	        function HolderMaster() {
 	        }
-	        HolderMaster.prototype.transformMe = function (me) {
-	            return this.transform(me, me);
+	        HolderMaster.prototype.transformMe = function (me, option) {
+	            return this.transform(me, me, option);
 	        };
-	        HolderMaster.prototype.transform = function (from, to) {
+	        HolderMaster.prototype.transform = function (from, to, option) {
 	            var _this = this;
+	            option.wave = UTILS.def(option.wave, { enabled: false, amplitude: 0, frequency: 0 });
+	            if (typeof option.radius == 'number') {
+	                option.radius = { begin: option.radius, end: option.radius };
+	            }
 	            if (this.animating) {
 	                console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
 	                return false;
@@ -251,7 +259,7 @@
 	                var prevWormsLength = prevWorms.length;
 	                for (var i = prevWormsLength; i <= lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-	                    var w = new WF.FigureWorm(pw.getLength(), { thickness: 26 });
+	                    var w = WF.createWorm(pw.getLength());
 	                    w.setRoute(pw.getCurrentLine());
 	                    worms.push(w);
 	                }
@@ -264,7 +272,7 @@
 	                for (var i = 0; i < holder.figure.getLength(); i++) {
 	                    var line = holder.figure.at(i);
 	                    var worm = worms.pop();
-	                    _this.setRoute(worm, line);
+	                    _this.setRoute(worm, line, option);
 	                    holder.worms.push(worm);
 	                }
 	                holder.animating = true;
@@ -273,20 +281,21 @@
 	                var holder = to[Math.floor(Math.random() * to.length)];
 	                var figure = holder.figure;
 	                var target = figure.at(Math.floor(Math.random() * figure.getLength()));
-	                _this.setRoute(worm, target);
+	                _this.setRoute(worm, target, option);
 	                holder.worms.push(worm);
 	            });
 	            this.animating = true;
 	            return true;
 	        };
-	        HolderMaster.prototype.setRoute = function (worm, target) {
+	        HolderMaster.prototype.setRoute = function (worm, target, option) {
 	            target = target.clone();
 	            if (Math.random() < 0.5)
 	                worm.reverse();
 	            if (Math.random() < 0.5)
 	                target.reverse();
-	            var route = ROUTES.RouteGenerator.getMinimumRoute(worm.getHeadVecPos(), target.getHeadVecPos(), 80, 80, 5);
-	            route.wave(10, 0.08);
+	            var route = ROUTES.RouteGenerator.getMinimumRoute(worm.getHeadVecPos(), target.getHeadVecPos(), option.radius.begin, option.radius.end, option.resolution);
+	            if (option.wave.enabled)
+	                route.wave(option.wave.amplitude, option.wave.frequency);
 	            worm.setRoute(worm.getCurrentLine()
 	                .pushLine(route)
 	                .pushLine(target), target.getLength());

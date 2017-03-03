@@ -65,4 +65,7 @@ namespace WF {
             graphics.endFill();
         }
     }
+    export function createWorm(length: number): WORMS.Base {
+        return new FigureWorm(length, {thickness: 30});
+    }
 }
