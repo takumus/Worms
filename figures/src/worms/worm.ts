@@ -1,20 +1,20 @@
-namespace WORMS {
+namespace WF {
     export interface SimpleLightOption {
         fillColor?: number,
         thickness: number
     }
-    export class Figure extends Base {
+    export class FigureWorm extends WORMS.Base {
         public static graphics: PIXI.Graphics;
-        private static worms: {[key: number]: Figure} = {};
+        private static worms: {[key: number]: FigureWorm} = {};
         private option: SimpleLightOption;
         private static _id: number = 0;
         public id: number;
         constructor(length: number, option: SimpleLightOption) {
             super(length);
             this.setOption(option);
-            this.id = Figure._id;
-            Figure.worms[this.id] = this;
-            Figure._id ++;
+            this.id = FigureWorm._id;
+            FigureWorm.worms[this.id] = this;
+            FigureWorm._id ++;
         }
         public static render(): void {
             this.graphics.clear();
@@ -23,7 +23,7 @@ namespace WORMS {
                 worm.render();
             }
         }
-        public static getWorms(): Figure[] {
+        public static getWorms(): FigureWorm[] {
             return Object.keys(this.worms).map((key) => this.worms[key]);
         }
         public setOption(option: SimpleLightOption): void {
@@ -35,7 +35,7 @@ namespace WORMS {
         }
         public render() {
             this.renderWith(
-                Figure.graphics,
+                FigureWorm.graphics,
                 this.option.fillColor,
                 this.option.thickness,
                 0, 0
@@ -43,8 +43,8 @@ namespace WORMS {
         }
         public dispose(): void {
             this.option = null;
-            Figure.worms[this.id] = null;
-            delete Figure.worms[this.id];
+            FigureWorm.worms[this.id] = null;
+            delete FigureWorm.worms[this.id];
         }
         private renderWith(graphics: PIXI.Graphics, color: number, thickness: number, offsetX: number, offsetY: number): void {
             const bbone = this.bone.at(0);

@@ -183,6 +183,7 @@
 	    }());
 	    WORMS.Base = Base;
 	})(WORMS || (WORMS = {}));
+	///<reference path="@base.ts" />
 	window['WORMS'] = WORMS;
 	var WORMS;
 	(function (WORMS) {
