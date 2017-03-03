@@ -44,36 +44,8 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	var Matthew;
-	(function (Matthew) {
-	    Matthew.PI = Math.PI;
-	    Matthew.H_PI = Math.PI / 2;
-	    Matthew.D_PI = Math.PI * 2;
-	    function normalize(r) {
-	        r = r % Matthew.D_PI;
-	        if (r < 0)
-	            return Matthew.D_PI + r;
-	        return r;
-	    }
-	    Matthew.normalize = normalize;
-	    function abs(v) {
-	        return v < 0 ? -v : v;
-	    }
-	    Matthew.abs = abs;
-	})(Matthew || (Matthew = {}));
 	var UTILS;
 	(function (UTILS) {
-	    function shuffle(array) {
-	        var n = array.length, t, i;
-	        while (n) {
-	            i = Math.floor(Math.random() * n--);
-	            t = array[n];
-	            array[n] = array[i];
-	            array[i] = t;
-	        }
-	        return array;
-	    }
-	    UTILS.shuffle = shuffle;
 	    var Pos = (function () {
 	        function Pos(x, y) {
 	            if (x === void 0) { x = 0; }
@@ -129,12 +101,9 @@
 	        return Circle;
 	    }());
 	    UTILS.Circle = Circle;
-	    function def(value, defValue) {
-	        if (typeof value === 'undefined')
-	            return defValue;
-	        return value;
-	    }
-	    UTILS.def = def;
+	})(UTILS || (UTILS = {}));
+	var UTILS;
+	(function (UTILS) {
 	    var Color = (function () {
 	        function Color(color) {
 	            if (color === void 0) { color = 0; }
@@ -264,6 +233,47 @@
 	    }());
 	    UTILS.Color = Color;
 	})(UTILS || (UTILS = {}));
+	var Matthew;
+	(function (Matthew) {
+	    Matthew.PI = Math.PI;
+	    Matthew.H_PI = Math.PI / 2;
+	    Matthew.D_PI = Math.PI * 2;
+	    function normalize(r) {
+	        r = r % Matthew.D_PI;
+	        if (r < 0)
+	            return Matthew.D_PI + r;
+	        return r;
+	    }
+	    Matthew.normalize = normalize;
+	    function abs(v) {
+	        return v < 0 ? -v : v;
+	    }
+	    Matthew.abs = abs;
+	})(Matthew || (Matthew = {}));
+	var UTILS;
+	(function (UTILS) {
+	    function shuffle(array) {
+	        var n = array.length, t, i;
+	        while (n) {
+	            i = Math.floor(Math.random() * n--);
+	            t = array[n];
+	            array[n] = array[i];
+	            array[i] = t;
+	        }
+	        return array;
+	    }
+	    UTILS.shuffle = shuffle;
+	    function def(value, defValue) {
+	        if (typeof value === 'undefined')
+	            return defValue;
+	        return value;
+	    }
+	    UTILS.def = def;
+	})(UTILS || (UTILS = {}));
+	/// <reference path="./matthew.ts" />
+	/// <reference path="./2d.ts" />
+	/// <reference path="./color.ts" />
+	/// <reference path="./others.ts" />
 	window['UTILS'] = UTILS;
 	window['Matthew'] = Matthew;
 

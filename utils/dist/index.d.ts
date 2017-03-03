@@ -1,12 +1,4 @@
-declare namespace Matthew {
-    const PI: number;
-    const H_PI: number;
-    const D_PI: number;
-    function normalize(r: number): number;
-    function abs(v: number): number;
-}
 declare namespace UTILS {
-    function shuffle<T>(array: T[]): T[];
     class Pos {
         x: number;
         y: number;
@@ -29,7 +21,8 @@ declare namespace UTILS {
         tr: number;
         constructor(x: number, y: number, r: number, d: number, tr: number);
     }
-    function def<T>(value: T, defValue: T): T;
+}
+declare namespace UTILS {
     class Color {
         private color;
         private h;
@@ -55,4 +48,15 @@ declare namespace UTILS {
         static transformRGB(color: Color, to: Color, p: number): void;
         static transformHSV(color: Color, to: Color, p: number): void;
     }
+}
+declare namespace Matthew {
+    const PI: number;
+    const H_PI: number;
+    const D_PI: number;
+    function normalize(r: number): number;
+    function abs(v: number): number;
+}
+declare namespace UTILS {
+    function shuffle<T>(array: T[]): T[];
+    function def<T>(value: T, defValue: T): T;
 }
