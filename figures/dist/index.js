@@ -163,7 +163,7 @@
 	        };
 	        Object.defineProperty(Figure.prototype, "length", {
 	            get: function () {
-	                return this.length;
+	                return this._length;
 	            },
 	            enumerable: true,
 	            configurable: true

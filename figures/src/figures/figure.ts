@@ -16,7 +16,7 @@ namespace WF {
             this._length = this.lines.length;
         }
         public get length(): number {
-            return this.length;
+            return this._length;
         }
         public at(id: number): ROUTES.Line {
             return this.lines[id];
