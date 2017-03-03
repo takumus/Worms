@@ -1,45 +1,52 @@
 namespace WF {
     export class Holder {
-        public worms: HoldableWorm[];
-        public figure: Figure;
-        public animating: boolean;
+        private _worms: HoldableWorm[];
+        private _figure: Figure;
+        private _animating: boolean;
+        public get worms(): HoldableWorm[] {return this._worms; }
+        public get figure(): Figure {return this._figure; }
+        public get animating(): boolean {return this._animating; }
+        public set animating(val: boolean) {this._animating = val; }
         constructor() {
-            this.worms = [];
+            this._worms = [];
         }
         public setFigure(figure: Figure): void {
-            if (this.animating) {
+            if (this._animating) {
                 console.error('Cannnot call "Holder.prototype.setFigure" while animating');
                 return;
             }
-            this.figure = figure;
+            this._figure = figure;
         }
         public generate(): void {
-            if (this.animating) {
+            if (this._animating) {
                 console.error('Cannnot call "Holder.prototype.generate" while animating');
                 return;
             }
-            this.clear();
-            for (let i = 0; i < this.figure.getLength(); i ++) {
-                const l = this.figure.at(i);
+            this.dispose();
+            for (let i = 0; i < this._figure.length; i ++) {
+                const l = this._figure.at(i);
                 const w = createWorm(l.getLength(), this);
                 w.setRoute(l);
-                this.worms.push(w);
+                this._worms.push(w);
             }
         }
-        public clear(): void {
-            if (this.animating) {
+        public dispose(): void {
+            if (this._animating) {
                 console.error('Cannnot call "Holder.prototype.clear" while animating');
                 return;
             }
-            this.worms.forEach((worm) => worm.dispose());
-            this.worms = [];
+            this._worms.forEach((worm) => worm.dispose());
+            this.clear();
+        }
+        public clear(): void {
+            this._worms = [];
         }
         public setStepToAll(step: number): void {
-            if (!this.animating) {
+            if (!this._animating) {
                 console.error('Cannnot call "Holder.prototype.setStep" after completed animation');
                 return;
             }
-            this.worms.forEach((worm) => this.setStep(worm, step));
+            this._worms.forEach((worm) => this.setStep(worm, step));
         }
         public setStep(worm: HoldableWorm, step: number): void {
             worm.setStep(step);

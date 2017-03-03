@@ -81,8 +81,8 @@
 	        function FigureWorm(length, option) {
 	            var _this = _super.call(this, length) || this;
 	            _this.setOption(option);
-	            _this.id = FigureWorm._id;
-	            FigureWorm.worms[_this.id] = _this;
+	            _this._id = FigureWorm._id;
+	            FigureWorm.worms[_this._id] = _this;
 	            FigureWorm._id++;
 	            return _this;
 	        }
@@ -109,8 +109,8 @@
 	        };
 	        FigureWorm.prototype.dispose = function () {
 	            this.option = null;
-	            FigureWorm.worms[this.id] = null;
-	            delete FigureWorm.worms[this.id];
+	            FigureWorm.worms[this._id] = null;
+	            delete FigureWorm.worms[this._id];
 	        };
 	        FigureWorm.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
 	            var bbone = this.bone.at(0);
@@ -153,17 +153,21 @@
 	            var _this = this;
 	            this.lines = [];
 	            data.forEach(function (lo) { return _this.lines.push(new ROUTES.Line(lo)); });
-	            this.length = this.lines.length;
+	            this._length = this.lines.length;
 	        };
 	        Figure.prototype.initWithLines = function (data) {
 	            var _this = this;
 	            this.lines = [];
 	            data.forEach(function (line) { return _this.lines.push(line.clone()); });
-	            this.length = this.lines.length;
+	            this._length = this.lines.length;
 	        };
-	        Figure.prototype.getLength = function () {
-	            return this.length;
-	        };
+	        Object.defineProperty(Figure.prototype, "length", {
+	            get: function () {
+	                return this.length;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Figure.prototype.at = function (id) {
 	            return this.lines[id];
 	        };
@@ -173,7 +177,7 @@
 	            return figure;
 	        };
 	        Figure.prototype.setPositionOffset = function (pos) {
-	            for (var i = 0; i < this.getLength(); i++) {
+	            for (var i = 0; i < this._length; i++) {
 	                this.at(i).setPositionOffset(pos);
 	            }
 	            return this;
@@ -186,43 +190,62 @@
 	(function (WF) {
 	    var Holder = (function () {
 	        function Holder() {
-	            this.worms = [];
+	            this._worms = [];
 	        }
+	        Object.defineProperty(Holder.prototype, "worms", {
+	            get: function () { return this._worms; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(Holder.prototype, "figure", {
+	            get: function () { return this._figure; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(Holder.prototype, "animating", {
+	            get: function () { return this._animating; },
+	            set: function (val) { this._animating = val; },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Holder.prototype.setFigure = function (figure) {
-	            if (this.animating) {
+	            if (this._animating) {
 	                console.error('Cannnot call "Holder.prototype.setFigure" while animating');
 	                return;
 	            }
-	            this.figure = figure;
+	            this._figure = figure;
 	        };
 	        Holder.prototype.generate = function () {
-	            if (this.animating) {
+	            if (this._animating) {
 	                console.error('Cannnot call "Holder.prototype.generate" while animating');
 	                return;
 	            }
-	            this.clear();
-	            for (var i = 0; i < this.figure.getLength(); i++) {
-	                var l = this.figure.at(i);
+	            this.dispose();
+	            for (var i = 0; i < this._figure.length; i++) {
+	                var l = this._figure.at(i);
 	                var w = WF.createWorm(l.getLength(), this);
 	                w.setRoute(l);
-	                this.worms.push(w);
+	                this._worms.push(w);
 	            }
 	        };
-	        Holder.prototype.clear = function () {
-	            if (this.animating) {
+	        Holder.prototype.dispose = function () {
+	            if (this._animating) {
 	                console.error('Cannnot call "Holder.prototype.clear" while animating');
 	                return;
 	            }
-	            this.worms.forEach(function (worm) { return worm.dispose(); });
-	            this.worms = [];
+	            this._worms.forEach(function (worm) { return worm.dispose(); });
+	            this.clear();
+	        };
+	        Holder.prototype.clear = function () {
+	            this._worms = [];
 	        };
 	        Holder.prototype.setStepToAll = function (step) {
 	            var _this = this;
-	            if (!this.animating) {
+	            if (!this._animating) {
 	                console.error('Cannnot call "Holder.prototype.setStep" after completed animation');
 	                return;
 	            }
-	            this.worms.forEach(function (worm) { return _this.setStep(worm, step); });
+	            this._worms.forEach(function (worm) { return _this.setStep(worm, step); });
 	        };
 	        Holder.prototype.setStep = function (worm, step) {
 	            worm.setStep(step);
@@ -236,6 +259,12 @@
 	    var HolderMaster = (function () {
 	        function HolderMaster() {
 	        }
+	        Object.defineProperty(HolderMaster.prototype, "holders", {
+	            get: function () { return this._holders; },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        ;
 	        HolderMaster.prototype.transformMe = function (me, option) {
 	            return this.transform(me, me, option);
 	        };
@@ -258,14 +287,14 @@
 	                console.error('Cannnot call "HolderMaster.prototype.transform" while Holder[] is animating');
 	                return false;
 	            }
-	            this.holders = to;
+	            this._holders = to;
 	            this.step = 0;
 	            var worms = [];
 	            from.forEach(function (holder) {
 	                holder.worms.forEach(function (worm) {
 	                    worms.push(worm);
 	                });
-	                holder.worms = [];
+	                holder.clear();
 	            });
 	            // create init worms
 	            if (worms.length == 0) {
@@ -275,7 +304,7 @@
 	                return true;
 	            }
 	            var lineCount = 0;
-	            to.forEach(function (holder) { return lineCount += holder.figure.getLength(); });
+	            to.forEach(function (holder) { return lineCount += holder.figure.length; });
 	            // create if need more worms
 	            if (worms.length < lineCount) {
 	                var prevWorms = worms.concat();
@@ -292,7 +321,7 @@
 	            UTILS.shuffle(to);
 	            // generate route to figures
 	            to.forEach(function (holder) {
-	                for (var i = 0; i < holder.figure.getLength(); i++) {
+	                for (var i = 0; i < holder.figure.length; i++) {
 	                    var line = holder.figure.at(i);
 	                    var worm = worms.pop();
 	                    worm.setHolder(holder);
@@ -304,7 +333,7 @@
 	            worms.forEach(function (worm) {
 	                var holder = to[Math.floor(Math.random() * to.length)];
 	                var figure = holder.figure;
-	                var target = figure.at(Math.floor(Math.random() * figure.getLength()));
+	                var target = figure.at(Math.floor(Math.random() * figure.length));
 	                worm.setHolder(holder);
 	                _this.setRoute(worm, target, option);
 	                holder.worms.push(worm);
@@ -331,10 +360,10 @@
 	                console.error('Cannnot call "HolderMaster.prototype.endMovement" after completed animation');
 	                return;
 	            }
-	            this.holders.forEach(function (holder) {
+	            this._holders.forEach(function (holder) {
 	                if (_this.step == 1) {
 	                    // completely complete
-	                    var removedWorms = holder.worms.splice(holder.figure.getLength());
+	                    var removedWorms = holder.worms.splice(holder.figure.length);
 	                    // holder.setStepToAll(1);
 	                    holder.worms.forEach(function (worm) { return worm.updateLength(); });
 	                    removedWorms.forEach(function (worm) { return worm.dispose(); });
@@ -383,7 +412,7 @@
 	                return;
 	            }
 	            this.step = step;
-	            this.holders.forEach(function (holder) {
+	            this._holders.forEach(function (holder) {
 	                if (!holder.animating) {
 	                    console.error('already ended');
 	                    return;

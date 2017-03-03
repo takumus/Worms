@@ -26,12 +26,12 @@ namespace WF {
         private static worms: {[key: number]: FigureWorm} = {};
         private option: SimpleLightOption;
         private static _id: number = 0;
-        public id: number;
+        private _id: number;
         constructor(length: number, option: SimpleLightOption) {
             super(length);
             this.setOption(option);
-            this.id = FigureWorm._id;
-            FigureWorm.worms[this.id] = this;
+            this._id = FigureWorm._id;
+            FigureWorm.worms[this._id] = this;
             FigureWorm._id ++;
         }
         public static render(): void {
@@ -61,8 +61,8 @@ namespace WF {
         }
         public dispose(): void {
             this.option = null;
-            FigureWorm.worms[this.id] = null;
-            delete FigureWorm.worms[this.id];
+            FigureWorm.worms[this._id] = null;
+            delete FigureWorm.worms[this._id];
         }
         private renderWith(graphics: PIXI.Graphics, color: number, thickness: number, offsetX: number, offsetY: number): void {
             const bbone = this.bone.at(0);

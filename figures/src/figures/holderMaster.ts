@@ -14,10 +14,11 @@ namespace WF {
         wave?: WaveOption
     }
     export class HolderMaster {
-        public holders: Holder[];
+        private _holders: Holder[];
         private step: number;
         private animating: boolean;
         private autoTweening: boolean;
+        public get holders(): Holder[] {return this._holders};
         public transformMe(me: Holder[], option: TransformOption): boolean {
             return this.transform(me, me, option);
         }
@@ -37,14 +38,14 @@ namespace WF {
                 console.error('Cannnot call "HolderMaster.prototype.transform" while Holder[] is animating');
                 return false;
             }
-            this.holders = to;
+            this._holders = to;
             this.step = 0;
             const worms: HoldableWorm[] = [];
             from.forEach((holder) => {
                 holder.worms.forEach((worm) => {
                     worms.push(worm);
                 });
-                holder.worms = [];
+                holder.clear();
             });
             // create init worms
             if (worms.length == 0) {
@@ -54,7 +55,7 @@ namespace WF {
                 return true;
             }
             let lineCount = 0;
-            to.forEach((holder) => lineCount += holder.figure.getLength());
+            to.forEach((holder) => lineCount += holder.figure.length);
             // create if need more worms
             if (worms.length < lineCount) {
                 const prevWorms = worms.concat();
@@ -71,7 +72,7 @@ namespace WF {
             UTILS.shuffle<Holder>(to);
             // generate route to figures
             to.forEach((holder) => {
-                for (let i = 0; i < holder.figure.getLength(); i ++) {
+                for (let i = 0; i < holder.figure.length; i ++) {
                     const line = holder.figure.at(i);
                     const worm = worms.pop();
                     worm.setHolder(holder);
@@ -83,7 +84,7 @@ namespace WF {
             worms.forEach((worm) => {
                 const holder = to[Math.floor(Math.random() * to.length)];
                 const figure = holder.figure;
-                const target = figure.at(Math.floor(Math.random() * figure.getLength()));
+                const target = figure.at(Math.floor(Math.random() * figure.length));
                 worm.setHolder(holder);
                 this.setRoute(worm, target, option);
                 holder.worms.push(worm);
@@ -115,10 +116,10 @@ namespace WF {
                 console.error('Cannnot call "HolderMaster.prototype.endMovement" after completed animation');
                 return;
             }
-            this.holders.forEach((holder) => {
+            this._holders.forEach((holder) => {
                 if (this.step == 1) {
                     // completely complete
-                    const removedWorms = holder.worms.splice(holder.figure.getLength());
+                    const removedWorms = holder.worms.splice(holder.figure.length);
                     // holder.setStepToAll(1);
                     holder.worms.forEach((worm) => worm.updateLength());
                     removedWorms.forEach((worm) => worm.dispose());
@@ -164,7 +165,7 @@ namespace WF {
                 return;
             }
             this.step = step;
-            this.holders.forEach((holder) => {
+            this._holders.forEach((holder) => {
                 if (!holder.animating) {
                     console.error('already ended');
                     return;
