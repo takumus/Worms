@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "outFile": "./dist/index.js",
+    "sourceMap": true,
+    "declaration" : true,
+    "module" : "amd"
+  },
+  "include":[
+    "./src/**/*"
+  ],
+  "files": [
+    "../utils/dist/index.d.ts",
+    "../routes/dist/index.d.ts",
+    "../worms/dist/index.d.ts"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "figures",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-webpack": "^1.5.0",
+    "ts-loader": "^1.0.0",
+    "typescript": "^2.2.1"
+  },
+  "dependencies": {
+    "@types/pixi.js": "^4.3.1",
+    "@types/tween.js": "0.0.31",
+    "tslint": "^4.4.2"
+  }
+}
