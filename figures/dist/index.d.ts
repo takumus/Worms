@@ -87,7 +87,7 @@ declare namespace WF {
         transform(from: Holder[], to: Holder[], option: TransformOption): boolean;
         private setRoute(worm, target, option);
         endMovement(): void;
-        autoTween(time: number, complete?: () => void): void;
+        autoTween(time: number, delay: number, complete?: () => void): void;
         setStep(step: number): void;
     }
 }

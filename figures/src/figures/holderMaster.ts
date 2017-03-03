@@ -135,7 +135,7 @@ namespace WF {
             this.animating = false;
             console.log('all worms:' + WF.FigureWorm.getWorms().length);
         }
-        public autoTween(time: number, complete?: () => void): void {
+        public autoTween(time: number, delay: number, complete?: () => void): void {
             if (!this.animating) {
                 console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
                 return;
@@ -157,6 +157,7 @@ namespace WF {
                 this.endMovement();
                 if (complete) complete();
             })
+            .delay(delay)
             .start();
         }
         public setStep(step: number): void {

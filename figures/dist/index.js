@@ -380,7 +380,7 @@
 	            this.animating = false;
 	            console.log('all worms:' + WF.FigureWorm.getWorms().length);
 	        };
-	        HolderMaster.prototype.autoTween = function (time, complete) {
+	        HolderMaster.prototype.autoTween = function (time, delay, complete) {
 	            var _this = this;
 	            if (!this.animating) {
 	                console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
@@ -404,6 +404,7 @@
 	                if (complete)
 	                    complete();
 	            })
+	                .delay(delay)
 	                .start();
 	        };
 	        HolderMaster.prototype.setStep = function (step) {
