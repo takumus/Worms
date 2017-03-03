@@ -1,10 +1,18 @@
 /// <reference types="pixi.js" />
 declare namespace WF {
+    class HoldableWorm extends WORMS.Base {
+        holder: WF.Holder;
+        prevHolder: WF.Holder;
+        holderMaster: WF.HolderMaster;
+        constructor(length: number);
+        dispose(): void;
+        setHolder(holder: Holder, def?: boolean): void;
+    }
     interface SimpleLightOption {
         fillColor?: number;
         thickness: number;
     }
-    class FigureWorm extends WORMS.Base {
+    class FigureWorm extends HoldableWorm {
         static graphics: PIXI.Graphics;
         private static worms;
         private option;
@@ -19,7 +27,7 @@ declare namespace WF {
         dispose(): void;
         private renderWith(graphics, color, thickness, offsetX, offsetY);
     }
-    function createWorm(length: number): WORMS.Base;
+    function createWorm(length: number, holder: Holder): HoldableWorm;
 }
 declare namespace WF {
     class Figure {
@@ -39,7 +47,7 @@ declare namespace WF {
 }
 declare namespace WF {
     class Holder {
-        worms: WORMS.Base[];
+        worms: HoldableWorm[];
         figure: Figure;
         animating: boolean;
         constructor();
@@ -47,7 +55,7 @@ declare namespace WF {
         generate(): void;
         clear(): void;
         setStepToAll(step: number): void;
-        setStep(worm: WORMS.Base, step: number): void;
+        setStep(worm: HoldableWorm, step: number): void;
     }
 }
 declare namespace WF {

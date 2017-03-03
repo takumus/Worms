@@ -1,9 +1,27 @@
 namespace WF {
+    export class HoldableWorm extends WORMS.Base {
+        public holder: WF.Holder;
+        public prevHolder: WF.Holder;
+        public holderMaster: WF.HolderMaster;
+        constructor(length: number) {
+            super(length);
+        }
+        public dispose(): void {
+            this.holder = null;
+            this.prevHolder = null;
+            this.holderMaster = null;
+        }
+        public setHolder(holder: Holder, def: boolean = false): void {
+            if (def) this.holder = holder;
+            this.prevHolder = this.holder;
+            this.holder = holder;
+        }
+    }
     export interface SimpleLightOption {
         fillColor?: number,
         thickness: number
     }
-    export class FigureWorm extends WORMS.Base {
+    export class FigureWorm extends HoldableWorm {
         public static graphics: PIXI.Graphics;
         private static worms: {[key: number]: FigureWorm} = {};
         private option: SimpleLightOption;
@@ -65,7 +83,9 @@ namespace WF {
             graphics.endFill();
         }
     }
-    export function createWorm(length: number): WORMS.Base {
-        return new FigureWorm(length, {thickness: 30});
+    export function createWorm(length: number, holder: Holder): HoldableWorm {
+        const worm = new FigureWorm(length, {thickness: 30});
+        worm.setHolder(holder, true);
+        return worm;
     }
 }

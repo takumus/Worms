@@ -56,6 +56,26 @@
 	})();
 	var WF;
 	(function (WF) {
+	    var HoldableWorm = (function (_super) {
+	        __extends(HoldableWorm, _super);
+	        function HoldableWorm(length) {
+	            return _super.call(this, length) || this;
+	        }
+	        HoldableWorm.prototype.dispose = function () {
+	            this.holder = null;
+	            this.prevHolder = null;
+	            this.holderMaster = null;
+	        };
+	        HoldableWorm.prototype.setHolder = function (holder, def) {
+	            if (def === void 0) { def = false; }
+	            if (def)
+	                this.holder = holder;
+	            this.prevHolder = this.holder;
+	            this.holder = holder;
+	        };
+	        return HoldableWorm;
+	    }(WORMS.Base));
+	    WF.HoldableWorm = HoldableWorm;
 	    var FigureWorm = (function (_super) {
 	        __extends(FigureWorm, _super);
 	        function FigureWorm(length, option) {
@@ -111,12 +131,14 @@
 	            graphics.endFill();
 	        };
 	        return FigureWorm;
-	    }(WORMS.Base));
+	    }(HoldableWorm));
 	    FigureWorm.worms = {};
 	    FigureWorm._id = 0;
 	    WF.FigureWorm = FigureWorm;
-	    function createWorm(length) {
-	        return new FigureWorm(length, { thickness: 30 });
+	    function createWorm(length, holder) {
+	        var worm = new FigureWorm(length, { thickness: 30 });
+	        worm.setHolder(holder, true);
+	        return worm;
 	    }
 	    WF.createWorm = createWorm;
 	})(WF || (WF = {}));
@@ -180,7 +202,7 @@
 	            this.clear();
 	            for (var i = 0; i < this.figure.getLength(); i++) {
 	                var l = this.figure.at(i);
-	                var w = WF.createWorm(l.getLength());
+	                var w = WF.createWorm(l.getLength(), this);
 	                w.setRoute(l);
 	                this.worms.push(w);
 	            }
@@ -259,7 +281,7 @@
 	                var prevWormsLength = prevWorms.length;
 	                for (var i = prevWormsLength; i <= lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-	                    var w = WF.createWorm(pw.getLength());
+	                    var w = WF.createWorm(pw.getLength(), pw.holder);
 	                    w.setRoute(pw.getCurrentLine());
 	                    worms.push(w);
 	                }
@@ -272,6 +294,7 @@
 	                for (var i = 0; i < holder.figure.getLength(); i++) {
 	                    var line = holder.figure.at(i);
 	                    var worm = worms.pop();
+	                    worm.setHolder(holder);
 	                    _this.setRoute(worm, line, option);
 	                    holder.worms.push(worm);
 	                }
@@ -281,6 +304,7 @@
 	                var holder = to[Math.floor(Math.random() * to.length)];
 	                var figure = holder.figure;
 	                var target = figure.at(Math.floor(Math.random() * figure.getLength()));
+	                worm.setHolder(holder);
 	                _this.setRoute(worm, target, option);
 	                holder.worms.push(worm);
 	            });

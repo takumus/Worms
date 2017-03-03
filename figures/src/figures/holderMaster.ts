@@ -39,7 +39,7 @@ namespace WF {
             }
             this.holders = to;
             this.step = 0;
-            const worms: WORMS.Base[] = [];
+            const worms: HoldableWorm[] = [];
             from.forEach((holder) => {
                 holder.worms.forEach((worm) => {
                     worms.push(worm);
@@ -61,19 +61,20 @@ namespace WF {
                 const prevWormsLength = prevWorms.length;
                 for (let i = prevWormsLength; i <= lineCount; i ++) {
                     const pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-                    const w = createWorm(pw.getLength());
+                    const w = createWorm(pw.getLength(), pw.holder);
                     w.setRoute(pw.getCurrentLine());
                     worms.push(w);
                 }
             }
             // shuffle
-            UTILS.shuffle<WORMS.Base>(worms);
+            UTILS.shuffle<HoldableWorm>(worms);
             UTILS.shuffle<Holder>(to);
             // generate route to figures
             to.forEach((holder) => {
                 for (let i = 0; i < holder.figure.getLength(); i ++) {
                     const line = holder.figure.at(i);
                     const worm = worms.pop();
+                    worm.setHolder(holder);
                     this.setRoute(worm, line, option);
                     holder.worms.push(worm);
                 }
@@ -83,13 +84,14 @@ namespace WF {
                 const holder = to[Math.floor(Math.random() * to.length)];
                 const figure = holder.figure;
                 const target = figure.at(Math.floor(Math.random() * figure.getLength()));
+                worm.setHolder(holder);
                 this.setRoute(worm, target, option);
                 holder.worms.push(worm);
             });
             this.animating = true;
             return true;
         }
-        private setRoute(worm: WORMS.Base, target: ROUTES.Line, option: TransformOption): void {
+        private setRoute(worm: HoldableWorm, target: ROUTES.Line, option: TransformOption): void {
             target = target.clone();
             if (Math.random() < 0.5) worm.reverse();
             if (Math.random() < 0.5) target.reverse();
