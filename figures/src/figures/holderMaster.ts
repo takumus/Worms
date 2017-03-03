@@ -119,7 +119,7 @@ namespace WF {
                 if (this.step == 1) {
                     // completely complete
                     const removedWorms = holder.worms.splice(holder.figure.getLength());
-                    holder.setStepToAll(1);
+                    // holder.setStepToAll(1);
                     holder.worms.forEach((worm) => worm.updateLength());
                     removedWorms.forEach((worm) => worm.dispose());
                     // console.log('completely complete!!');

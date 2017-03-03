@@ -86,6 +86,7 @@ namespace WF {
     export function createWorm(length: number, holder: Holder): HoldableWorm {
         const worm = new FigureWorm(length, {thickness: 30});
         worm.setHolder(holder, true);
+        holder.setStep(worm, 0);
         return worm;
     }
 }

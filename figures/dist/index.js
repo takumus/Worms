@@ -138,6 +138,7 @@
 	    function createWorm(length, holder) {
 	        var worm = new FigureWorm(length, { thickness: 30 });
 	        worm.setHolder(holder, true);
+	        holder.setStep(worm, 0);
 	        return worm;
 	    }
 	    WF.createWorm = createWorm;
@@ -334,7 +335,7 @@
 	                if (_this.step == 1) {
 	                    // completely complete
 	                    var removedWorms = holder.worms.splice(holder.figure.getLength());
-	                    holder.setStepToAll(1);
+	                    // holder.setStepToAll(1);
 	                    holder.worms.forEach(function (worm) { return worm.updateLength(); });
 	                    removedWorms.forEach(function (worm) { return worm.dispose(); });
 	                    // console.log('completely complete!!');
