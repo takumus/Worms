@@ -186,10 +186,19 @@
 	                console.error('Cannnot call "Holder.prototype.clear" while animating');
 	                return;
 	            }
-	            this.worms.forEach(function (worm) {
-	                worm.dispose();
-	            });
+	            this.worms.forEach(function (worm) { return worm.dispose(); });
 	            this.worms = [];
+	        };
+	        Holder.prototype.setStepToAll = function (step) {
+	            var _this = this;
+	            if (!this.animating) {
+	                console.error('Cannnot call "Holder.prototype.setStep" after completed animation');
+	                return;
+	            }
+	            this.worms.forEach(function (worm) { return _this.setStep(worm, step); });
+	        };
+	        Holder.prototype.setStep = function (worm, step) {
+	            worm.setStep(step);
 	        };
 	        return Holder;
 	    }());
@@ -292,20 +301,14 @@
 	                if (_this.step == 1) {
 	                    // completely complete
 	                    var removedWorms = holder.worms.splice(holder.figure.getLength());
-	                    holder.worms.forEach(function (worm) {
-	                        worm.setStep(1);
-	                        worm.updateLength();
-	                    });
-	                    removedWorms.forEach(function (worm) {
-	                        worm.dispose();
-	                    });
+	                    holder.setStepToAll(1);
+	                    holder.worms.forEach(function (worm) { return worm.updateLength(); });
+	                    removedWorms.forEach(function (worm) { return worm.dispose(); });
 	                    // console.log('completely complete!!');
 	                }
 	                else {
 	                    // force complete
-	                    holder.worms.forEach(function (worm) {
-	                        worm.updateLength();
-	                    });
+	                    holder.worms.forEach(function (worm) { return worm.updateLength(); });
 	                    // console.log('force complete!!');
 	                }
 	                holder.animating = false;
@@ -351,9 +354,7 @@
 	                    console.error('already ended');
 	                    return;
 	                }
-	                holder.worms.forEach(function (worm) {
-	                    worm.setStep(step);
-	                });
+	                holder.setStepToAll(step);
 	            });
 	        };
 	        return HolderMaster;

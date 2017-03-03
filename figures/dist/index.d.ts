@@ -45,11 +45,15 @@ declare namespace WF {
         setFigure(figure: Figure): void;
         generate(): void;
         clear(): void;
+        setStepToAll(step: number): void;
+        setStep(worm: WF.FigureWorm, step: number): void;
     }
 }
 declare namespace WF {
+    interface holderMasterOption {
+    }
     class HolderMaster {
-        private holders;
+        holders: Holder[];
         private step;
         private animating;
         private autoTweening;

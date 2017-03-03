@@ -1,6 +1,9 @@
 namespace WF {
+    export interface holderMasterOption {
+
+    }
     export class HolderMaster {
-        private holders: Holder[];
+        public holders: Holder[];
         private step: number;
         private animating: boolean;
         private autoTweening: boolean;
@@ -97,19 +100,13 @@ namespace WF {
                 if (this.step == 1) {
                     // completely complete
                     const removedWorms = holder.worms.splice(holder.figure.getLength());
-                    holder.worms.forEach((worm) => {
-                        worm.setStep(1);
-                        worm.updateLength();
-                    });
-                    removedWorms.forEach((worm) => {
-                        worm.dispose();
-                    });
+                    holder.setStepToAll(1);
+                    holder.worms.forEach((worm) => worm.updateLength());
+                    removedWorms.forEach((worm) => worm.dispose());
                     // console.log('completely complete!!');
                 }else {
                     // force complete
-                    holder.worms.forEach((worm) => {
-                        worm.updateLength();
-                    });
+                    holder.worms.forEach((worm) => worm.updateLength());
                     // console.log('force complete!!');
                 }
                 holder.animating = false;
@@ -153,9 +150,7 @@ namespace WF {
                     console.error('already ended');
                     return;
                 }
-                holder.worms.forEach((worm) => {
-                    worm.setStep(step);
-                });
+                holder.setStepToAll(step);
             });
         }
     }

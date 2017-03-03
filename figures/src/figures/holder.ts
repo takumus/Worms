@@ -31,10 +31,18 @@ namespace WF {
                 console.error('Cannnot call "Holder.prototype.clear" while animating');
                 return;
             }
-            this.worms.forEach((worm) => {
-                worm.dispose();
-            });
+            this.worms.forEach((worm) => worm.dispose());
             this.worms = [];
+        }
+        public setStepToAll(step: number): void {
+            if (!this.animating) {
+                console.error('Cannnot call "Holder.prototype.setStep" after completed animation');
+                return;
+            }
+            this.worms.forEach((worm) => this.setStep(worm, step));
+        }
+        public setStep(worm: WF.FigureWorm, step: number): void {
+            worm.setStep(step);
         }
     }
 }
