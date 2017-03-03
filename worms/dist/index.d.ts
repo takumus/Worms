@@ -27,29 +27,6 @@ declare namespace WORMS {
     }
 }
 declare namespace WORMS {
-    interface SimpleOption {
-        fillColor?: number;
-        thickness: number;
-        shadow?: boolean;
-        shadowColor?: number;
-        shadowPosition?: UTILS.Pos;
-        shadowThickness?: number;
-    }
-    class Simple extends Base {
-        bodyGraphics: PIXI.Graphics;
-        shadowGraphics: PIXI.Graphics;
-        private option;
-        private visible;
-        constructor(length: number, option: SimpleOption);
-        setOption(option: SimpleOption): void;
-        getOption(): SimpleOption;
-        render(): void;
-        private renderWith(graphics, color, thickness, offsetX, offsetY);
-        setVisible(visible: boolean): void;
-        getVisible(): boolean;
-    }
-}
-declare namespace WORMS {
     interface NastyOption {
         headLength?: number;
         tailLength?: number;
@@ -70,23 +47,25 @@ declare namespace WORMS {
     }
 }
 declare namespace WORMS {
-    interface SimpleLightOption {
+    interface SimpleOption {
         fillColor?: number;
         thickness: number;
+        shadow?: boolean;
+        shadowColor?: number;
+        shadowPosition?: UTILS.Pos;
+        shadowThickness?: number;
     }
-    class SimpleLight extends Base {
-        static graphics: PIXI.Graphics;
-        private static worms;
+    class Simple extends Base {
+        bodyGraphics: PIXI.Graphics;
+        shadowGraphics: PIXI.Graphics;
         private option;
-        private static _id;
-        id: number;
-        constructor(length: number, option: SimpleLightOption);
-        static render(): void;
-        static getWorms(): SimpleLight[];
-        setOption(option: SimpleLightOption): void;
-        getOption(): SimpleLightOption;
+        private visible;
+        constructor(length: number, option: SimpleOption);
+        setOption(option: SimpleOption): void;
+        getOption(): SimpleOption;
         render(): void;
-        dispose(): void;
         private renderWith(graphics, color, thickness, offsetX, offsetY);
+        setVisible(visible: boolean): void;
+        getVisible(): boolean;
     }
 }

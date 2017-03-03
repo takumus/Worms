@@ -44,6 +44,16 @@
 /* 0 */
 /***/ function(module, exports) {
 
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	window['WF'] = WF;
 	var WF;
 	(function (WF) {
@@ -105,7 +115,7 @@
 	            this.clear();
 	            for (var i = 0; i < this.figure.getLength(); i++) {
 	                var l = this.figure.at(i);
-	                var w = new WORMS.SimpleLight(l.getLength(), { thickness: 30 });
+	                var w = new WORMS.Figure(l.getLength(), { thickness: 30 });
 	                w.setRoute(l);
 	                this.worms.push(w);
 	            }
@@ -171,7 +181,7 @@
 	                var prevWormsLength = prevWorms.length;
 	                for (var i = prevWormsLength; i <= lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-	                    var w = new WORMS.SimpleLight(pw.getLength(), { thickness: 26 });
+	                    var w = new WORMS.Figure(pw.getLength(), { thickness: 26 });
 	                    w.setRoute(pw.getCurrentLine());
 	                    worms.push(w);
 	                }
@@ -241,7 +251,7 @@
 	            });
 	            this.autoTweening = false;
 	            this.animating = false;
-	            console.log('all worms:' + WORMS.SimpleLight.getWorms().length);
+	            console.log('all worms:' + WORMS.Figure.getWorms().length);
 	        };
 	        HolderMaster.prototype.autoTween = function (time, complete) {
 	            var _this = this;
@@ -289,6 +299,68 @@
 	    }());
 	    WF.HolderMaster = HolderMaster;
 	})(WF || (WF = {}));
+	var WORMS;
+	(function (WORMS) {
+	    var Figure = (function (_super) {
+	        __extends(Figure, _super);
+	        function Figure(length, option) {
+	            var _this = _super.call(this, length) || this;
+	            _this.setOption(option);
+	            _this.id = Figure._id;
+	            Figure.worms[_this.id] = _this;
+	            Figure._id++;
+	            return _this;
+	        }
+	        Figure.render = function () {
+	            this.graphics.clear();
+	            for (var id in this.worms) {
+	                var worm = this.worms[id];
+	                worm.render();
+	            }
+	        };
+	        Figure.getWorms = function () {
+	            var _this = this;
+	            return Object.keys(this.worms).map(function (key) { return _this.worms[key]; });
+	        };
+	        Figure.prototype.setOption = function (option) {
+	            this.option = option;
+	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
+	        };
+	        Figure.prototype.getOption = function () {
+	            return this.option;
+	        };
+	        Figure.prototype.render = function () {
+	            this.renderWith(Figure.graphics, this.option.fillColor, this.option.thickness, 0, 0);
+	        };
+	        Figure.prototype.dispose = function () {
+	            this.option = null;
+	            Figure.worms[this.id] = null;
+	            delete Figure.worms[this.id];
+	        };
+	        Figure.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
+	            var bbone = this.bone.at(0);
+	            var ebone = this.bone.at(this.length - 1);
+	            graphics.beginFill(color);
+	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	            graphics.lineStyle(thickness, color);
+	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
+	            for (var i = 1; i < this.length - 1; i++) {
+	                var nbone = this.bone.at(i);
+	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
+	            }
+	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);
+	            graphics.lineStyle();
+	            graphics.beginFill(color);
+	            graphics.drawCircle(ebone.x + offsetX, ebone.y + offsetY, thickness / 2);
+	            graphics.endFill();
+	        };
+	        return Figure;
+	    }(WORMS.Base));
+	    Figure.worms = {};
+	    Figure._id = 0;
+	    WORMS.Figure = Figure;
+	})(WORMS || (WORMS = {}));
 
 
 /***/ }

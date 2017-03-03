@@ -1,6 +1,6 @@
 namespace WF {
     export class Holder {
-        public worms: WORMS.SimpleLight[];
+        public worms: WORMS.Figure[];
         public figure: Figure;
         public animating: boolean;
         constructor() {
@@ -21,7 +21,7 @@ namespace WF {
             this.clear();
             for (let i = 0; i < this.figure.getLength(); i ++) {
                 const l = this.figure.at(i);
-                const w = new WORMS.SimpleLight(l.getLength(), {thickness: 30});
+                const w = new WORMS.Figure(l.getLength(), {thickness: 30});
                 w.setRoute(l);
                 this.worms.push(w);
             }

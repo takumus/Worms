@@ -1,4 +1,3 @@
-///<reference path='@base.ts' />
 namespace WORMS {
     export interface SimpleOption {
         fillColor?: number,

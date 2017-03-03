@@ -21,7 +21,7 @@ namespace WF {
             }
             this.holders = to;
             this.step = 0;
-            const worms: WORMS.SimpleLight[] = [];
+            const worms: WORMS.Figure[] = [];
             from.forEach((holder) => {
                 holder.worms.forEach((worm) => {
                     worms.push(worm);
@@ -43,13 +43,13 @@ namespace WF {
                 const prevWormsLength = prevWorms.length;
                 for (let i = prevWormsLength; i <= lineCount; i ++) {
                     const pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-                    const w = new WORMS.SimpleLight(pw.getLength(), {thickness: 26});
+                    const w = new WORMS.Figure(pw.getLength(), {thickness: 26});
                     w.setRoute(pw.getCurrentLine());
                     worms.push(w);
                 }
             }
             // shuffle
-            UTILS.shuffle<WORMS.SimpleLight>(worms);
+            UTILS.shuffle<WORMS.Figure>(worms);
             UTILS.shuffle<Holder>(to);
             // generate route to figures
             to.forEach((holder) => {
@@ -71,7 +71,7 @@ namespace WF {
             this.animating = true;
             return true;
         }
-        private setRoute(worm: WORMS.SimpleLight, target: ROUTES.Line): void {
+        private setRoute(worm: WORMS.Figure, target: ROUTES.Line): void {
             target = target.clone();
             if (Math.random() < 0.5) worm.reverse();
             if (Math.random() < 0.5) target.reverse();
@@ -116,7 +116,7 @@ namespace WF {
             });
             this.autoTweening = false;
             this.animating = false;
-            console.log('all worms:' + WORMS.SimpleLight.getWorms().length);
+            console.log('all worms:' + WORMS.Figure.getWorms().length);
         }
         public autoTween(time: number, complete?: () => void): void {
             if (!this.animating) {
