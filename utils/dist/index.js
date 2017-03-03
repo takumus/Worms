@@ -249,6 +249,14 @@
 	        return v < 0 ? -v : v;
 	    }
 	    Matthew.abs = abs;
+	    function frandom(min, max) {
+	        return min + (max - min) * Math.random();
+	    }
+	    Matthew.frandom = frandom;
+	    function irandom(min, max) {
+	        return Math.floor(min + (max - min + 1) * Math.random());
+	    }
+	    Matthew.irandom = irandom;
 	})(Matthew || (Matthew = {}));
 	var UTILS;
 	(function (UTILS) {

@@ -55,6 +55,8 @@ declare namespace Matthew {
     const D_PI: number;
     function normalize(r: number): number;
     function abs(v: number): number;
+    function frandom(min: number, max: number): number;
+    function irandom(min: number, max: number): number;
 }
 declare namespace UTILS {
     function shuffle<T>(array: T[]): T[];

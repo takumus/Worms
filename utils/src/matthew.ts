@@ -11,4 +11,10 @@ namespace Matthew {
     export function abs(v: number): number {
         return v < 0 ? -v : v;
     }
+    export function frandom(min: number, max: number): number {
+        return min + (max - min) * Math.random();
+    }
+    export function irandom(min: number, max: number): number {
+        return Math.floor(min + (max - min + 1) * Math.random());
+    }
 }
