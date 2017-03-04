@@ -18,12 +18,12 @@ namespace ROUTES {
             this.gradient = gradient;
         }
         public render(line: Line): void {
-            const bp: UTILS.Pos = line.points[0];
-            const ep: UTILS.Pos = line.points[line.length - 1];
+            const bp: UTILS.Pos = line[0];
+            const ep: UTILS.Pos = line[line.length - 1];
             this.graphics.lineStyle(this.thickness, this.color, this.gradient ? 0 : 1);
             this.graphics.moveTo(bp.x, bp.y);
             for (let i = 1; i < line.length; i ++) {
-                const p = line.points[i];
+                const p = line[i];
                 const a = i / (line.length - 1);
                 this.graphics.lineStyle(this.thickness, this.color, this.gradient ? a : 1);
                 this.graphics.lineTo(p.x, p.y);

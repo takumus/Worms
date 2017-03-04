@@ -182,7 +182,7 @@ namespace ROUTES {
             const l = Math.sqrt(tx * tx + ty * ty) - res;
             const L = l / res;
             for (let i = 0; i < L; i++) {
-                line.points.push(new UTILS.Pos(
+                line.push(new UTILS.Pos(
                     dx * i + bp.x,
                     dy * i + bp.y
                 ));

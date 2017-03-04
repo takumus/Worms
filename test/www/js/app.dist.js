@@ -250,8 +250,8 @@
 	            w.setRoute(w.getCurrentLine().pushLine(route));
 	            w.setStep(0);
 	            var r = w.route;
-	            var h = r.points[0];
-	            var t = r.points[r.length - 1];
+	            var h = r[0];
+	            var t = r[r.length - 1];
 	            var c = i != 0 ? 0x666666 : 0xCCCCCC;
 	            g.clear();
 	            g.beginFill(c);
@@ -260,7 +260,7 @@
 	            g.lineStyle(1, c, 0);
 	            g.moveTo(h.x, h.y);
 	            for (var n = 1; n < r.length; n++) {
-	                var p = r.points[n];
+	                var p = r[n];
 	                g.lineStyle(n / r.length * 2, c);
 	                g.lineTo(p.x, p.y);
 	            }

@@ -117,15 +117,15 @@
 	            delete FigureWorm.worms[this._id];
 	        };
 	        FigureWorm.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
-	            var bbone = this.bone.points[0];
-	            var ebone = this.bone.points[this.currentLength - 1];
+	            var bbone = this.bone[0];
+	            var ebone = this.bone[this.currentLength - 1];
 	            graphics.beginFill(color);
 	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
 	            graphics.endFill();
 	            graphics.lineStyle(thickness, color);
 	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
 	            for (var i = 1; i < this.currentLength - 1; i++) {
-	                var nbone = this.bone.points[i];
+	                var nbone = this.bone[i];
 	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
 	            }
 	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);

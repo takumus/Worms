@@ -228,8 +228,8 @@ function draw(): void {
             w.setRoute(w.getCurrentLine().pushLine(route));
             w.setStep(0);
             const r = w.route;
-            const h = r.points[0];
-            const t = r.points[r.length - 1];
+            const h = r[0];
+            const t = r[r.length - 1];
             const c = i != 0 ? 0x666666 : 0xCCCCCC;
             g.clear();
             g.beginFill(c)
@@ -238,7 +238,7 @@ function draw(): void {
             g.lineStyle(1, c, 0);
             g.moveTo(h.x, h.y);
             for (let n = 1; n < r.length; n ++) {
-                const p = r.points[n];
+                const p = r[n];
                 g.lineStyle(n / r.length * 2, c);
                 g.lineTo(p.x, p.y);
             }

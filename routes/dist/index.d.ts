@@ -1,10 +1,8 @@
 /// <reference types="pixi.js" />
 declare namespace ROUTES {
-    class Line {
-        private _points;
+    class Line extends Array<UTILS.Pos> {
         private prevPositionOffset;
         private prevScaleOffset;
-        readonly points: Array<UTILS.Pos>;
         constructor(data?: Array<UTILS.Pos> | Array<{
             x: number;
             y: number;
@@ -13,16 +11,14 @@ declare namespace ROUTES {
         setScaleOffset(scale: UTILS.Pos): void;
         getWidth(): number;
         getHeight(): number;
-        reverse(): Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
-        private getVecPos(fp, sp);
         pushLine(line: Line): Line;
-        readonly length: number;
         clone(): Line;
         clear(): void;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
         toString(): string;
+        private getVecPos(fp, sp);
     }
 }
 declare namespace ROUTES {
