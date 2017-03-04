@@ -271,6 +271,14 @@
 	        return array;
 	    }
 	    UTILS.shuffle = shuffle;
+	    function clone(array) {
+	        var newArray = [];
+	        array.forEach(function (value) {
+	            newArray.push(value);
+	        });
+	        return newArray;
+	    }
+	    UTILS.clone = clone;
 	    function def(value, defValue) {
 	        if (typeof value === 'undefined')
 	            return defValue;

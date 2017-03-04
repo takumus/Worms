@@ -60,5 +60,6 @@ declare namespace Matthew {
 }
 declare namespace UTILS {
     function shuffle<T>(array: T[]): T[];
+    function clone<T>(array: T[]): T[];
     function def<T>(value: T, defValue: T): T;
 }

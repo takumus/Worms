@@ -9,6 +9,13 @@ namespace UTILS {
         }
         return array;
     }
+    export function clone<T>(array: T[]): T[] {
+        const newArray: T[] = [];
+        array.forEach((value) => {
+            newArray.push(value);
+        });
+        return newArray;
+    }
     export function def<T>(value: T, defValue: T): T {
         if (typeof value === 'undefined') return defValue;
         return value;
