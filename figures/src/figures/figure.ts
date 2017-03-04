@@ -32,6 +32,8 @@ namespace WF {
             }
             return this;
         }
-        public forEach = this.lines.forEach;
+        public forEach(callbackfn: (value: ROUTES.Line, index: number, array: ROUTES.Line[]) => void): void {
+            this.lines.forEach(callbackfn);
+        }
     }
 }

@@ -148,6 +148,8 @@ namespace ROUTES {
         public toString(): string {
             return JSON.stringify(this.data);
         }
-        public forEach = this.data.forEach;
+        public forEach(callbackfn: (value: UTILS.Pos, index: number, array: UTILS.Pos[]) => void): void {
+            this.data.forEach(callbackfn);
+        }
     }
 }

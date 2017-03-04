@@ -59,7 +59,6 @@
 	    var Line = (function () {
 	        function Line(data) {
 	            if (data === void 0) { data = []; }
-	            this.forEach = this.data.forEach;
 	            this.data = [];
 	            for (var i = 0; i < data.length; i++) {
 	                var p = data[i];
@@ -195,6 +194,9 @@
 	        };
 	        Line.prototype.toString = function () {
 	            return JSON.stringify(this.data);
+	        };
+	        Line.prototype.forEach = function (callbackfn) {
+	            this.data.forEach(callbackfn);
 	        };
 	        return Line;
 	    }());

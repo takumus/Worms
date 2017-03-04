@@ -43,7 +43,7 @@ declare namespace WF {
         at(id: number): ROUTES.Line;
         clone(): Figure;
         setPositionOffset(pos: UTILS.Pos): Figure;
-        forEach: (callbackfn: (value: ROUTES.Line, index: number, array: ROUTES.Line[]) => void, thisArg?: any) => void;
+        forEach(callbackfn: (value: ROUTES.Line, index: number, array: ROUTES.Line[]) => void): void;
     }
 }
 declare namespace WF {

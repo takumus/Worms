@@ -151,7 +151,6 @@
 	(function (WF) {
 	    var Figure = (function () {
 	        function Figure() {
-	            this.forEach = this.lines.forEach;
 	            this.lines = [];
 	        }
 	        Figure.prototype.initWithOject = function (data) {
@@ -186,6 +185,9 @@
 	                this.at(i).setPositionOffset(pos);
 	            }
 	            return this;
+	        };
+	        Figure.prototype.forEach = function (callbackfn) {
+	            this.lines.forEach(callbackfn);
 	        };
 	        return Figure;
 	    }());
