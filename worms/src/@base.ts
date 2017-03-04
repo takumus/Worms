@@ -30,7 +30,7 @@ namespace WORMS {
             this.bone.clear();
             const L = this.prevLength > length ? this.prevLength : length;
             for (let i = 0; i < L; i ++) {
-                this.bone.push(new UTILS.Pos());
+                this.bone.points.push(new UTILS.Pos());
             }
             // re set bones
             this.setStep(this._step);
@@ -66,9 +66,9 @@ namespace WORMS {
             const offset = (length * step - posIndex);
             for (let i = 0; i < this.bone.length; i ++) {
                 const id = beginIndex - i + posIndex;
-                const b = this.bone.at(i);
-                const l = this._route.at(id);
-                const nl = this._route.at(id + 1);
+                const b = this.bone.points[i];
+                const l = this._route.points[id];
+                const nl = this._route.points[id + 1];
                 if (!l) continue;
                 let dx = 0;
                 let dy = 0;
@@ -92,7 +92,7 @@ namespace WORMS {
             const line = new ROUTES.Line();
             const current = this.bone.clone();
             for (let i = 0; i < this._length; i ++) {
-                line.push(current.at(i).clone());
+                line.points.push(current.points[i].clone());
             }
             return line.reverse();
         }

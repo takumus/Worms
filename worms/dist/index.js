@@ -82,7 +82,7 @@
 	            this.bone.clear();
 	            var L = this.prevLength > length ? this.prevLength : length;
 	            for (var i = 0; i < L; i++) {
-	                this.bone.push(new UTILS.Pos());
+	                this.bone.points.push(new UTILS.Pos());
 	            }
 	            // re set bones
 	            this.setStep(this._step);
@@ -122,9 +122,9 @@
 	            var offset = (length * step - posIndex);
 	            for (var i = 0; i < this.bone.length; i++) {
 	                var id = beginIndex - i + posIndex;
-	                var b = this.bone.at(i);
-	                var l = this._route.at(id);
-	                var nl = this._route.at(id + 1);
+	                var b = this.bone.points[i];
+	                var l = this._route.points[id];
+	                var nl = this._route.points[id + 1];
 	                if (!l)
 	                    continue;
 	                var dx = 0;
@@ -153,7 +153,7 @@
 	            var line = new ROUTES.Line();
 	            var current = this.bone.clone();
 	            for (var i = 0; i < this._length; i++) {
-	                line.push(current.at(i).clone());
+	                line.points.push(current.points[i].clone());
 	            }
 	            return line.reverse();
 	        };
@@ -224,19 +224,19 @@
 	            return this._option;
 	        };
 	        Nasty.prototype.render = function () {
-	            var bbone = this.bone.at(0);
+	            var bbone = this.bone.points[0];
 	            // ワームの外殻を生成
-	            var ebone = this.bone.at(this.currentLength - 1);
+	            var ebone = this.bone.points[this.currentLength - 1];
 	            var bbody = this.bodyPos[0];
 	            var ebody = this.bodyPos[this.currentLength - 1];
 	            bbody.left.x = bbone.x;
 	            bbody.left.y = bbone.y;
 	            var L = this.currentLength - 1;
 	            for (var i = 1; i < L; i++) {
-	                var nbone = this.bone.at(i);
+	                var nbone = this.bone.points[i];
 	                var nbody = this.bodyPos[i];
-	                var vx = this.bone.at(i - 1).x - nbone.x;
-	                var vy = this.bone.at(i - 1).y - nbone.y;
+	                var vx = this.bone.points[i - 1].x - nbone.x;
+	                var vy = this.bone.points[i - 1].y - nbone.y;
 	                var radian = Matthew.H_PI;
 	                var headLength = this.currentLength * this._option.headLength;
 	                var tailLength = this.currentLength * this._option.tailLength;
@@ -313,15 +313,15 @@
 	        };
 	        Simple.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
 	            graphics.clear();
-	            var bbone = this.bone.at(0);
-	            var ebone = this.bone.at(this.currentLength - 1);
+	            var bbone = this.bone.points[0];
+	            var ebone = this.bone.points[this.currentLength - 1];
 	            graphics.beginFill(color);
 	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
 	            graphics.endFill();
 	            graphics.lineStyle(thickness, color);
 	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
 	            for (var i = 1; i < this.currentLength - 1; i++) {
-	                var nbone = this.bone.at(i);
+	                var nbone = this.bone.points[i];
 	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
 	            }
 	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);

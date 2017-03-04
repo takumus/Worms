@@ -111,7 +111,7 @@ function initGUI(): void {
     wormsGuideContainer.visible = props.global.guide;
 }
 function initPIXI(): void {
-    renderer = PIXI.autoDetectRenderer(800, 800, {antialias: true, resolution: 2, transparent: false});
+    renderer = PIXI.autoDetectRenderer(800, 800, {antialias: false, resolution: 2, transparent: false});
     canvas = <HTMLCanvasElement>document.getElementById('content');
     canvas.appendChild(renderer.view);
     renderer.view.style.width = '100%';
@@ -228,8 +228,8 @@ function draw(): void {
             w.setRoute(w.getCurrentLine().pushLine(route));
             w.setStep(0);
             const r = w.route;
-            const h = r.head();
-            const t = r.tail();
+            const h = r.points[0];
+            const t = r.points[r.length - 1];
             const c = i != 0 ? 0x666666 : 0xCCCCCC;
             g.clear();
             g.beginFill(c)
@@ -238,7 +238,7 @@ function draw(): void {
             g.lineStyle(1, c, 0);
             g.moveTo(h.x, h.y);
             for (let n = 1; n < r.length; n ++) {
-                const p = r.at(n);
+                const p = r.points[n];
                 g.lineStyle(n / r.length * 2, c);
                 g.lineTo(p.x, p.y);
             }

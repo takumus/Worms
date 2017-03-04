@@ -35,19 +35,19 @@ namespace WORMS {
             return this._option;
         }
         public render() {
-            const bbone = this.bone.at(0);
+            const bbone = this.bone.points[0];
             // ワームの外殻を生成
-            const ebone = this.bone.at(this.currentLength - 1);
+            const ebone = this.bone.points[this.currentLength - 1];
             const bbody = this.bodyPos[0];
             const ebody = this.bodyPos[this.currentLength - 1];
             bbody.left.x = bbone.x;
             bbody.left.y = bbone.y;
             const L = this.currentLength  - 1;
             for (let i = 1; i < L; i ++) {
-                const nbone = this.bone.at(i);
+                const nbone = this.bone.points[i];
                 const nbody = this.bodyPos[i];
-                let vx = this.bone.at(i - 1).x - nbone.x;
-                let vy = this.bone.at(i - 1).y - nbone.y;
+                let vx = this.bone.points[i - 1].x - nbone.x;
+                let vy = this.bone.points[i - 1].y - nbone.y;
                 let radian: number = Matthew.H_PI;
                 const headLength = this.currentLength * this._option.headLength;
                 const tailLength = this.currentLength * this._option.tailLength;

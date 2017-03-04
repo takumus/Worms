@@ -27,9 +27,9 @@ namespace ROUTES {
                 tr = this.c1rb + r * this.c1.d;
                 _x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
                 _y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
-                line.push(new UTILS.Pos(_x, _y));
+                line.points.push(new UTILS.Pos(_x, _y));
             }
-            line.pop();
+            line.points.pop();
             this.getLineRoot(
                 new UTILS.Pos(_x, _y),
                 new UTILS.Pos(
@@ -45,9 +45,9 @@ namespace ROUTES {
                 tr = this.c2rb + r * this.c2.d;
                 _x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
                 _y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
-                line.push(new UTILS.Pos(_x, _y));
+                line.points.push(new UTILS.Pos(_x, _y));
             }
-            line.push(
+            line.points.push(
                 new UTILS.Pos(
                     Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x,
                     Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y,
@@ -79,7 +79,7 @@ namespace ROUTES {
             const l = Math.sqrt(tx * tx + ty * ty) - res;
             const L = l / res;
             for (let i = 0; i < L; i++) {
-                line.push(new UTILS.Pos(
+                line.points.push(new UTILS.Pos(
                     dx * i + bp.x,
                     dy * i + bp.y
                 ));

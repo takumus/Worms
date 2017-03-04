@@ -49,15 +49,15 @@ namespace WORMS {
         }
         private renderWith(graphics: PIXI.Graphics, color: number, thickness: number, offsetX: number, offsetY: number): void {
             graphics.clear();
-            const bbone = this.bone.at(0);
-            const ebone = this.bone.at(this.currentLength - 1);
+            const bbone = this.bone.points[0];
+            const ebone = this.bone.points[this.currentLength - 1];
             graphics.beginFill(color);
             graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
             graphics.endFill();
             graphics.lineStyle(thickness, color);
             graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
             for (let i = 1; i < this.currentLength  - 1; i ++) {
-                const nbone = this.bone.at(i);
+                const nbone = this.bone.points[i];
                 graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
             }
             graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);

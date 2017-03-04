@@ -1,9 +1,10 @@
 /// <reference types="pixi.js" />
 declare namespace ROUTES {
     class Line {
-        protected points: Array<UTILS.Pos>;
+        private _points;
         private prevPositionOffset;
         private prevScaleOffset;
+        readonly points: Array<UTILS.Pos>;
         constructor(data?: Array<UTILS.Pos> | Array<{
             x: number;
             y: number;
@@ -16,12 +17,6 @@ declare namespace ROUTES {
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
         private getVecPos(fp, sp);
-        head(): UTILS.Pos;
-        tail(): UTILS.Pos;
-        at(id: number): UTILS.Pos;
-        push(pos: UTILS.Pos): void;
-        pop(): UTILS.Pos;
-        shift(): UTILS.Pos;
         pushLine(line: Line): Line;
         readonly length: number;
         clone(): Line;

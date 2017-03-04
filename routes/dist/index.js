@@ -59,17 +59,22 @@
 	    var Line = (function () {
 	        function Line(data) {
 	            if (data === void 0) { data = []; }
-	            this.points = [];
+	            this._points = [];
 	            for (var i = 0; i < data.length; i++) {
 	                var p = data[i];
-	                this.points.push(new UTILS.Pos(p.x, p.y));
+	                this._points.push(new UTILS.Pos(p.x, p.y));
 	            }
 	            this.prevPositionOffset = new UTILS.Pos();
 	            this.prevScaleOffset = new UTILS.Pos();
 	        }
+	        Object.defineProperty(Line.prototype, "points", {
+	            get: function () { return this._points; },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Line.prototype.setPositionOffset = function (pos) {
 	            for (var i = 0; i < this.length; i++) {
-	                var p = this.at(i);
+	                var p = this._points[i];
 	                p.x += pos.x - this.prevPositionOffset.x;
 	                p.y += pos.y - this.prevPositionOffset.y;
 	            }
@@ -77,7 +82,7 @@
 	        };
 	        Line.prototype.setScaleOffset = function (scale) {
 	            for (var i = 0; i < this.length; i++) {
-	                var p = this.at(i);
+	                var p = this._points[i];
 	                p.x /= this.prevScaleOffset.x;
 	                p.y /= this.prevScaleOffset.y;
 	                p.x *= scale.x;
@@ -89,7 +94,7 @@
 	            var min = Number.MAX_VALUE;
 	            var max = Number.MIN_VALUE;
 	            for (var i = 0; i < this.length; i++) {
-	                var p = this.at(i);
+	                var p = this._points[i];
 	                if (min > p.x)
 	                    min = p.x;
 	                else if (max < p.x)
@@ -101,7 +106,7 @@
 	            var min = Number.MAX_VALUE;
 	            var max = Number.MIN_VALUE;
 	            for (var i = 0; i < this.length; i++) {
-	                var p = this.at(i);
+	                var p = this._points[i];
 	                if (min > p.y)
 	                    min = p.y;
 	                else if (max < p.y)
@@ -110,49 +115,31 @@
 	            return max - min;
 	        };
 	        Line.prototype.reverse = function () {
-	            this.points.reverse();
+	            this._points.reverse();
 	            return this;
 	        };
 	        Line.prototype.getHeadVecPos = function () {
-	            return this.getVecPos(this.at(0), this.at(1));
+	            return this.getVecPos(this._points[0], this._points[1]);
 	        };
 	        Line.prototype.getTailVecPos = function () {
-	            return this.getVecPos(this.at(this.length - 1), this.at(this.length - 2));
+	            return this.getVecPos(this._points[this.length - 1], this._points[this.length - 2]);
 	        };
 	        Line.prototype.getVecPos = function (fp, sp) {
 	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.y - fp.y, sp.x - fp.x));
 	        };
-	        Line.prototype.head = function () {
-	            return this.at(0);
-	        };
-	        Line.prototype.tail = function () {
-	            return this.at(this.length - 1);
-	        };
-	        Line.prototype.at = function (id) {
-	            return this.points[id];
-	        };
-	        Line.prototype.push = function (pos) {
-	            this.points.push(pos.clone());
-	        };
-	        Line.prototype.pop = function () {
-	            return this.points.pop();
-	        };
-	        Line.prototype.shift = function () {
-	            return this.points.shift();
-	        };
 	        Line.prototype.pushLine = function (line) {
 	            line = line.clone();
-	            if (line.head().equals(this.tail()))
-	                line.shift();
-	            var L = line.points.length;
+	            if (line.points[0].equals(this.points[this.length - 1]))
+	                line.points.shift();
+	            var L = line._points.length;
 	            for (var i = 0; i < L; i++) {
-	                this.push(line.points[i].clone());
+	                this.points.push(line._points[i].clone());
 	            }
 	            return this;
 	        };
 	        Object.defineProperty(Line.prototype, "length", {
 	            get: function () {
-	                return this.points.length;
+	                return this._points.length;
 	            },
 	            enumerable: true,
 	            configurable: true
@@ -160,22 +147,22 @@
 	        Line.prototype.clone = function () {
 	            var data = [];
 	            for (var i = 0; i < this.length; i++) {
-	                data.push(this.points[i].clone());
+	                data.push(this._points[i].clone());
 	            }
 	            return new Line(data);
 	        };
 	        Line.prototype.clear = function () {
-	            this.points = [];
+	            this._points = [];
 	        };
 	        Line.prototype.wave = function (amp, freq, randomBegin) {
 	            if (randomBegin === void 0) { randomBegin = false; }
 	            var newData = [];
 	            var rad = randomBegin ? Math.random() * (Math.PI * 2) : 0;
-	            newData.push(this.at(0).clone());
+	            newData.push(this._points[0].clone());
 	            for (var i = 1; i < this.length - 1; i++) {
-	                var p = this.at(i);
-	                var vx = this.at(i - 1).x - p.x;
-	                var vy = this.at(i - 1).y - p.y;
+	                var p = this._points[i];
+	                var vx = this._points[i - 1].x - p.x;
+	                var vy = this._points[i - 1].y - p.y;
 	                var np = new UTILS.Pos();
 	                var all = Math.sin(i / (this.length - 1) * Math.PI);
 	                // all * allで開始、終了を極端にする。(先端への影響を少なく)
@@ -186,12 +173,12 @@
 	                np.y = p.y + (vx / vr * offset);
 	                newData.push(np);
 	            }
-	            newData.push(this.at(this.length - 1).clone());
-	            this.points = newData;
+	            newData.push(this._points[this.length - 1].clone());
+	            this._points = newData;
 	            return this;
 	        };
 	        Line.prototype.toString = function () {
-	            return JSON.stringify(this.points);
+	            return JSON.stringify(this._points);
 	        };
 	        return Line;
 	    }());
@@ -351,7 +338,7 @@
 	            var l = Math.sqrt(tx * tx + ty * ty) - res;
 	            var L = l / res;
 	            for (var i = 0; i < L; i++) {
-	                line.push(new UTILS.Pos(dx * i + bp.x, dy * i + bp.y));
+	                line.points.push(new UTILS.Pos(dx * i + bp.x, dy * i + bp.y));
 	            }
 	            return line;
 	        };
@@ -391,9 +378,9 @@
 	                tr = this.c1rb + r * this.c1.d;
 	                _x = Math.cos(tr) * this.c1.r + this.c1.pos.x;
 	                _y = Math.sin(tr) * this.c1.r + this.c1.pos.y;
-	                line.push(new UTILS.Pos(_x, _y));
+	                line.points.push(new UTILS.Pos(_x, _y));
 	            }
-	            line.pop();
+	            line.points.pop();
 	            this.getLineRoot(new UTILS.Pos(_x, _y), new UTILS.Pos(Math.cos(this.c2rb) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb) * this.c2.r + this.c2.pos.y), res, line);
 	            // trace(_x, _y, Math.cos(c2rb) * c2.r + c2.pos.x, Math.sin(c2rb) * c2.r + c2.pos.y)
 	            var LL = Matthew.abs(this.c2rl) - c2rres;
@@ -401,9 +388,9 @@
 	                tr = this.c2rb + r * this.c2.d;
 	                _x = Math.cos(tr) * this.c2.r + this.c2.pos.x;
 	                _y = Math.sin(tr) * this.c2.r + this.c2.pos.y;
-	                line.push(new UTILS.Pos(_x, _y));
+	                line.points.push(new UTILS.Pos(_x, _y));
 	            }
-	            line.push(new UTILS.Pos(Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y));
+	            line.points.push(new UTILS.Pos(Math.cos(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.x, Math.sin(this.c2rb + (Matthew.abs(this.c2rl)) * this.c2.d) * this.c2.r + this.c2.pos.y));
 	            return line;
 	        };
 	        Route.prototype.getLength = function () {
@@ -428,7 +415,7 @@
 	            var l = Math.sqrt(tx * tx + ty * ty) - res;
 	            var L = l / res;
 	            for (var i = 0; i < L; i++) {
-	                line.push(new UTILS.Pos(dx * i + bp.x, dy * i + bp.y));
+	                line.points.push(new UTILS.Pos(dx * i + bp.x, dy * i + bp.y));
 	            }
 	        };
 	        return Route;
@@ -458,12 +445,12 @@
 	            this.gradient = gradient;
 	        };
 	        Debugger.prototype.render = function (line) {
-	            var bp = line.head();
-	            var ep = line.tail();
+	            var bp = line.points[0];
+	            var ep = line.points[line.length - 1];
 	            this.graphics.lineStyle(this.thickness, this.color, this.gradient ? 0 : 1);
 	            this.graphics.moveTo(bp.x, bp.y);
 	            for (var i = 1; i < line.length; i++) {
-	                var p = line.at(i);
+	                var p = line.points[i];
 	                var a = i / (line.length - 1);
 	                this.graphics.lineStyle(this.thickness, this.color, this.gradient ? a : 1);
 	                this.graphics.lineTo(p.x, p.y);
