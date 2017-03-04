@@ -151,6 +151,7 @@
 	(function (WF) {
 	    var Figure = (function () {
 	        function Figure() {
+	            this.forEach = this.lines.forEach;
 	            this.lines = [];
 	        }
 	        Figure.prototype.initWithOject = function (data) {
@@ -274,13 +275,15 @@
 	        };
 	        HolderMaster.prototype.transform = function (from, to, option) {
 	            var _this = this;
-	            option.wave = UTILS.def(option.wave, { enabled: false, amplitude: 0, frequency: 0 });
-	            if (typeof option.radius == 'number') {
-	                option.radius = { begin: option.radius, end: option.radius };
-	            }
 	            if (this.animating) {
 	                console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
 	                return false;
+	            }
+	            from = UTILS.clone(from);
+	            to = UTILS.clone(to);
+	            option.wave = UTILS.def(option.wave, { enabled: false, amplitude: 0, frequency: 0 });
+	            if (typeof option.radius == 'number') {
+	                option.radius = { begin: option.radius, end: option.radius };
 	            }
 	            var animatingHolders = false;
 	            from.forEach(function (holder) { if (holder.animating)

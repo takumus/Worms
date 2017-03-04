@@ -32,5 +32,6 @@ namespace WF {
             }
             return this;
         }
+        public forEach = this.lines.forEach;
     }
 }
