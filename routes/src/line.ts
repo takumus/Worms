@@ -148,5 +148,6 @@ namespace ROUTES {
         public toString(): string {
             return JSON.stringify(this.data);
         }
+        public forEach = this.data.forEach;
     }
 }

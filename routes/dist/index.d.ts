@@ -29,6 +29,7 @@ declare namespace ROUTES {
         clear(): void;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
         toString(): string;
+        forEach: (callbackfn: (value: UTILS.Pos, index: number, array: UTILS.Pos[]) => void, thisArg?: any) => void;
     }
 }
 declare namespace ROUTES {
