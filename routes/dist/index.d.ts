@@ -1,8 +1,7 @@
 /// <reference types="pixi.js" />
 declare namespace ROUTES {
     class Line {
-        protected data: Array<UTILS.Pos>;
-        private length;
+        protected points: Array<UTILS.Pos>;
         private prevPositionOffset;
         private prevScaleOffset;
         constructor(data?: Array<UTILS.Pos> | Array<{
@@ -24,12 +23,11 @@ declare namespace ROUTES {
         pop(): UTILS.Pos;
         shift(): UTILS.Pos;
         pushLine(line: Line): Line;
-        getLength(): number;
+        readonly length: number;
         clone(): Line;
         clear(): void;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
         toString(): string;
-        forEach(callbackfn: (value: UTILS.Pos, index: number, array: UTILS.Pos[]) => void): void;
     }
 }
 declare namespace ROUTES {

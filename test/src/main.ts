@@ -175,7 +175,7 @@ function draw(): void {
         const opt = w.getOption();
         opt.fillColor = i != 0 ? props.global.color : 0x000000;
         opt.borderColor = i != 0 ? 0x000000 : props.global.color;
-        if (w.getStep() == 1 || (i == 0 && pressing)) {
+        if (w.step == 1 || (i == 0 && pressing)) {
             let vpos: UTILS.VecPos;
             let route: ROUTES.Line;
             if (i != 0) {
@@ -227,7 +227,7 @@ function draw(): void {
             }
             w.setRoute(w.getCurrentLine().pushLine(route));
             w.setStep(0);
-            const r = w.getRoute();
+            const r = w.route;
             const h = r.head();
             const t = r.tail();
             const c = i != 0 ? 0x666666 : 0xCCCCCC;
@@ -237,9 +237,9 @@ function draw(): void {
             g.endFill();
             g.lineStyle(1, c, 0);
             g.moveTo(h.x, h.y);
-            for (let n = 1; n < r.getLength(); n ++) {
+            for (let n = 1; n < r.length; n ++) {
                 const p = r.at(n);
-                g.lineStyle(n / r.getLength() * 2, c);
+                g.lineStyle(n / r.length * 2, c);
                 g.lineTo(p.x, p.y);
             }
             pressing = false;

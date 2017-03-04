@@ -31,19 +31,18 @@ declare namespace WF {
 }
 declare namespace WF {
     class Figure {
-        private lines;
+        private _lines;
         private _length;
         constructor();
+        readonly lines: Array<ROUTES.Line>;
         initWithOject(data: {
             x: number;
             y: number;
         }[][]): void;
         initWithLines(data: ROUTES.Line[]): void;
         readonly length: number;
-        at(id: number): ROUTES.Line;
         clone(): Figure;
         setPositionOffset(pos: UTILS.Pos): Figure;
-        forEach(callbackfn: (value: ROUTES.Line, index: number, array: ROUTES.Line[]) => void): void;
     }
 }
 declare namespace WF {

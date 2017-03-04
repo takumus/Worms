@@ -24,8 +24,8 @@ namespace WF {
             }
             this.dispose();
             for (let i = 0; i < this._figure.length; i ++) {
-                const l = this._figure.at(i);
-                const w = createWorm(l.getLength(), this);
+                const l = this._figure.lines[i];
+                const w = createWorm(l.length, this);
                 w.setRoute(l);
                 this._worms.push(w);
             }

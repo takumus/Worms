@@ -19,7 +19,7 @@ namespace WORMS {
         protected allocLength(length: number) {
             super.allocLength(length);
             this.bodyPos = [];
-            for (let i = 0; i < this.bone.getLength(); i ++) {
+            for (let i = 0; i < this.bone.length; i ++) {
                 this.bodyPos.push(new BodyPos());
             }
         }
@@ -37,20 +37,20 @@ namespace WORMS {
         public render() {
             const bbone = this.bone.at(0);
             // ワームの外殻を生成
-            const ebone = this.bone.at(this.length - 1);
+            const ebone = this.bone.at(this.currentLength - 1);
             const bbody = this.bodyPos[0];
-            const ebody = this.bodyPos[this.length - 1];
+            const ebody = this.bodyPos[this.currentLength - 1];
             bbody.left.x = bbone.x;
             bbody.left.y = bbone.y;
-            const L = this.length  - 1;
+            const L = this.currentLength  - 1;
             for (let i = 1; i < L; i ++) {
                 const nbone = this.bone.at(i);
                 const nbody = this.bodyPos[i];
                 let vx = this.bone.at(i - 1).x - nbone.x;
                 let vy = this.bone.at(i - 1).y - nbone.y;
                 let radian: number = Matthew.H_PI;
-                const headLength = this.length * this._option.headLength;
-                const tailLength = this.length * this._option.tailLength;
+                const headLength = this.currentLength * this._option.headLength;
+                const tailLength = this.currentLength * this._option.tailLength;
                 if (i < headLength) {
                     radian = i / headLength * Matthew.H_PI;
                 }else if (i > L - tailLength) {
@@ -73,10 +73,10 @@ namespace WORMS {
             this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
             this.graphics.beginFill(this._option.fillColor);
             this.graphics.moveTo(bbody.left.x, bbody.left.y);
-            for (let i = 1; i < this.length; i ++) {
+            for (let i = 1; i < this.currentLength; i ++) {
                 this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
             }
-            for (let i = this.length - 2; i >= 2; i --) {
+            for (let i = this.currentLength - 2; i >= 2; i --) {
                 this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
             }
             this.graphics.lineTo(bbody.left.x, bbody.left.y);

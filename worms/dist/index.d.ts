@@ -3,27 +3,26 @@ declare namespace WORMS {
     class Base {
         protected bone: ROUTES.Line;
         protected prevLength: number;
-        protected length: number;
+        private _length;
         private diffLength;
-        private route;
-        private step;
+        private _route;
+        private _step;
         constructor(length: number);
         setLength(length: number): void;
         updateLength(): void;
         protected allocLength(length: number): void;
-        push(x: number, y: number): void;
         render(): void;
         setRoute(line: ROUTES.Line, nextLength?: number): void;
         addStep(step: number): boolean;
         setStep(step: number): boolean;
-        getStep(): number;
+        readonly step: number;
         reverse(): void;
         getCurrentLine(): ROUTES.Line;
         getHeadVecPos(): UTILS.VecPos;
         getTailVecPos(): UTILS.VecPos;
-        getRoute(): ROUTES.Line;
-        getLength(): number;
-        getCurrentLength(): number;
+        readonly route: ROUTES.Line;
+        readonly length: number;
+        readonly currentLength: number;
         dispose(): void;
     }
 }

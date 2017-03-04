@@ -2,10 +2,10 @@ namespace WORMS {
     export class Base {
         protected bone: ROUTES.Line;
         protected prevLength: number;
-        protected length: number;
+        private _length: number;
         private diffLength: number;
-        private route: ROUTES.Line;
-        private step: number = 0;
+        private _route: ROUTES.Line;
+        private _step: number = 0;
         constructor(length: number) {
             this.bone = new ROUTES.Line();
             this.setLength(length);
@@ -15,11 +15,11 @@ namespace WORMS {
             this.allocLength(length);
         }
         public updateLength(): void {
-            const pl = this.route.getLength() - this.prevLength;
-            this.setLength(this.length);
-            const nl = this.route.getLength() - this.prevLength;
+            const pl = this._route.length - this.prevLength;
+            this.setLength(this._length);
+            const nl = this._route.length - this.prevLength;
             if (pl > 0 && nl > 0) {
-                const pdf = pl - pl * this.step;
+                const pdf = pl - pl * this._step;
                 const p = (nl - pdf) / nl;
                 this.setStep(p);
             }
@@ -33,53 +33,42 @@ namespace WORMS {
                 this.bone.push(new UTILS.Pos());
             }
             // re set bones
-            this.setStep(this.step);
-        }
-        public push(x: number, y: number) {
-            // 先頭に加えて、１つずつずらす。
-            let i = this.bone.getLength() - 1;
-            for (; i >= 1; i --) {
-                this.bone.at(i).x = this.bone.at(i - 1).x;
-                this.bone.at(i).y = this.bone.at(i - 1).y;
-            }
-            const bbone = this.bone.at(0);
-            bbone.x = x;
-            bbone.y = y;
+            this.setStep(this._step);
         }
         public render() {
         }
         public setRoute(line: ROUTES.Line, nextLength?: number) {
-            if (line.getLength() < this.prevLength) return;
-            this.step = 0;
-            this.route = line;
-            this.allocLength(UTILS.def<number>(nextLength, this.length));
+            if (line.length < this.prevLength) return;
+            this._step = 0;
+            this._route = line;
+            this.allocLength(UTILS.def<number>(nextLength, this._length));
         }
         public addStep(step: number): boolean {
-            const length = this.route.getLength() - this.prevLength;
+            const length = this._route.length - this.prevLength;
             const p = step / length;
             if (p < 0) {
                 this.setStep(1);
                 return false;
             }
-            return this.setStep(this.step + p);
+            return this.setStep(this._step + p);
         }
         public setStep(step: number): boolean {
             if (step < 0) step = 0;
             if (step > 1) step = 1;
             let s = step * 1.2;
             s = s > 1 ? 1 : s;
-            this.length = Math.floor(s * this.diffLength + this.prevLength);
-            this.step = step;
-            if (!this.route) return false;
+            this._length = Math.floor(s * this.diffLength + this.prevLength);
+            this._step = step;
+            if (!this._route) return false;
             const beginIndex = this.prevLength - 1;
-            const length = this.route.getLength() - beginIndex - 1;
+            const length = this._route.length - beginIndex - 1;
             const posIndex = Math.floor(length * step);
             const offset = (length * step - posIndex);
-            for (let i = 0; i < this.bone.getLength(); i ++) {
+            for (let i = 0; i < this.bone.length; i ++) {
                 const id = beginIndex - i + posIndex;
                 const b = this.bone.at(i);
-                const l = this.route.at(id);
-                const nl = this.route.at(id + 1);
+                const l = this._route.at(id);
+                const nl = this._route.at(id + 1);
                 if (!l) continue;
                 let dx = 0;
                 let dy = 0;
@@ -92,8 +81,8 @@ namespace WORMS {
             }
             return true;
         }
-        public getStep(): number {
-            return this.step;
+        public get step(): number {
+            return this._step;
         }
         public reverse(): void {
             this.bone.reverse();
@@ -102,7 +91,7 @@ namespace WORMS {
             // console.log(this.bone);
             const line = new ROUTES.Line();
             const current = this.bone.clone();
-            for (let i = 0; i < this.length; i ++) {
+            for (let i = 0; i < this._length; i ++) {
                 line.push(current.at(i).clone());
             }
             return line.reverse();
@@ -113,18 +102,18 @@ namespace WORMS {
         public getTailVecPos(): UTILS.VecPos {
             return this.bone.getTailVecPos().add(Math.PI);
         }
-        public getRoute(): ROUTES.Line {
-            return this.route;
+        public get route(): ROUTES.Line {
+            return this._route;
         }
-        public getLength(): number {
+        public get length(): number {
             return this.prevLength;
         }
-        public getCurrentLength(): number {
-            return this.length;
+        public get currentLength(): number {
+            return this._length;
         }
         public dispose(): void {
             this.bone = null;
-            this.route = null;
+            this._route = null;
         }
     }
 }

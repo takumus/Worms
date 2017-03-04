@@ -1,16 +1,14 @@
 namespace ROUTES {
     export class Line {
-        protected data: Array<UTILS.Pos>;
-        private length: number;
+        protected points: Array<UTILS.Pos>;
         private prevPositionOffset: UTILS.Pos;
         private prevScaleOffset: UTILS.Pos;
         constructor(data: Array<UTILS.Pos>|Array<{x: number, y: number}> = []) {
-            this.data = [];
+            this.points = [];
             for (let i = 0; i < data.length; i ++) {
                 const p = data[i];
-                this.data.push(new UTILS.Pos(p.x, p.y));
+                this.points.push(new UTILS.Pos(p.x, p.y));
             }
-            this.length = this.data.length;
             this.prevPositionOffset = new UTILS.Pos();
             this.prevScaleOffset = new UTILS.Pos();
         }
@@ -53,7 +51,7 @@ namespace ROUTES {
             return max - min;
         }
         public reverse(): Line {
-            this.data.reverse();
+            this.points.reverse();
             return this;
         }
         public getHeadVecPos(): UTILS.VecPos {
@@ -85,43 +83,38 @@ namespace ROUTES {
             return this.at(this.length - 1);
         }
         public at(id: number): UTILS.Pos {
-            return this.data[id];
+            return this.points[id];
         }
         public push(pos: UTILS.Pos): void {
-            this.data.push(pos.clone());
-            this.length = this.data.length;
+            this.points.push(pos.clone());
         }
         public pop(): UTILS.Pos {
-            this.length --;
-            return this.data.pop();
+            return this.points.pop();
         }
         public shift(): UTILS.Pos {
-            this.length --;
-            return this.data.shift();
+            return this.points.shift();
         }
         public pushLine(line: Line): Line {
             line = line.clone();
             if (line.head().equals(this.tail())) line.shift();
-            const L = line.data.length;
+            const L = line.points.length;
             for (let i = 0; i < L; i ++) {
-                this.push(line.data[i].clone());
+                this.push(line.points[i].clone());
             }
-            this.length = this.data.length;
             return this;
         }
-        public getLength(): number {
-            return this.length;
+        public get length(): number {
+            return this.points.length;
         }
         public clone(): Line {
             const data: Array<UTILS.Pos> = [];
             for (let i = 0; i < this.length; i ++) {
-                data.push(this.data[i].clone());
+                data.push(this.points[i].clone());
             }
             return new Line(data);
         }
         public clear(): void {
-            this.data = [];
-            this.length = 0;
+            this.points = [];
         }
         public wave(amp: number, freq: number, randomBegin: boolean = false): Line {
             const newData: Array<UTILS.Pos> = [];
@@ -142,14 +135,11 @@ namespace ROUTES {
                 newData.push(np);
             }
             newData.push(this.at(this.length - 1).clone());
-            this.data = newData;
+            this.points = newData;
             return this;
         }
         public toString(): string {
-            return JSON.stringify(this.data);
-        }
-        public forEach(callbackfn: (value: UTILS.Pos, index: number, array: UTILS.Pos[]) => void): void {
-            this.data.forEach(callbackfn);
+            return JSON.stringify(this.points);
         }
     }
 }

@@ -220,7 +220,7 @@
 	        var opt = w.getOption();
 	        opt.fillColor = i != 0 ? props.global.color : 0x000000;
 	        opt.borderColor = i != 0 ? 0x000000 : props.global.color;
-	        if (w.getStep() == 1 || (i == 0 && pressing)) {
+	        if (w.step == 1 || (i == 0 && pressing)) {
 	            var vpos = void 0;
 	            var route = void 0;
 	            if (i != 0) {
@@ -249,7 +249,7 @@
 	            }
 	            w.setRoute(w.getCurrentLine().pushLine(route));
 	            w.setStep(0);
-	            var r = w.getRoute();
+	            var r = w.route;
 	            var h = r.head();
 	            var t = r.tail();
 	            var c = i != 0 ? 0x666666 : 0xCCCCCC;
@@ -259,9 +259,9 @@
 	            g.endFill();
 	            g.lineStyle(1, c, 0);
 	            g.moveTo(h.x, h.y);
-	            for (var n = 1; n < r.getLength(); n++) {
+	            for (var n = 1; n < r.length; n++) {
 	                var p = r.at(n);
-	                g.lineStyle(n / r.getLength() * 2, c);
+	                g.lineStyle(n / r.length * 2, c);
 	                g.lineTo(p.x, p.y);
 	            }
 	            pressing = false;

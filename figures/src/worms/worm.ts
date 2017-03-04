@@ -66,13 +66,13 @@ namespace WF {
         }
         private renderWith(graphics: PIXI.Graphics, color: number, thickness: number, offsetX: number, offsetY: number): void {
             const bbone = this.bone.at(0);
-            const ebone = this.bone.at(this.length - 1);
+            const ebone = this.bone.at(this.currentLength - 1);
             graphics.beginFill(color);
             graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
             graphics.endFill();
             graphics.lineStyle(thickness, color);
             graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
-            for (let i = 1; i < this.length  - 1; i ++) {
+            for (let i = 1; i < this.currentLength  - 1; i ++) {
                 const nbone = this.bone.at(i);
                 graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
             }

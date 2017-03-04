@@ -22,9 +22,9 @@ namespace ROUTES {
             const ep: UTILS.Pos = line.tail();
             this.graphics.lineStyle(this.thickness, this.color, this.gradient ? 0 : 1);
             this.graphics.moveTo(bp.x, bp.y);
-            for (let i = 1; i < line.getLength(); i ++) {
+            for (let i = 1; i < line.length; i ++) {
                 const p = line.at(i);
-                const a = i / (line.getLength() - 1);
+                const a = i / (line.length - 1);
                 this.graphics.lineStyle(this.thickness, this.color, this.gradient ? a : 1);
                 this.graphics.lineTo(p.x, p.y);
             }

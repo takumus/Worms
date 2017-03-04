@@ -59,12 +59,11 @@
 	    var Line = (function () {
 	        function Line(data) {
 	            if (data === void 0) { data = []; }
-	            this.data = [];
+	            this.points = [];
 	            for (var i = 0; i < data.length; i++) {
 	                var p = data[i];
-	                this.data.push(new UTILS.Pos(p.x, p.y));
+	                this.points.push(new UTILS.Pos(p.x, p.y));
 	            }
-	            this.length = this.data.length;
 	            this.prevPositionOffset = new UTILS.Pos();
 	            this.prevScaleOffset = new UTILS.Pos();
 	        }
@@ -111,7 +110,7 @@
 	            return max - min;
 	        };
 	        Line.prototype.reverse = function () {
-	            this.data.reverse();
+	            this.points.reverse();
 	            return this;
 	        };
 	        Line.prototype.getHeadVecPos = function () {
@@ -130,44 +129,43 @@
 	            return this.at(this.length - 1);
 	        };
 	        Line.prototype.at = function (id) {
-	            return this.data[id];
+	            return this.points[id];
 	        };
 	        Line.prototype.push = function (pos) {
-	            this.data.push(pos.clone());
-	            this.length = this.data.length;
+	            this.points.push(pos.clone());
 	        };
 	        Line.prototype.pop = function () {
-	            this.length--;
-	            return this.data.pop();
+	            return this.points.pop();
 	        };
 	        Line.prototype.shift = function () {
-	            this.length--;
-	            return this.data.shift();
+	            return this.points.shift();
 	        };
 	        Line.prototype.pushLine = function (line) {
 	            line = line.clone();
 	            if (line.head().equals(this.tail()))
 	                line.shift();
-	            var L = line.data.length;
+	            var L = line.points.length;
 	            for (var i = 0; i < L; i++) {
-	                this.push(line.data[i].clone());
+	                this.push(line.points[i].clone());
 	            }
-	            this.length = this.data.length;
 	            return this;
 	        };
-	        Line.prototype.getLength = function () {
-	            return this.length;
-	        };
+	        Object.defineProperty(Line.prototype, "length", {
+	            get: function () {
+	                return this.points.length;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Line.prototype.clone = function () {
 	            var data = [];
 	            for (var i = 0; i < this.length; i++) {
-	                data.push(this.data[i].clone());
+	                data.push(this.points[i].clone());
 	            }
 	            return new Line(data);
 	        };
 	        Line.prototype.clear = function () {
-	            this.data = [];
-	            this.length = 0;
+	            this.points = [];
 	        };
 	        Line.prototype.wave = function (amp, freq, randomBegin) {
 	            if (randomBegin === void 0) { randomBegin = false; }
@@ -189,14 +187,11 @@
 	                newData.push(np);
 	            }
 	            newData.push(this.at(this.length - 1).clone());
-	            this.data = newData;
+	            this.points = newData;
 	            return this;
 	        };
 	        Line.prototype.toString = function () {
-	            return JSON.stringify(this.data);
-	        };
-	        Line.prototype.forEach = function (callbackfn) {
-	            this.data.forEach(callbackfn);
+	            return JSON.stringify(this.points);
 	        };
 	        return Line;
 	    }());
@@ -467,9 +462,9 @@
 	            var ep = line.tail();
 	            this.graphics.lineStyle(this.thickness, this.color, this.gradient ? 0 : 1);
 	            this.graphics.moveTo(bp.x, bp.y);
-	            for (var i = 1; i < line.getLength(); i++) {
+	            for (var i = 1; i < line.length; i++) {
 	                var p = line.at(i);
-	                var a = i / (line.getLength() - 1);
+	                var a = i / (line.length - 1);
 	                this.graphics.lineStyle(this.thickness, this.color, this.gradient ? a : 1);
 	                this.graphics.lineTo(p.x, p.y);
 	            }

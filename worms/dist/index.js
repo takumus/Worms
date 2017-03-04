@@ -58,7 +58,7 @@
 	(function (WORMS) {
 	    var Base = (function () {
 	        function Base(length) {
-	            this.step = 0;
+	            this._step = 0;
 	            this.bone = new ROUTES.Line();
 	            this.setLength(length);
 	        }
@@ -67,11 +67,11 @@
 	            this.allocLength(length);
 	        };
 	        Base.prototype.updateLength = function () {
-	            var pl = this.route.getLength() - this.prevLength;
-	            this.setLength(this.length);
-	            var nl = this.route.getLength() - this.prevLength;
+	            var pl = this._route.length - this.prevLength;
+	            this.setLength(this._length);
+	            var nl = this._route.length - this.prevLength;
 	            if (pl > 0 && nl > 0) {
-	                var pdf = pl - pl * this.step;
+	                var pdf = pl - pl * this._step;
 	                var p = (nl - pdf) / nl;
 	                this.setStep(p);
 	            }
@@ -85,36 +85,25 @@
 	                this.bone.push(new UTILS.Pos());
 	            }
 	            // re set bones
-	            this.setStep(this.step);
-	        };
-	        Base.prototype.push = function (x, y) {
-	            // 先頭に加えて、１つずつずらす。
-	            var i = this.bone.getLength() - 1;
-	            for (; i >= 1; i--) {
-	                this.bone.at(i).x = this.bone.at(i - 1).x;
-	                this.bone.at(i).y = this.bone.at(i - 1).y;
-	            }
-	            var bbone = this.bone.at(0);
-	            bbone.x = x;
-	            bbone.y = y;
+	            this.setStep(this._step);
 	        };
 	        Base.prototype.render = function () {
 	        };
 	        Base.prototype.setRoute = function (line, nextLength) {
-	            if (line.getLength() < this.prevLength)
+	            if (line.length < this.prevLength)
 	                return;
-	            this.step = 0;
-	            this.route = line;
-	            this.allocLength(UTILS.def(nextLength, this.length));
+	            this._step = 0;
+	            this._route = line;
+	            this.allocLength(UTILS.def(nextLength, this._length));
 	        };
 	        Base.prototype.addStep = function (step) {
-	            var length = this.route.getLength() - this.prevLength;
+	            var length = this._route.length - this.prevLength;
 	            var p = step / length;
 	            if (p < 0) {
 	                this.setStep(1);
 	                return false;
 	            }
-	            return this.setStep(this.step + p);
+	            return this.setStep(this._step + p);
 	        };
 	        Base.prototype.setStep = function (step) {
 	            if (step < 0)
@@ -123,19 +112,19 @@
 	                step = 1;
 	            var s = step * 1.2;
 	            s = s > 1 ? 1 : s;
-	            this.length = Math.floor(s * this.diffLength + this.prevLength);
-	            this.step = step;
-	            if (!this.route)
+	            this._length = Math.floor(s * this.diffLength + this.prevLength);
+	            this._step = step;
+	            if (!this._route)
 	                return false;
 	            var beginIndex = this.prevLength - 1;
-	            var length = this.route.getLength() - beginIndex - 1;
+	            var length = this._route.length - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);
-	            for (var i = 0; i < this.bone.getLength(); i++) {
+	            for (var i = 0; i < this.bone.length; i++) {
 	                var id = beginIndex - i + posIndex;
 	                var b = this.bone.at(i);
-	                var l = this.route.at(id);
-	                var nl = this.route.at(id + 1);
+	                var l = this._route.at(id);
+	                var nl = this._route.at(id + 1);
 	                if (!l)
 	                    continue;
 	                var dx = 0;
@@ -149,9 +138,13 @@
 	            }
 	            return true;
 	        };
-	        Base.prototype.getStep = function () {
-	            return this.step;
-	        };
+	        Object.defineProperty(Base.prototype, "step", {
+	            get: function () {
+	                return this._step;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Base.prototype.reverse = function () {
 	            this.bone.reverse();
 	        };
@@ -159,7 +152,7 @@
 	            // console.log(this.bone);
 	            var line = new ROUTES.Line();
 	            var current = this.bone.clone();
-	            for (var i = 0; i < this.length; i++) {
+	            for (var i = 0; i < this._length; i++) {
 	                line.push(current.at(i).clone());
 	            }
 	            return line.reverse();
@@ -170,18 +163,30 @@
 	        Base.prototype.getTailVecPos = function () {
 	            return this.bone.getTailVecPos().add(Math.PI);
 	        };
-	        Base.prototype.getRoute = function () {
-	            return this.route;
-	        };
-	        Base.prototype.getLength = function () {
-	            return this.prevLength;
-	        };
-	        Base.prototype.getCurrentLength = function () {
-	            return this.length;
-	        };
+	        Object.defineProperty(Base.prototype, "route", {
+	            get: function () {
+	                return this._route;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(Base.prototype, "length", {
+	            get: function () {
+	                return this.prevLength;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        Object.defineProperty(Base.prototype, "currentLength", {
+	            get: function () {
+	                return this._length;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Base.prototype.dispose = function () {
 	            this.bone = null;
-	            this.route = null;
+	            this._route = null;
 	        };
 	        return Base;
 	    }());
@@ -203,7 +208,7 @@
 	        Nasty.prototype.allocLength = function (length) {
 	            _super.prototype.allocLength.call(this, length);
 	            this.bodyPos = [];
-	            for (var i = 0; i < this.bone.getLength(); i++) {
+	            for (var i = 0; i < this.bone.length; i++) {
 	                this.bodyPos.push(new BodyPos());
 	            }
 	        };
@@ -221,20 +226,20 @@
 	        Nasty.prototype.render = function () {
 	            var bbone = this.bone.at(0);
 	            // ワームの外殻を生成
-	            var ebone = this.bone.at(this.length - 1);
+	            var ebone = this.bone.at(this.currentLength - 1);
 	            var bbody = this.bodyPos[0];
-	            var ebody = this.bodyPos[this.length - 1];
+	            var ebody = this.bodyPos[this.currentLength - 1];
 	            bbody.left.x = bbone.x;
 	            bbody.left.y = bbone.y;
-	            var L = this.length - 1;
+	            var L = this.currentLength - 1;
 	            for (var i = 1; i < L; i++) {
 	                var nbone = this.bone.at(i);
 	                var nbody = this.bodyPos[i];
 	                var vx = this.bone.at(i - 1).x - nbone.x;
 	                var vy = this.bone.at(i - 1).y - nbone.y;
 	                var radian = Matthew.H_PI;
-	                var headLength = this.length * this._option.headLength;
-	                var tailLength = this.length * this._option.tailLength;
+	                var headLength = this.currentLength * this._option.headLength;
+	                var tailLength = this.currentLength * this._option.tailLength;
 	                if (i < headLength) {
 	                    radian = i / headLength * Matthew.H_PI;
 	                }
@@ -257,10 +262,10 @@
 	            this.graphics.lineStyle(this._option.borderThickness, this._option.borderColor);
 	            this.graphics.beginFill(this._option.fillColor);
 	            this.graphics.moveTo(bbody.left.x, bbody.left.y);
-	            for (var i = 1; i < this.length; i++) {
+	            for (var i = 1; i < this.currentLength; i++) {
 	                this.graphics.lineTo(this.bodyPos[i].left.x, this.bodyPos[i].left.y);
 	            }
-	            for (var i = this.length - 2; i >= 2; i--) {
+	            for (var i = this.currentLength - 2; i >= 2; i--) {
 	                this.graphics.lineTo(this.bodyPos[i].right.x, this.bodyPos[i].right.y);
 	            }
 	            this.graphics.lineTo(bbody.left.x, bbody.left.y);
@@ -309,13 +314,13 @@
 	        Simple.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
 	            graphics.clear();
 	            var bbone = this.bone.at(0);
-	            var ebone = this.bone.at(this.length - 1);
+	            var ebone = this.bone.at(this.currentLength - 1);
 	            graphics.beginFill(color);
 	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
 	            graphics.endFill();
 	            graphics.lineStyle(thickness, color);
 	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
-	            for (var i = 1; i < this.length - 1; i++) {
+	            for (var i = 1; i < this.currentLength - 1; i++) {
 	                var nbone = this.bone.at(i);
 	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
 	            }
