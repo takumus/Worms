@@ -15,14 +15,14 @@ declare namespace WF {
     class FigureWorm extends HoldableWorm {
         static graphics: PIXI.Graphics;
         private static worms;
-        private option;
+        private _option;
         private static _id;
         private _id;
         constructor(length: number, option: SimpleLightOption);
         static render(): void;
         static getWorms(): FigureWorm[];
         setOption(option: SimpleLightOption): void;
-        getOption(): SimpleLightOption;
+        readonly option: SimpleLightOption;
         render(): void;
         dispose(): void;
         private renderWith(graphics, color, thickness, offsetX, offsetY);

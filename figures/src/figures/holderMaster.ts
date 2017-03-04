@@ -23,13 +23,15 @@ namespace WF {
             return this.transform(me, me, option);
         }
         public transform(from: Holder[], to: Holder[], option: TransformOption): boolean {
-            option.wave = UTILS.def<WaveOption>(option.wave, {enabled: false, amplitude: 0, frequency: 0});
-            if (typeof option.radius == 'number') {
-                option.radius = {begin: option.radius, end: option.radius};
-            }
             if (this.animating) {
                 console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
                 return false;
+            }
+            from = UTILS.clone(from);
+            to = UTILS.clone(to);
+            option.wave = UTILS.def<WaveOption>(option.wave, {enabled: false, amplitude: 0, frequency: 0});
+            if (typeof option.radius == 'number') {
+                option.radius = {begin: option.radius, end: option.radius};
             }
             let animatingHolders = false;
             from.forEach((holder) => {if (holder.animating) animatingHolders = true});
@@ -68,8 +70,8 @@ namespace WF {
                 }
             }
             // shuffle
-            UTILS.shuffle<HoldableWorm>(worms);
-            UTILS.shuffle<Holder>(to);
+            UTILS.shuffle(worms);
+            UTILS.shuffle(to);
             // generate route to figures
             to.forEach((holder) => {
                 for (let i = 0; i < holder.figure.length; i ++) {

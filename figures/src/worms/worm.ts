@@ -24,7 +24,7 @@ namespace WF {
     export class FigureWorm extends HoldableWorm {
         public static graphics: PIXI.Graphics;
         private static worms: {[key: number]: FigureWorm} = {};
-        private option: SimpleLightOption;
+        private _option: SimpleLightOption;
         private static _id: number = 0;
         private _id: number;
         constructor(length: number, option: SimpleLightOption) {
@@ -45,22 +45,22 @@ namespace WF {
             return Object.keys(this.worms).map((key) => this.worms[key]);
         }
         public setOption(option: SimpleLightOption): void {
-            this.option = option;
+            this._option = option;
             option.fillColor = UTILS.def<number>(option.fillColor, 0xff0000);
         }
-        public getOption(): SimpleLightOption {
-            return this.option;
+        public get option(): SimpleLightOption {
+            return this._option;
         }
         public render() {
             this.renderWith(
                 FigureWorm.graphics,
-                this.option.fillColor,
-                this.option.thickness,
+                this._option.fillColor,
+                this._option.thickness,
                 0, 0
             );
         }
         public dispose(): void {
-            this.option = null;
+            this._option = null;
             FigureWorm.worms[this._id] = null;
             delete FigureWorm.worms[this._id];
         }

@@ -98,17 +98,21 @@
 	            return Object.keys(this.worms).map(function (key) { return _this.worms[key]; });
 	        };
 	        FigureWorm.prototype.setOption = function (option) {
-	            this.option = option;
+	            this._option = option;
 	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
 	        };
-	        FigureWorm.prototype.getOption = function () {
-	            return this.option;
-	        };
+	        Object.defineProperty(FigureWorm.prototype, "option", {
+	            get: function () {
+	                return this._option;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        FigureWorm.prototype.render = function () {
-	            this.renderWith(FigureWorm.graphics, this.option.fillColor, this.option.thickness, 0, 0);
+	            this.renderWith(FigureWorm.graphics, this._option.fillColor, this._option.thickness, 0, 0);
 	        };
 	        FigureWorm.prototype.dispose = function () {
-	            this.option = null;
+	            this._option = null;
 	            FigureWorm.worms[this._id] = null;
 	            delete FigureWorm.worms[this._id];
 	        };
