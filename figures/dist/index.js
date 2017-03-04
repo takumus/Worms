@@ -149,47 +149,41 @@
 	})(WF || (WF = {}));
 	var WF;
 	(function (WF) {
-	    var Figure = (function () {
+	    var Figure = (function (_super) {
+	        __extends(Figure, _super);
 	        function Figure() {
-	            this._lines = [];
+	            var _this = _super.call(this) || this;
+	            _this['__proto__'] = Figure.prototype;
+	            return _this;
 	        }
-	        Object.defineProperty(Figure.prototype, "lines", {
-	            get: function () { return this._lines; },
-	            enumerable: true,
-	            configurable: true
-	        });
 	        Figure.prototype.initWithOject = function (data) {
 	            var _this = this;
-	            this._lines = [];
-	            data.forEach(function (lo) { return _this._lines.push(new ROUTES.Line(lo)); });
-	            this._length = this._lines.length;
+	            this.clear();
+	            data.forEach(function (lo) { return _this.push(new ROUTES.Line(lo)); });
+	            this._length = this.length;
 	        };
 	        Figure.prototype.initWithLines = function (data) {
 	            var _this = this;
-	            this._lines = [];
-	            data.forEach(function (line) { return _this._lines.push(line.clone()); });
-	            this._length = this._lines.length;
+	            this.clear();
+	            data.forEach(function (line) { return _this.push(line.clone()); });
+	            this._length = this.length;
 	        };
-	        Object.defineProperty(Figure.prototype, "length", {
-	            get: function () {
-	                return this._length;
-	            },
-	            enumerable: true,
-	            configurable: true
-	        });
 	        Figure.prototype.clone = function () {
 	            var figure = new Figure();
-	            figure.initWithLines(this._lines);
+	            figure.initWithLines(this);
 	            return figure;
 	        };
 	        Figure.prototype.setPositionOffset = function (pos) {
 	            for (var i = 0; i < this._length; i++) {
-	                this._lines[i].setPositionOffset(pos);
+	                this[i].setPositionOffset(pos);
 	            }
 	            return this;
 	        };
+	        Figure.prototype.clear = function () {
+	            this.length = 0;
+	        };
 	        return Figure;
-	    }());
+	    }(Array));
 	    WF.Figure = Figure;
 	})(WF || (WF = {}));
 	var WF;
@@ -228,7 +222,7 @@
 	            }
 	            this.dispose();
 	            for (var i = 0; i < this._figure.length; i++) {
-	                var l = this._figure.lines[i];
+	                var l = this._figure[i];
 	                var w = WF.createWorm(l.length, this);
 	                w.setRoute(l);
 	                this._worms.push(w);
@@ -330,7 +324,7 @@
 	            // generate route to figures
 	            to.forEach(function (holder) {
 	                for (var i = 0; i < holder.figure.length; i++) {
-	                    var line = holder.figure.lines[i];
+	                    var line = holder.figure[i];
 	                    var worm = worms.pop();
 	                    worm.setHolder(holder);
 	                    _this.setRoute(worm, line, option);
@@ -341,7 +335,7 @@
 	            worms.forEach(function (worm) {
 	                var holder = to[Math.floor(Math.random() * to.length)];
 	                var figure = holder.figure;
-	                var target = figure.lines[Math.floor(Math.random() * figure.length)];
+	                var target = figure[Math.floor(Math.random() * figure.length)];
 	                worm.setHolder(holder);
 	                _this.setRoute(worm, target, option);
 	                holder.worms.push(worm);

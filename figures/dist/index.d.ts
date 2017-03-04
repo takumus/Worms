@@ -30,19 +30,17 @@ declare namespace WF {
     function createWorm(length: number, holder: Holder): HoldableWorm;
 }
 declare namespace WF {
-    class Figure {
-        private _lines;
+    class Figure extends Array<ROUTES.Line> {
         private _length;
         constructor();
-        readonly lines: Array<ROUTES.Line>;
         initWithOject(data: {
             x: number;
             y: number;
         }[][]): void;
         initWithLines(data: ROUTES.Line[]): void;
-        readonly length: number;
         clone(): Figure;
         setPositionOffset(pos: UTILS.Pos): Figure;
+        clear(): void;
     }
 }
 declare namespace WF {

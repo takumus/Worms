@@ -75,7 +75,7 @@ namespace WF {
             // generate route to figures
             to.forEach((holder) => {
                 for (let i = 0; i < holder.figure.length; i ++) {
-                    const line = holder.figure.lines[i];
+                    const line = holder.figure[i];
                     const worm = worms.pop();
                     worm.setHolder(holder);
                     this.setRoute(worm, line, option);
@@ -86,7 +86,7 @@ namespace WF {
             worms.forEach((worm) => {
                 const holder = to[Math.floor(Math.random() * to.length)];
                 const figure = holder.figure;
-                const target = figure.lines[Math.floor(Math.random() * figure.length)];
+                const target = figure[Math.floor(Math.random() * figure.length)];
                 worm.setHolder(holder);
                 this.setRoute(worm, target, option);
                 holder.worms.push(worm);
