@@ -393,7 +393,7 @@
 	        HolderMaster.prototype.autoTween = function (time, delay, complete) {
 	            var _this = this;
 	            if (!this.animating) {
-	                console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
+	                // console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
 	                return;
 	            }
 	            if (this.autoTweening) {

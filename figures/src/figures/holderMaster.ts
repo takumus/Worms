@@ -139,7 +139,7 @@ namespace WF {
         }
         public autoTween(time: number, delay: number, complete?: () => void): void {
             if (!this.animating) {
-                console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
+                // console.error('Cannnot call "HolderMaster.prototype.autoTween" while not animating');
                 return;
             }
             if (this.autoTweening) {
