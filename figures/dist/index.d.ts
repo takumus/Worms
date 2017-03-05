@@ -47,10 +47,12 @@ declare namespace WF {
         private _worms;
         private _figure;
         private _animating;
+        private _positionOffset;
         readonly worms: HoldableWorm[];
         readonly figure: Figure;
         animating: boolean;
         constructor();
+        setPositionOffset(pos: UTILS.Pos): void;
         setFigure(figure: Figure): void;
         generate(): void;
         dispose(): void;

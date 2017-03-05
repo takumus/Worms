@@ -188,6 +188,7 @@
 	    var Holder = (function () {
 	        function Holder() {
 	            this._worms = [];
+	            this._positionOffset = new UTILS.Pos();
 	        }
 	        Object.defineProperty(Holder.prototype, "worms", {
 	            get: function () { return this._worms; },
@@ -205,12 +206,22 @@
 	            enumerable: true,
 	            configurable: true
 	        });
+	        Holder.prototype.setPositionOffset = function (pos) {
+	            if (this._animating) {
+	                console.error('Cannnot call "Holder.prototype.setPositionOffset" while animating');
+	                return;
+	            }
+	            this._positionOffset = pos;
+	            if (this._figure)
+	                this._figure.setPositionOffset(pos);
+	        };
 	        Holder.prototype.setFigure = function (figure) {
 	            if (this._animating) {
 	                console.error('Cannnot call "Holder.prototype.setFigure" while animating');
 	                return;
 	            }
-	            this._figure = figure;
+	            this._figure = figure.clone();
+	            this._figure.setPositionOffset(this._positionOffset);
 	        };
 	        Holder.prototype.generate = function () {
 	            if (this._animating) {
