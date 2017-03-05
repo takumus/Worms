@@ -262,5 +262,3 @@ function setProps(newProps): void {
     });
 }
 window.onload = init;
-
-// 100コミット

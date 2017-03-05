@@ -1,6 +1,6 @@
 /// <reference types="pixi.js" />
 declare namespace ROUTES {
-    class Line extends Array<UTILS.Pos> {
+    class Line extends UTILS.ArrayWrapper<Line, UTILS.Pos> {
         private prevPositionOffset;
         private prevScaleOffset;
         constructor(data?: Array<UTILS.Pos> | Array<{

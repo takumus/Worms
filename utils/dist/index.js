@@ -44,6 +44,16 @@
 /* 0 */
 /***/ function(module, exports) {
 
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	var UTILS;
 	(function (UTILS) {
 	    var Pos = (function () {
@@ -101,6 +111,17 @@
 	        return Circle;
 	    }());
 	    UTILS.Circle = Circle;
+	})(UTILS || (UTILS = {}));
+	var UTILS;
+	(function (UTILS) {
+	    var ArrayWrapper = (function (_super) {
+	        __extends(ArrayWrapper, _super);
+	        function ArrayWrapper() {
+	            return _super.call(this) || this;
+	        }
+	        return ArrayWrapper;
+	    }(Array));
+	    UTILS.ArrayWrapper = ArrayWrapper;
 	})(UTILS || (UTILS = {}));
 	var UTILS;
 	(function (UTILS) {
@@ -290,6 +311,7 @@
 	/// <reference path="./2d.ts" />
 	/// <reference path="./color.ts" />
 	/// <reference path="./others.ts" />
+	/// <reference path="./array.ts" />
 	window['UTILS'] = UTILS;
 	window['Matthew'] = Matthew;
 

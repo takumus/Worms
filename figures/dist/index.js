@@ -174,16 +174,16 @@
 	            return figure;
 	        };
 	        Figure.prototype.setPositionOffset = function (pos) {
-	            for (var i = 0; i < this._length; i++) {
-	                this[i].setPositionOffset(pos);
-	            }
+	            this.forEach(function (l) {
+	                l.setPositionOffset(pos);
+	            });
 	            return this;
 	        };
 	        Figure.prototype.clear = function () {
 	            this.length = 0;
 	        };
 	        return Figure;
-	    }(Array));
+	    }(UTILS.ArrayWrapper));
 	    WF.Figure = Figure;
 	})(WF || (WF = {}));
 	var WF;

@@ -30,7 +30,7 @@ declare namespace WF {
     function createWorm(length: number, holder: Holder): HoldableWorm;
 }
 declare namespace WF {
-    class Figure extends Array<ROUTES.Line> {
+    class Figure extends UTILS.ArrayWrapper<Figure, ROUTES.Line> {
         private _length;
         constructor();
         initWithOject(data: {

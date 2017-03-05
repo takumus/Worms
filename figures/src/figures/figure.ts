@@ -1,5 +1,5 @@
 namespace WF {
-    export class Figure extends Array<ROUTES.Line> {
+    export class Figure extends UTILS.ArrayWrapper<Figure, ROUTES.Line> {
         private _length: number;
         constructor() {
             super();
@@ -21,9 +21,9 @@ namespace WF {
             return figure;
         }
         public setPositionOffset(pos: UTILS.Pos): Figure {
-            for (let i = 0; i < this._length; i ++) {
-                this[i].setPositionOffset(pos);
-            }
+            this.forEach((l) => {
+                l.setPositionOffset(pos);
+            })
             return this;
         }
         public clear(): void {

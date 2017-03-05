@@ -1,5 +1,5 @@
 namespace ROUTES {
-    export class Line extends Array<UTILS.Pos> {
+    export class Line extends UTILS.ArrayWrapper<Line, UTILS.Pos> {
         private prevPositionOffset: UTILS.Pos;
         private prevScaleOffset: UTILS.Pos;
         constructor(data: Array<UTILS.Pos>|Array<{x: number, y: number}> = []) {
@@ -13,21 +13,19 @@ namespace ROUTES {
             this.prevScaleOffset = new UTILS.Pos();
         }
         public setPositionOffset(pos: UTILS.Pos): void {
-            for (let i = 0; i < this.length; i ++) {
-                const p = this[i];
+            this.forEach((p) => {
                 p.x += pos.x - this.prevPositionOffset.x;
                 p.y += pos.y - this.prevPositionOffset.y;
-            }
+            });
             this.prevPositionOffset = pos.clone();
         }
         public setScaleOffset(scale: UTILS.Pos): void {
-            for (let i = 0; i < this.length; i ++) {
-                const p = this[i];
+            this.forEach((p) => {
                 p.x /= this.prevScaleOffset.x;
                 p.y /= this.prevScaleOffset.y;
                 p.x *= scale.x;
                 p.y *= scale.y;
-            }
+            });
             this.prevScaleOffset = scale.clone();
         }
         public getWidth(): number {
@@ -43,11 +41,10 @@ namespace ROUTES {
         public getHeight(): number {
             let min = Number.MAX_VALUE;
             let max = Number.MIN_VALUE;
-            for (let i = 0; i < this.length; i ++) {
-                const p = this[i];
+            this.forEach((p) => {
                 if (min > p.y) min = p.y;
                 else if (max < p.y) max = p.y;
-            }
+            })
             return max - min;
         }
         public getHeadVecPos(): UTILS.VecPos {
@@ -65,18 +62,17 @@ namespace ROUTES {
         public pushLine(line: Line): Line {
             line = line.clone();
             if (line[0].equals(this[this.length - 1])) line.shift();
-            const L = line.length;
-            for (let i = 0; i < L; i ++) {
-                this.push(line[i].clone());
-            }
+            line.forEach((p) => {
+               this.push(p.clone());
+            })
             return this;
         }
         public clone(): Line {
-            const data: Array<UTILS.Pos> = [];
-            for (let i = 0; i < this.length; i ++) {
-                data.push(this[i].clone());
-            }
-            return new Line(data);
+            const data: Line = new Line();
+            this.forEach((p) => {
+                data.push(p.clone());
+            });
+            return data;
         }
         public clear(): void {
             this.length = 0;

@@ -71,21 +71,21 @@
 	            return _this;
 	        }
 	        Line.prototype.setPositionOffset = function (pos) {
-	            for (var i = 0; i < this.length; i++) {
-	                var p = this[i];
-	                p.x += pos.x - this.prevPositionOffset.x;
-	                p.y += pos.y - this.prevPositionOffset.y;
-	            }
+	            var _this = this;
+	            this.forEach(function (p) {
+	                p.x += pos.x - _this.prevPositionOffset.x;
+	                p.y += pos.y - _this.prevPositionOffset.y;
+	            });
 	            this.prevPositionOffset = pos.clone();
 	        };
 	        Line.prototype.setScaleOffset = function (scale) {
-	            for (var i = 0; i < this.length; i++) {
-	                var p = this[i];
-	                p.x /= this.prevScaleOffset.x;
-	                p.y /= this.prevScaleOffset.y;
+	            var _this = this;
+	            this.forEach(function (p) {
+	                p.x /= _this.prevScaleOffset.x;
+	                p.y /= _this.prevScaleOffset.y;
 	                p.x *= scale.x;
 	                p.y *= scale.y;
-	            }
+	            });
 	            this.prevScaleOffset = scale.clone();
 	        };
 	        Line.prototype.getWidth = function () {
@@ -103,13 +103,12 @@
 	        Line.prototype.getHeight = function () {
 	            var min = Number.MAX_VALUE;
 	            var max = Number.MIN_VALUE;
-	            for (var i = 0; i < this.length; i++) {
-	                var p = this[i];
+	            this.forEach(function (p) {
 	                if (min > p.y)
 	                    min = p.y;
 	                else if (max < p.y)
 	                    max = p.y;
-	            }
+	            });
 	            return max - min;
 	        };
 	        Line.prototype.getHeadVecPos = function () {
@@ -119,21 +118,21 @@
 	            return this.getVecPos(this[this.length - 1], this[this.length - 2]);
 	        };
 	        Line.prototype.pushLine = function (line) {
+	            var _this = this;
 	            line = line.clone();
 	            if (line[0].equals(this[this.length - 1]))
 	                line.shift();
-	            var L = line.length;
-	            for (var i = 0; i < L; i++) {
-	                this.push(line[i].clone());
-	            }
+	            line.forEach(function (p) {
+	                _this.push(p.clone());
+	            });
 	            return this;
 	        };
 	        Line.prototype.clone = function () {
-	            var data = [];
-	            for (var i = 0; i < this.length; i++) {
-	                data.push(this[i].clone());
-	            }
-	            return new Line(data);
+	            var data = new Line();
+	            this.forEach(function (p) {
+	                data.push(p.clone());
+	            });
+	            return data;
 	        };
 	        Line.prototype.clear = function () {
 	            this.length = 0;
@@ -172,7 +171,7 @@
 	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.y - fp.y, sp.x - fp.x));
 	        };
 	        return Line;
-	    }(Array));
+	    }(UTILS.ArrayWrapper));
 	    ROUTES.Line = Line;
 	})(ROUTES || (ROUTES = {}));
 	var ROUTES;
