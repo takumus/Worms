@@ -19,16 +19,16 @@ namespace WF {
         private animating: boolean;
         private autoTweening: boolean;
         public get holders(): Holder[] {return this._holders};
-        public transformMe(me: Holder[], option: TransformOption): boolean {
+        public transformMe(me: Holder[] | Holder, option: TransformOption): boolean {
             return this.transform(me, me, option);
         }
-        public transform(from: Holder[], to: Holder[], option: TransformOption): boolean {
+        public transform(fromHolders: Holder[] | Holder, toHolders: Holder[] | Holder, option: TransformOption): boolean {
             if (this.animating) {
                 console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
                 return false;
             }
-            from = UTILS.clone(from);
-            to = UTILS.clone(to);
+            const from = Array.isArray(fromHolders) ? fromHolders : [fromHolders];
+            const to = Array.isArray(toHolders) ? toHolders : [toHolders];
             option.wave = UTILS.def<WaveOption>(option.wave, {enabled: false, amplitude: 0, frequency: 0});
             if (typeof option.radius == 'number') {
                 option.radius = {begin: option.radius, end: option.radius};

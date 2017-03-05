@@ -82,8 +82,8 @@ declare namespace WF {
         private animating;
         private autoTweening;
         readonly holders: Holder[];
-        transformMe(me: Holder[], option: TransformOption): boolean;
-        transform(from: Holder[], to: Holder[], option: TransformOption): boolean;
+        transformMe(me: Holder[] | Holder, option: TransformOption): boolean;
+        transform(fromHolders: Holder[] | Holder, toHolders: Holder[] | Holder, option: TransformOption): boolean;
         private setRoute(worm, target, option);
         endMovement(): void;
         autoTween(time: number, delay: number, complete?: () => void): void;

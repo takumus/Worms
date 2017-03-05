@@ -276,14 +276,14 @@
 	        HolderMaster.prototype.transformMe = function (me, option) {
 	            return this.transform(me, me, option);
 	        };
-	        HolderMaster.prototype.transform = function (from, to, option) {
+	        HolderMaster.prototype.transform = function (fromHolders, toHolders, option) {
 	            var _this = this;
 	            if (this.animating) {
 	                console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
 	                return false;
 	            }
-	            from = UTILS.clone(from);
-	            to = UTILS.clone(to);
+	            var from = Array.isArray(fromHolders) ? fromHolders : [fromHolders];
+	            var to = Array.isArray(toHolders) ? toHolders : [toHolders];
 	            option.wave = UTILS.def(option.wave, { enabled: false, amplitude: 0, frequency: 0 });
 	            if (typeof option.radius == 'number') {
 	                option.radius = { begin: option.radius, end: option.radius };
