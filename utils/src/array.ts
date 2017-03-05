@@ -3,6 +3,12 @@ namespace UTILS {
         constructor() {
             super();
         }
+        public shuffle() {
+            UTILS.shuffle(this);
+        }
+        public clear() {
+            this.length = 0;
+        }
     }
     export interface ArrayWrapper<T extends ArrayWrapper<T, V>, V> extends Array<V>{
         forEach(callbackfn: (value: V, index: number, array: T) => void, thisArg?: any): void;

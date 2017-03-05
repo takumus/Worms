@@ -15,7 +15,6 @@ declare namespace ROUTES {
         getTailVecPos(): UTILS.VecPos;
         pushLine(line: Line): Line;
         clone(): Line;
-        clear(): void;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
         toString(): string;
         private getVecPos(fp, sp);

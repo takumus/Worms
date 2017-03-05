@@ -25,6 +25,8 @@ declare namespace UTILS {
 declare namespace UTILS {
     class ArrayWrapper<T extends ArrayWrapper<T, V>, V> extends Array<V> {
         constructor();
+        shuffle(): void;
+        clear(): void;
     }
     interface ArrayWrapper<T extends ArrayWrapper<T, V>, V> extends Array<V> {
         forEach(callbackfn: (value: V, index: number, array: T) => void, thisArg?: any): void;

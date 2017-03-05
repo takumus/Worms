@@ -26,8 +26,5 @@ namespace WF {
             })
             return this;
         }
-        public clear(): void {
-            this.length = 0;
-        }
     }
 }

@@ -179,9 +179,6 @@
 	            });
 	            return this;
 	        };
-	        Figure.prototype.clear = function () {
-	            this.length = 0;
-	        };
 	        return Figure;
 	    }(UTILS.ArrayWrapper));
 	    WF.Figure = Figure;

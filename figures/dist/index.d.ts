@@ -40,7 +40,6 @@ declare namespace WF {
         initWithLines(data: ROUTES.Line[]): void;
         clone(): Figure;
         setPositionOffset(pos: UTILS.Pos): Figure;
-        clear(): void;
     }
 }
 declare namespace WF {

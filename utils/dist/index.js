@@ -119,6 +119,12 @@
 	        function ArrayWrapper() {
 	            return _super.call(this) || this;
 	        }
+	        ArrayWrapper.prototype.shuffle = function () {
+	            UTILS.shuffle(this);
+	        };
+	        ArrayWrapper.prototype.clear = function () {
+	            this.length = 0;
+	        };
 	        return ArrayWrapper;
 	    }(Array));
 	    UTILS.ArrayWrapper = ArrayWrapper;

@@ -134,9 +134,6 @@
 	            });
 	            return data;
 	        };
-	        Line.prototype.clear = function () {
-	            this.length = 0;
-	        };
 	        Line.prototype.wave = function (amp, freq, randomBegin) {
 	            var _this = this;
 	            if (randomBegin === void 0) { randomBegin = false; }

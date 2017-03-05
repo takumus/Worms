@@ -74,9 +74,6 @@ namespace ROUTES {
             });
             return data;
         }
-        public clear(): void {
-            this.length = 0;
-        }
         public wave(amp: number, freq: number, randomBegin: boolean = false): Line {
             const newData: Array<UTILS.Pos> = [];
             let rad = randomBegin ? Math.random() * (Math.PI * 2) : 0;
