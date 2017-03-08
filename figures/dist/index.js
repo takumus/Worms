@@ -431,6 +431,9 @@
 	                holder.setStepToAll(step);
 	            });
 	        };
+	        HolderMaster.prototype.dispose = function () {
+	            this._holders = null;
+	        };
 	        return HolderMaster;
 	    }());
 	    WF.HolderMaster = HolderMaster;

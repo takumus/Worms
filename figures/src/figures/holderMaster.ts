@@ -176,5 +176,8 @@ namespace WF {
                 holder.setStepToAll(step);
             });
         }
+        public dispose(): void {
+            this._holders = null;
+        }
     }
 }

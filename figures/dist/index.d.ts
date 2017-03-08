@@ -88,5 +88,6 @@ declare namespace WF {
         endMovement(): void;
         autoTween(time: number, delay: number, complete?: () => void): void;
         setStep(step: number): void;
+        dispose(): void;
     }
 }
