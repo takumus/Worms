@@ -59,7 +59,7 @@
 	    var Base = (function () {
 	        function Base(length) {
 	            this._step = 0;
-	            this.bone = new ROUTES.Line();
+	            this._bone = new ROUTES.Line();
 	            this.setLength(length);
 	        }
 	        Base.prototype.setLength = function (length) {
@@ -79,10 +79,10 @@
 	        Base.prototype.allocLength = function (length) {
 	            length = Math.floor(length);
 	            this.diffLength = length - this.prevLength;
-	            this.bone.clear();
+	            this._bone.clear();
 	            var L = this.prevLength > length ? this.prevLength : length;
 	            for (var i = 0; i < L; i++) {
-	                this.bone.push(new UTILS.Pos());
+	                this._bone.push(new UTILS.Pos());
 	            }
 	            // re set bones
 	            this.setStep(this._step);
@@ -120,9 +120,9 @@
 	            var length = this._route.length - beginIndex - 1;
 	            var posIndex = Math.floor(length * step);
 	            var offset = (length * step - posIndex);
-	            for (var i = 0; i < this.bone.length; i++) {
+	            for (var i = 0; i < this._bone.length; i++) {
 	                var id = beginIndex - i + posIndex;
-	                var b = this.bone[i];
+	                var b = this._bone[i];
 	                var l = this._route[id];
 	                var nl = this._route[id + 1];
 	                if (!l)
@@ -146,12 +146,12 @@
 	            configurable: true
 	        });
 	        Base.prototype.reverse = function () {
-	            this.bone.reverse();
+	            this._bone.reverse();
 	        };
 	        Base.prototype.getCurrentLine = function () {
-	            // console.log(this.bone);
+	            // console.log(this._bone);
 	            var line = new ROUTES.Line();
-	            var current = this.bone.clone();
+	            var current = this._bone.clone();
 	            for (var i = 0; i < this._length; i++) {
 	                line.push(current[i].clone());
 	            }
@@ -159,10 +159,10 @@
 	            return line;
 	        };
 	        Base.prototype.getHeadVecPos = function () {
-	            return this.bone.getHeadVecPos().add(Math.PI);
+	            return this._bone.getHeadVecPos().add(Math.PI);
 	        };
 	        Base.prototype.getTailVecPos = function () {
-	            return this.bone.getTailVecPos().add(Math.PI);
+	            return this._bone.getTailVecPos().add(Math.PI);
 	        };
 	        Object.defineProperty(Base.prototype, "route", {
 	            get: function () {
@@ -185,8 +185,15 @@
 	            enumerable: true,
 	            configurable: true
 	        });
+	        Object.defineProperty(Base.prototype, "bone", {
+	            get: function () {
+	                return this._bone;
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
 	        Base.prototype.dispose = function () {
-	            this.bone = null;
+	            this._bone = null;
 	            this._route = null;
 	        };
 	        return Base;

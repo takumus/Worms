@@ -1,7 +1,7 @@
 /// <reference types="pixi.js" />
 declare namespace WORMS {
     class Base {
-        protected bone: ROUTES.Line;
+        private _bone;
         protected prevLength: number;
         private _length;
         private diffLength;
@@ -23,6 +23,7 @@ declare namespace WORMS {
         readonly route: ROUTES.Line;
         readonly length: number;
         readonly currentLength: number;
+        readonly bone: ROUTES.Line;
         dispose(): void;
     }
 }
