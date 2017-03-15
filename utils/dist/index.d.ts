@@ -6,6 +6,7 @@ declare namespace UTILS {
         clone(): Pos;
         equals(pos: Pos, diff?: number): boolean;
         round(n: number): void;
+        distance(pos: Pos): number;
     }
     class VecPos {
         pos: Pos;

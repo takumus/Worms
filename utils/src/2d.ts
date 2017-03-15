@@ -19,6 +19,11 @@ namespace UTILS {
             this.x = Math.floor(this.x * n) / n;
             this.y = Math.floor(this.y * n) / n;
         }
+        public distance(pos: Pos): number {
+            const tx = pos.x - this.x;
+            const ty = pos.y - this.y;
+            return Math.sqrt(tx * tx + ty * ty);
+        }
     }
     export class VecPos {
         public pos: Pos;

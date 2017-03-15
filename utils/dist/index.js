@@ -79,6 +79,11 @@
 	            this.x = Math.floor(this.x * n) / n;
 	            this.y = Math.floor(this.y * n) / n;
 	        };
+	        Pos.prototype.distance = function (pos) {
+	            var tx = pos.x - this.x;
+	            var ty = pos.y - this.y;
+	            return Math.sqrt(tx * tx + ty * ty);
+	        };
 	        return Pos;
 	    }());
 	    UTILS.Pos = Pos;
