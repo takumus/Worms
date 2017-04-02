@@ -177,8 +177,74 @@
 	        function PointRouteGenerator() {
 	        }
 	        PointRouteGenerator.getRoute = function (points, radius, res) {
+	            var _this = this;
 	            var line = new ROUTES.Line();
+	            var ppos = new UTILS.Pos();
+	            points.forEach(function (pos, id) {
+	                if (id == points.length - 1) {
+	                    if (!ppos)
+	                        ppos = points[0];
+	                    line.pushLine(RouteGenerator.getLine(ppos, pos, res));
+	                }
+	                if (id > 0 && id < points.length - 1) {
+	                    var pp = ppos ? ppos : points[id - 1];
+	                    var np = points[id + 1];
+	                    var r1 = Math.atan2(pp.y - pos.y, pp.x - pos.x);
+	                    var r2 = Math.atan2(np.y - pos.y, np.x - pos.x);
+	                    var pos1 = new UTILS.Pos(Math.cos(r1) * radius + pos.x, Math.sin(r1) * radius + pos.y);
+	                    var pos2 = new UTILS.Pos(Math.cos(r2) * radius + pos.x, Math.sin(r2) * radius + pos.y);
+	                    ppos = pos2;
+	                    var rr1 = r1 + Math.PI / 2;
+	                    var rr2 = r2 - Math.PI / 2;
+	                    var pos11 = new UTILS.Pos(Math.cos(rr1) + pos1.x, Math.sin(rr1) + pos1.y);
+	                    var pos22 = new UTILS.Pos(Math.cos(rr2) + pos2.x, Math.sin(rr2) + pos2.y);
+	                    var cp = _this.cross(pos2, pos22, pos1, pos22);
+	                    if (!cp) {
+	                        console.error('PointRouteGenerator error : points are wrong!');
+	                        return null;
+	                    }
+	                    var dx = cp.x - pos2.x;
+	                    var dy = cp.y - pos2.y;
+	                    var d = Math.sqrt(dx * dx + dy * dy);
+	                    line.pushLine(RouteGenerator.getLine(pp, pos1, res));
+	                    var br = Matthew.normalize(Math.atan2(pos2.y - cp.y, pos2.x - cp.x));
+	                    var er = Matthew.normalize(Math.atan2(pos1.y - cp.y, pos1.x - cp.x));
+	                    var rd = 0;
+	                    if (br > er) {
+	                        rd = br - er;
+	                    }
+	                    else {
+	                        rd = Math.PI * 2 - (er - br);
+	                    }
+	                    r2 = Matthew.normalize(r2);
+	                    r1 = Matthew.normalize(r1);
+	                    var r = 0;
+	                    if (r1 > r2) {
+	                        r = r1 - r2;
+	                    }
+	                    else {
+	                        r = Math.PI * 2 - (r2 - r1);
+	                    }
+	                    var di = r > Math.PI ? -1 : 1;
+	                    rd = di < 0 ? Math.PI * 2 - rd : rd;
+	                    var rres = res / (d * 2 * Math.PI) * Math.PI * 2;
+	                    for (var ii = 0; ii < rd; ii += rres) {
+	                        var rr = ii * di + er;
+	                        var xx = Math.cos(rr) * d + cp.x;
+	                        var yy = Math.sin(rr) * d + cp.y;
+	                        line.push(new UTILS.Pos(xx, yy));
+	                    }
+	                }
+	            });
 	            return line;
+	        };
+	        PointRouteGenerator.cross = function (p1, p2, p3, p4) {
+	            var d = (p2.x - p1.x) * (p4.y - p3.y) - (p2.y - p1.y) * (p4.x - p3.x);
+	            if (d == 0)
+	                return null;
+	            var u = ((p3.x - p1.x) * (p4.y - p3.y) - (p3.y - p1.y) * (p4.x - p3.x)) / d;
+	            var v = ((p3.x - p1.x) * (p2.y - p1.y) - (p3.y - p1.y) * (p2.x - p1.x)) / d;
+	            return new UTILS.Pos(p1.x + u * (p2.x - p1.x), p1.y + u * (p2.y - p1.y));
 	        };
 	        return PointRouteGenerator;
 	    }());
