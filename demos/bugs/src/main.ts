@@ -7,62 +7,55 @@ const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
     speed: 24
 }
+const bugs: Bug[] = [];
+const guide = new ROUTES.Debugger();
 function initBugs(): void {
-    const guide = new ROUTES.Debugger();
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
-    const bug = new Bug(40, 20);
-    stage.addChild(bug.graphics);
 
-    let pVecPos: UTILS.VecPos = new UTILS.VecPos(200, 200, 0);
-    let mousePos: UTILS.VecPos = new UTILS.VecPos();
-    const next = () => {
-        const p = bug.bone[0];
-        const r = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-        //const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
-
-        const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
-        const route = ROUTES.RouteGenerator.getMinimumRoute(
-            bug.getHeadVecPos(),
-            nVecPos,
-            50 * Math.random() + 70,
-            50 * Math.random() + 70,
-            5
-        ).wave(20, 0.1);
-        
-        while (route.length % Math.floor(20) != 0) {
-            const p1 = route[route.length - 2];
-            const p2 = route[route.length - 1].clone();
-            const d = p1.distance(p2);
-            p2.x += (p2.x - p1.x) / d * 5;
-            p2.y += (p2.y - p1.y) / d * 5;
-            route.push(p2.clone());
-        }
-        if (route.length == 0) {
-            next();
-            return;
-        }
-        pVecPos = nVecPos;
-        guide.clear();
-        guide.render(route);
-        bug.setRoute(bug.getCurrentLine().pushLine(route));
-        new TWEEN.Tween({s: 0})
-        .to({s: 1}, route.length * props.speed)
-        .onUpdate(function(): void {
-            bug.setStep(this.s);
-            bug.render();
-        })
-        .onComplete(function(): void {
-            next();
-        })
-        .start();
+    for (let i = 0; i < 20; i ++) {
+        const bug = new Bug(40, 20);
+        bugs.push(bug);
+        bug.setStep(1);
+        stage.addChild(bug.graphics);
     }
-    next();
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
     })
 }
+function draw(): void {
+    requestAnimationFrame(draw);
+    bugs.forEach((bug) => {
+        if (bug.step == 1) {
+            const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
+            const route = ROUTES.RouteGenerator.getMinimumRoute(
+                bug.getHeadVecPos(),
+                nVecPos,
+                50 * Math.random() + 70,
+                50 * Math.random() + 70,
+                5
+            ).wave(20, 0.1);
+            // 仕方ないおまじない
+            while (route.length % Math.floor(20) != 0) {
+                const p1 = route[route.length - 2];
+                const p2 = route[route.length - 1].clone();
+                const d = p1.distance(p2);
+                p2.x += (p2.x - p1.x) / d * 5;
+                p2.y += (p2.y - p1.y) / d * 5;
+                route.push(p2.clone());
+            }
+            bug.setRoute(bug.getCurrentLine().pushLine(route));
+            bug.setStep(0);
+        }
+        bug.addStep(1);
+        bug.render();
+    });
+
+    TWEEN.update();
+    renderer.render(stage);
+}
+
 function initGUI(): void {
     const gui = new dat.GUI();
     gui.add(props, 'speed', 0, 100);
@@ -83,11 +76,6 @@ function init(): void {
     draw();
     resize();
     initBugs();
-}
-function draw(): void {
-    requestAnimationFrame(draw);
-    TWEEN.update();
-    renderer.render(stage);
 }
 function resize(): void {
     stageWidth = canvas.offsetWidth;

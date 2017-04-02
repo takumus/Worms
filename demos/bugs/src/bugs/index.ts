@@ -39,11 +39,6 @@ export class Bug extends WORMS.Base {
         this.renderP(this.lp2.getPos());
         this.renderP(this.lp3.getPos());
         this.renderP(this.lp4.getPos());
-        ///*
-        this.renderGuide(this.lp);
-        this.renderGuide(this.lp2);
-        this.renderGuide(this.lp3);
-        this.renderGuide(this.lp4);//*/
     }
     public setRoute(route: ROUTES.Line, nextLength?: number): void {
         super.setRoute(route, nextLength);
@@ -62,15 +57,5 @@ export class Bug extends WORMS.Base {
         g.drawCircle(p.middle.x, p.middle.y, 8);
         g.drawCircle(p.end.x, p.end.y, 4);
         g.endFill();
-    }
-    private renderGuide(leg: Leg): void {
-        const g = this._graphics;
-        g.lineStyle(1, 0xff0000);
-        const pp = leg.legPos.prevPos;
-        const np = leg.legPos.nextPos;
-
-        g.moveTo(pp.x, pp.y);
-        g.lineTo(np.x, np.y);
-        g.drawCircle(np.x, np.y, 10);
     }
 }

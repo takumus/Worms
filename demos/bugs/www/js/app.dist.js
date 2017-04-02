@@ -55,52 +55,45 @@
 	var props = {
 	    speed: 24
 	};
+	var bugs = [];
+	var guide = new ROUTES.Debugger();
 	function initBugs() {
-	    var guide = new ROUTES.Debugger();
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    var bug = new bugs_1.Bug(40, 20);
-	    stage.addChild(bug.graphics);
-	    var pVecPos = new UTILS.VecPos(200, 200, 0);
-	    var mousePos = new UTILS.VecPos();
-	    var next = function () {
-	        var p = bug.bone[0];
-	        var r = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-	        //const nVecPos = new UTILS.VecPos(mouse.x, mouse.y, r);
-	        var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
-	        var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
-	        while (route.length % Math.floor(20) != 0) {
-	            var p1 = route[route.length - 2];
-	            var p2 = route[route.length - 1].clone();
-	            var d = p1.distance(p2);
-	            p2.x += (p2.x - p1.x) / d * 5;
-	            p2.y += (p2.y - p1.y) / d * 5;
-	            route.push(p2.clone());
-	        }
-	        if (route.length == 0) {
-	            next();
-	            return;
-	        }
-	        pVecPos = nVecPos;
-	        guide.clear();
-	        guide.render(route);
-	        bug.setRoute(bug.getCurrentLine().pushLine(route));
-	        new TWEEN.Tween({ s: 0 })
-	            .to({ s: 1 }, route.length * props.speed)
-	            .onUpdate(function () {
-	            bug.setStep(this.s);
-	            bug.render();
-	        })
-	            .onComplete(function () {
-	            next();
-	        })
-	            .start();
-	    };
-	    next();
+	    for (var i = 0; i < 20; i++) {
+	        var bug = new bugs_1.Bug(40, 20);
+	        bugs.push(bug);
+	        bug.setStep(1);
+	        stage.addChild(bug.graphics);
+	    }
 	    window.addEventListener('mousemove', function (e) {
 	        mouse.x = e.clientX;
 	        mouse.y = e.clientY;
 	    });
+	}
+	function draw() {
+	    requestAnimationFrame(draw);
+	    bugs.forEach(function (bug) {
+	        if (bug.step == 1) {
+	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
+	            var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
+	            // 仕方ないおまじない
+	            while (route.length % Math.floor(20) != 0) {
+	                var p1 = route[route.length - 2];
+	                var p2 = route[route.length - 1].clone();
+	                var d = p1.distance(p2);
+	                p2.x += (p2.x - p1.x) / d * 5;
+	                p2.y += (p2.y - p1.y) / d * 5;
+	                route.push(p2.clone());
+	            }
+	            bug.setRoute(bug.getCurrentLine().pushLine(route));
+	            bug.setStep(0);
+	        }
+	        bug.addStep(1);
+	        bug.render();
+	    });
+	    TWEEN.update();
+	    renderer.render(stage);
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();
@@ -122,11 +115,6 @@
 	    draw();
 	    resize();
 	    initBugs();
-	}
-	function draw() {
-	    requestAnimationFrame(draw);
-	    TWEEN.update();
-	    renderer.render(stage);
 	}
 	function resize() {
 	    stageWidth = canvas.offsetWidth;
@@ -194,11 +182,6 @@
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
 	        this.renderP(this.lp4.getPos());
-	        ///*
-	        this.renderGuide(this.lp);
-	        this.renderGuide(this.lp2);
-	        this.renderGuide(this.lp3);
-	        this.renderGuide(this.lp4); //*/
 	    };
 	    Bug.prototype.setRoute = function (route, nextLength) {
 	        _super.prototype.setRoute.call(this, route, nextLength);
@@ -216,15 +199,6 @@
 	        g.drawCircle(p.middle.x, p.middle.y, 8);
 	        g.drawCircle(p.end.x, p.end.y, 4);
 	        g.endFill();
-	    };
-	    Bug.prototype.renderGuide = function (leg) {
-	        var g = this._graphics;
-	        g.lineStyle(1, 0xff0000);
-	        var pp = leg.legPos.prevPos;
-	        var np = leg.legPos.nextPos;
-	        g.moveTo(pp.x, pp.y);
-	        g.lineTo(np.x, np.y);
-	        g.drawCircle(np.x, np.y, 10);
 	    };
 	    return Bug;
 	}(WORMS.Base));
@@ -329,7 +303,7 @@
 	        if (nf < nf2) {
 	            this._nextPos = this._getPos(pid + this.span);
 	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
-	            p = Math.pow(p, 2);
+	            p = Math.pow(p, 3);
 	            // p = nf / (this.span / 2);
 	            this._prevPos.x += (this._nextPos.x - this._prevPos.x) * p;
 	            this._prevPos.y += (this._nextPos.y - this._prevPos.y) * p;
