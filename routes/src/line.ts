@@ -61,7 +61,7 @@ namespace ROUTES {
         }
         public pushLine(line: Line): Line {
             line = line.clone();
-            if (line[0].equals(this[this.length - 1])) line.shift();
+            if (this.length > 0 && line[0].equals(this[this.length - 1])) line.shift();
             line.forEach((p) => {
                this.push(p.clone());
             })

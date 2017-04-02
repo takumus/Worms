@@ -120,7 +120,7 @@
 	        Line.prototype.pushLine = function (line) {
 	            var _this = this;
 	            line = line.clone();
-	            if (line[0].equals(this[this.length - 1]))
+	            if (this.length > 0 && line[0].equals(this[this.length - 1]))
 	                line.shift();
 	            line.forEach(function (p) {
 	                _this.push(p.clone());
@@ -183,8 +183,10 @@
 	            points.forEach(function (pos, id) {
 	                if (id == points.length - 1) {
 	                    if (!ppos)
-	                        ppos = points[0];
-	                    line.pushLine(RouteGenerator.getLine(ppos, pos, res));
+	                        ppos = new UTILS.Pos(0, 0);
+	                    points[0];
+	                    line.pushLine(RouteGenerator.getLine(ppos, new UTILS.Pos(pos.x, pos.y), res));
+	                    return;
 	                }
 	                if (id > 0 && id < points.length - 1) {
 	                    var pp = ppos ? ppos : points[id - 1];
@@ -198,7 +200,7 @@
 	                    var rr2 = r2 - Math.PI / 2;
 	                    var pos11 = new UTILS.Pos(Math.cos(rr1) + pos1.x, Math.sin(rr1) + pos1.y);
 	                    var pos22 = new UTILS.Pos(Math.cos(rr2) + pos2.x, Math.sin(rr2) + pos2.y);
-	                    var cp = _this.cross(pos2, pos22, pos1, pos22);
+	                    var cp = _this.cross(pos2, pos22, pos1, pos11);
 	                    if (!cp) {
 	                        console.error('PointRouteGenerator error : points include straight line.');
 	                        return null;
@@ -206,7 +208,7 @@
 	                    var dx = cp.x - pos2.x;
 	                    var dy = cp.y - pos2.y;
 	                    var d = Math.sqrt(dx * dx + dy * dy);
-	                    line.pushLine(RouteGenerator.getLine(pp, pos1, res));
+	                    line.pushLine(RouteGenerator.getLine(new UTILS.Pos(pp.x, pp.y), pos1, res));
 	                    var br = Matthew.normalize(Math.atan2(pos2.y - cp.y, pos2.x - cp.x));
 	                    var er = Matthew.normalize(Math.atan2(pos1.y - cp.y, pos1.x - cp.x));
 	                    var rd = br > er ? (br - er) : (Math.PI * 2 - (er - br));

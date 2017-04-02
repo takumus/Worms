@@ -1,12 +1,13 @@
 namespace ROUTES {
     export class PointRouteGenerator {
-        public static getRoute(points: UTILS.Pos[], radius: number, res: number): Line {
+        public static getRoute(points: {x: number, y: number}[], radius: number, res: number): Line {
             const line = new Line();
             let ppos: UTILS.Pos;
             points.forEach((pos, id) => {
                 if (id == points.length - 1) {
-                    if (!ppos) ppos = points[0];
-                    line.pushLine(RouteGenerator.getLine(ppos, pos, res));
+                    if (!ppos) ppos = new UTILS.Pos(0, 0);points[0];
+                    line.pushLine(RouteGenerator.getLine(ppos, new UTILS.Pos(pos.x, pos.y), res));
+                    return;
                 }
                 if (id > 0 && id < points.length - 1) {
                     const pp = ppos ? ppos : points[id - 1];
@@ -32,7 +33,7 @@ namespace ROUTES {
                         Math.cos(rr2) + pos2.x,
                         Math.sin(rr2) + pos2.y
                     );
-                    const cp = this.cross(pos2, pos22, pos1, pos22);
+                    const cp = this.cross(pos2, pos22, pos1, pos11);
                     if (!cp) {
                         console.error('PointRouteGenerator error : points include straight line.');
                         return null;
@@ -40,7 +41,7 @@ namespace ROUTES {
                     const dx = cp.x - pos2.x;
                     const dy = cp.y - pos2.y;
                     const d = Math.sqrt(dx * dx + dy * dy);
-                    line.pushLine(RouteGenerator.getLine(pp, pos1, res));
+                    line.pushLine(RouteGenerator.getLine(new UTILS.Pos(pp.x, pp.y), pos1, res));
                     const br = Matthew.normalize(Math.atan2(pos2.y - cp.y, pos2.x - cp.x));
                     const er = Matthew.normalize(Math.atan2(pos1.y - cp.y, pos1.x - cp.x));
                     let rd = br > er ? (br - er) : (Math.PI * 2 - (er - br));

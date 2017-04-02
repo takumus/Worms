@@ -22,7 +22,10 @@ declare namespace ROUTES {
 }
 declare namespace ROUTES {
     class PointRouteGenerator {
-        static getRoute(points: UTILS.Pos[], radius: number, res: number): Line;
+        static getRoute(points: {
+            x: number;
+            y: number;
+        }[], radius: number, res: number): Line;
         private static cross(p1, p2, p3, p4);
     }
     class RouteGenerator {
