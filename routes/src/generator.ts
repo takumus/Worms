@@ -2,7 +2,7 @@ namespace ROUTES {
     export class PointRouteGenerator {
         public static getRoute(points: UTILS.Pos[], radius: number, res: number): Line {
             const line = new Line();
-            let ppos = new UTILS.Pos();
+            let ppos: UTILS.Pos;
             points.forEach((pos, id) => {
                 if (id == points.length - 1) {
                     if (!ppos) ppos = points[0];
@@ -34,7 +34,7 @@ namespace ROUTES {
                     );
                     const cp = this.cross(pos2, pos22, pos1, pos22);
                     if (!cp) {
-                        console.error('PointRouteGenerator error : points are wrong!');
+                        console.error('PointRouteGenerator error : points include straight line.');
                         return null;
                     }
                     const dx = cp.x - pos2.x;
@@ -43,12 +43,7 @@ namespace ROUTES {
                     line.pushLine(RouteGenerator.getLine(pp, pos1, res));
                     const br = Matthew.normalize(Math.atan2(pos2.y - cp.y, pos2.x - cp.x));
                     const er = Matthew.normalize(Math.atan2(pos1.y - cp.y, pos1.x - cp.x));
-                    let rd = 0;
-                    if (br > er) {
-                        rd = br - er;
-                    }else {
-                        rd = Math.PI * 2 - (er - br);
-                    }
+                    let rd = br > er ? (br - er) : (Math.PI * 2 - (er - br));
                     r2 = Matthew.normalize(r2);
                     r1 = Matthew.normalize(r1);
                     let r = 0;

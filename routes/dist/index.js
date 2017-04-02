@@ -179,7 +179,7 @@
 	        PointRouteGenerator.getRoute = function (points, radius, res) {
 	            var _this = this;
 	            var line = new ROUTES.Line();
-	            var ppos = new UTILS.Pos();
+	            var ppos;
 	            points.forEach(function (pos, id) {
 	                if (id == points.length - 1) {
 	                    if (!ppos)
@@ -200,7 +200,7 @@
 	                    var pos22 = new UTILS.Pos(Math.cos(rr2) + pos2.x, Math.sin(rr2) + pos2.y);
 	                    var cp = _this.cross(pos2, pos22, pos1, pos22);
 	                    if (!cp) {
-	                        console.error('PointRouteGenerator error : points are wrong!');
+	                        console.error('PointRouteGenerator error : points include straight line.');
 	                        return null;
 	                    }
 	                    var dx = cp.x - pos2.x;
@@ -209,13 +209,7 @@
 	                    line.pushLine(RouteGenerator.getLine(pp, pos1, res));
 	                    var br = Matthew.normalize(Math.atan2(pos2.y - cp.y, pos2.x - cp.x));
 	                    var er = Matthew.normalize(Math.atan2(pos1.y - cp.y, pos1.x - cp.x));
-	                    var rd = 0;
-	                    if (br > er) {
-	                        rd = br - er;
-	                    }
-	                    else {
-	                        rd = Math.PI * 2 - (er - br);
-	                    }
+	                    var rd = br > er ? (br - er) : (Math.PI * 2 - (er - br));
 	                    r2 = Matthew.normalize(r2);
 	                    r1 = Matthew.normalize(r1);
 	                    var r = 0;
