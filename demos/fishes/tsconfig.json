@@ -6,8 +6,8 @@
     "./src/**/*"
   ],
   "files": [
-    "../utils/dist/index.d.ts",
-    "../routes/dist/index.d.ts",
-    "../worms/dist/index.d.ts"
+    "../../utils/dist/index.d.ts",
+    "../../routes/dist/index.d.ts",
+    "../../worms/dist/index.d.ts"
   ]
 }
