@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true
+  },
+  "include":[
+    "./src/**/*"
+  ],
+  "files": [
+    "../../utils/dist/index.d.ts",
+    "../../routes/dist/index.d.ts",
+    "../../worms/dist/index.d.ts"
+  ]
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="viewport" content="width=800,user-scalable=0">
+    <title>worm</title>
+    <script src="../../libs/pixi.min.js"></script>
+    <script src="../../libs/filters.min.js"></script>
+    <script src="../../libs/tween.js"></script>
+    <script src="../../libs/dat.gui.min.js"></script>
+    <script type="text/javascript">
+        //no cache
+        function load(scripts){
+            if(scripts.length < 1) return;
+            var elem = document.createElement("script");
+            var script = scripts.shift();
+            elem.src = script+"?cache="+new Date().getTime();
+            elem.type = "text/javascript";
+            elem.onload = function(){
+                console.log(script, "loaded.");
+                load(scripts);
+            }
+            document.head.appendChild(elem);
+        }
+        load([
+            "../../../utils/dist/index.js",
+            "../../../routes/dist/index.js",
+            "../../../worms/dist/index.js",
+            "../../../figures/dist/index.js",
+            "./js/app.dist.js"
+        ]);
+    </script>
+    <style>
+    body, html{
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+        overflow: hidden;
+    }
+    #content{
+        width:100%;
+        height:100%;
+    }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+</body>
+</html>
