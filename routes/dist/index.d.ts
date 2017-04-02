@@ -21,6 +21,9 @@ declare namespace ROUTES {
     }
 }
 declare namespace ROUTES {
+    class PointRouteGenerator {
+        static getRoute(points: UTILS.Pos[], radius: number, res: number): Line;
+    }
     class RouteGenerator {
         static getMinimumRoute(vposB: UTILS.VecPos, vposE: UTILS.VecPos, rB: number, rE: number, res: number): Line;
         static getAllRoute(vposB: UTILS.VecPos, vposE: UTILS.VecPos, rB: number, rE: number): Array<Route>;

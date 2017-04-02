@@ -173,6 +173,16 @@
 	})(ROUTES || (ROUTES = {}));
 	var ROUTES;
 	(function (ROUTES) {
+	    var PointRouteGenerator = (function () {
+	        function PointRouteGenerator() {
+	        }
+	        PointRouteGenerator.getRoute = function (points, radius, res) {
+	            var line = new ROUTES.Line();
+	            return line;
+	        };
+	        return PointRouteGenerator;
+	    }());
+	    ROUTES.PointRouteGenerator = PointRouteGenerator;
 	    var RouteGenerator = (function () {
 	        function RouteGenerator() {
 	        }

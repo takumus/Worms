@@ -1,4 +1,10 @@
 namespace ROUTES {
+    export class PointRouteGenerator {
+        public static getRoute(points: UTILS.Pos[], radius: number, res: number): Line {
+            const line = new Line();
+            return line;
+        }
+    }
     export class RouteGenerator {
         public static getMinimumRoute(vposB: UTILS.VecPos, vposE: UTILS.VecPos, rB: number, rE: number, res: number): Line {
             const routes = this.getAllRoute(vposB, vposE, rB, rE);
