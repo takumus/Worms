@@ -6,24 +6,12 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta name="viewport" content="width=600,user-scalable=0">
     <title>worm</title>
+    <script src="../../libs/jsloader.js"></script>
     <script src="../../libs/pixi.min.js"></script>
     <script src="../../libs/tween.js"></script>
     <script src="../../libs/dat.gui.min.js"></script>
     <script type="text/javascript">
-        //no cache
-        function load(scripts){
-            if(scripts.length < 1) return;
-            var elem = document.createElement("script");
-            var script = scripts.shift();
-            elem.src = script+"?cache="+new Date().getTime();
-            elem.type = "text/javascript";
-            elem.onload = function(){
-                console.log(script, "loaded.");
-                load(scripts);
-            }
-            document.head.appendChild(elem);
-        }
-        load([
+        JSLoader.load([
             "../../../utils/dist/index.js",
             "../../../routes/dist/index.js",
             "../../../worms/dist/index.js",
