@@ -23,8 +23,9 @@ var JSLoader = new (function() {
         var script = scripts.shift();
         elem.src = script + "?cache=" + new Date().getTime();
         elem.type = "text/javascript";
-        elem.onload = function() {
-            log("　(" + (len - scripts.length) + "/" + len + ") " + script + " loaded.");
+        elem.onerror = elem.onload = function(e) {
+            var msg = e.type.toLowerCase() == "error" ? "error" : "loaded";
+            log("　(" + (len - scripts.length) + "/" + len + ") " + msg + " " + script);
             if (scripts.length < 1) log("complete(^o^)/");
             _load(scripts, len);
         }
