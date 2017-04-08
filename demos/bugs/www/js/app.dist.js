@@ -53,14 +53,14 @@
 	var stageWidth = 0, stageHeight = 0;
 	var mouse = new UTILS.Pos();
 	var props = {
-	    speed: 24
+	    speed: 1
 	};
 	var bugs = [];
 	var guide = new ROUTES.Debugger();
 	function initBugs() {
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    for (var i = 0; i < 20; i++) {
+	    for (var i = 0; i < 5; i++) {
 	        var bug = new bugs_1.Bug(40, 20);
 	        bugs.push(bug);
 	        bug.setStep(1);
@@ -75,7 +75,7 @@
 	    requestAnimationFrame(draw);
 	    bugs.forEach(function (bug) {
 	        if (bug.step == 1) {
-	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
+	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 800 - 400, stageHeight / 2 + Math.random() * 800 - 400, Math.PI * 2 * Math.random());
 	            var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
 	            // 仕方ないおまじない
 	            while (route.length % Math.floor(20) != 0) {
@@ -89,7 +89,7 @@
 	            bug.setRoute(bug.getCurrentLine().pushLine(route));
 	            bug.setStep(0);
 	        }
-	        bug.addStep(1);
+	        bug.addStep(props.speed);
 	        bug.render();
 	    });
 	    TWEEN.update();
@@ -97,7 +97,7 @@
 	}
 	function initGUI() {
 	    var gui = new dat.GUI();
-	    gui.add(props, 'speed', 0, 100);
+	    gui.add(props, 'speed', 0, 10);
 	}
 	function initPIXI() {
 	    renderer = PIXI.autoDetectRenderer(800, 800, { antialias: false, resolution: 2, transparent: false, backgroundColor: 0xFFFFFF });

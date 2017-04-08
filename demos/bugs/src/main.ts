@@ -5,7 +5,7 @@ let canvas: HTMLCanvasElement;
 let stageWidth: number = 0, stageHeight: number = 0;
 const mouse: UTILS.Pos = new UTILS.Pos();
 const props = {
-    speed: 24
+    speed: 1
 }
 const bugs: Bug[] = [];
 const guide = new ROUTES.Debugger();
@@ -13,7 +13,7 @@ function initBugs(): void {
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
 
-    for (let i = 0; i < 20; i ++) {
+    for (let i = 0; i < 5; i ++) {
         const bug = new Bug(40, 20);
         bugs.push(bug);
         bug.setStep(1);
@@ -28,7 +28,7 @@ function draw(): void {
     requestAnimationFrame(draw);
     bugs.forEach((bug) => {
         if (bug.step == 1) {
-            const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 400 - 200, stageHeight / 2 + Math.random() * 400 - 200, Math.PI * 2 * Math.random());
+            const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 800 - 400, stageHeight / 2 + Math.random() * 800 - 400, Math.PI * 2 * Math.random());
             const route = ROUTES.RouteGenerator.getMinimumRoute(
                 bug.getHeadVecPos(),
                 nVecPos,
@@ -48,7 +48,7 @@ function draw(): void {
             bug.setRoute(bug.getCurrentLine().pushLine(route));
             bug.setStep(0);
         }
-        bug.addStep(1);
+        bug.addStep(props.speed);
         bug.render();
     });
 
@@ -58,7 +58,7 @@ function draw(): void {
 
 function initGUI(): void {
     const gui = new dat.GUI();
-    gui.add(props, 'speed', 0, 100);
+    gui.add(props, 'speed', 0, 10);
 }
 function initPIXI(): void {
     renderer = PIXI.autoDetectRenderer(800, 800, {antialias: false, resolution: 2, transparent: false, backgroundColor: 0xFFFFFF});
