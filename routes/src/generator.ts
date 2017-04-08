@@ -2,10 +2,9 @@ namespace ROUTES {
     export class PointRouteGenerator {
         public static getRoute(points: {x: number, y: number}[], radius: number, res: number): Line {
             const line = new Line();
-            let ppos: UTILS.Pos;
+            let ppos: UTILS.Pos = new UTILS.Pos(points[0].x, points[0].y);
             points.forEach((pos, id) => {
                 if (id == points.length - 1) {
-                    if (!ppos) ppos = new UTILS.Pos(0, 0);points[0];
                     line.pushLine(RouteGenerator.getLine(ppos, new UTILS.Pos(pos.x, pos.y), res));
                     return;
                 }

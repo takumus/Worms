@@ -179,12 +179,9 @@
 	        PointRouteGenerator.getRoute = function (points, radius, res) {
 	            var _this = this;
 	            var line = new ROUTES.Line();
-	            var ppos;
+	            var ppos = new UTILS.Pos(points[0].x, points[0].y);
 	            points.forEach(function (pos, id) {
 	                if (id == points.length - 1) {
-	                    if (!ppos)
-	                        ppos = new UTILS.Pos(0, 0);
-	                    points[0];
 	                    line.pushLine(RouteGenerator.getLine(ppos, new UTILS.Pos(pos.x, pos.y), res));
 	                    return;
 	                }
