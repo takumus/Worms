@@ -52,15 +52,5 @@ namespace WF {
         public clear(): void {
             this._worms = [];
         }
-        public setStepToAll(step: number): void {
-            if (!this._animating) {
-                console.error('Cannnot call "Holder.prototype.setStep" after completed animation');
-                return;
-            }
-            this._worms.forEach((worm) => this.setStep(worm, step));
-        }
-        public setStep(worm: HoldableWorm, step: number): void {
-            worm.setStep(step);
-        }
     }
 }

@@ -2,14 +2,12 @@ namespace WF {
     export class HoldableWorm extends WORMS.Base {
         public holder: WF.Holder;
         public prevHolder: WF.Holder;
-        public holderMaster: WF.HolderMaster;
         constructor(length: number) {
             super(length);
         }
         public dispose(): void {
             this.holder = null;
             this.prevHolder = null;
-            this.holderMaster = null;
         }
         public setHolder(holder: Holder, def: boolean = false): void {
             if (def) this.holder = holder;
@@ -86,7 +84,7 @@ namespace WF {
     export function createWorm(length: number, holder: Holder): HoldableWorm {
         const worm = new FigureWorm(length, {thickness: 30});
         worm.setHolder(holder, true);
-        holder.setStep(worm, 0);
+        // holder.setStep(worm, 0);
         return worm;
     }
 }

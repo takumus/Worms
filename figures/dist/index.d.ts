@@ -3,7 +3,6 @@ declare namespace WF {
     class HoldableWorm extends WORMS.Base {
         holder: WF.Holder;
         prevHolder: WF.Holder;
-        holderMaster: WF.HolderMaster;
         constructor(length: number);
         dispose(): void;
         setHolder(holder: Holder, def?: boolean): void;
@@ -57,8 +56,6 @@ declare namespace WF {
         generate(): void;
         dispose(): void;
         clear(): void;
-        setStepToAll(step: number): void;
-        setStep(worm: HoldableWorm, step: number): void;
     }
 }
 declare namespace WF {
@@ -76,18 +73,19 @@ declare namespace WF {
         radius: number | RadiusOption;
         wave?: WaveOption;
     }
-    class HolderMaster {
+    class HolderMaster<T extends Holder> {
         private _holders;
         private step;
         private animating;
         private autoTweening;
-        readonly holders: Holder[];
-        transformMe(me: Holder[] | Holder, option: TransformOption): boolean;
-        transform(fromHolders: Holder[] | Holder, toHolders: Holder[] | Holder, option: TransformOption): boolean;
+        readonly holders: T[];
+        transformMe(me: T[] | T, option: TransformOption): boolean;
+        transform(fromHolders: T[] | T, toHolders: T[] | T, option: TransformOption): boolean;
         private setRoute(worm, target, option);
         endMovement(): void;
         autoTween(time: number, delay: number, complete?: () => void): void;
         setStep(step: number): void;
+        protected setStepToWorm(worm: WF.HoldableWorm, step: number, prevHolder: T, nextHolder: T): void;
         dispose(): void;
     }
 }

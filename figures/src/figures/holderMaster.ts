@@ -13,16 +13,16 @@ namespace WF {
         radius: number | RadiusOption,
         wave?: WaveOption
     }
-    export class HolderMaster {
-        private _holders: Holder[];
+    export class HolderMaster<T extends Holder> {
+        private _holders: T[];
         private step: number;
         private animating: boolean;
         private autoTweening: boolean;
-        public get holders(): Holder[] {return this._holders};
-        public transformMe(me: Holder[] | Holder, option: TransformOption): boolean {
+        public get holders(): T[] {return this._holders};
+        public transformMe(me: T[] | T, option: TransformOption): boolean {
             return this.transform(me, me, option);
         }
-        public transform(fromHolders: Holder[] | Holder, toHolders: Holder[] | Holder, option: TransformOption): boolean {
+        public transform(fromHolders: T[] | T, toHolders: T[] | T, option: TransformOption): boolean {
             if (this.animating) {
                 console.error('Cannnot call "HolderMaster.prototype.transform" while animating');
                 return false;
@@ -173,8 +173,14 @@ namespace WF {
                     console.error('already ended');
                     return;
                 }
-                holder.setStepToAll(step);
+                // holder.setStepToAll(step);
+                holder.worms.forEach((worm) => {
+                    this.setStepToWorm(worm, step, <T>worm.prevHolder, <T>worm.holder);
+                });
             });
+        }
+        protected setStepToWorm(worm: WF.HoldableWorm, step: number, prevHolder: T, nextHolder: T): void {
+            worm.setStep(step);
         }
         public dispose(): void {
             this._holders = null;
