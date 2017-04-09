@@ -60,6 +60,7 @@ namespace ROUTES {
             );
         }
         public pushLine(line: Line): Line {
+            if (line.length < 1) return this;
             line = line.clone();
             if (this.length > 0 && line[0].equals(this[this.length - 1])) line.shift();
             line.forEach((p) => {
