@@ -141,7 +141,6 @@
 	    function createWorm(length, holder) {
 	        var worm = new FigureWorm(length, { thickness: 30 });
 	        worm.setHolder(holder, true);
-	        // holder.setStep(worm, 0);
 	        return worm;
 	    }
 	    WF.createWorm = createWorm;
