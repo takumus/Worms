@@ -1,5 +1,5 @@
-/// <reference types="pixi.js" />
 declare namespace WF {
+    let WormClass: typeof HoldableWorm;
     class HoldableWorm extends WORMS.Base {
         holder: WF.Holder;
         prevHolder: WF.Holder;
@@ -11,22 +11,8 @@ declare namespace WF {
         fillColor?: number;
         thickness: number;
     }
-    class FigureWorm extends HoldableWorm {
-        static graphics: PIXI.Graphics;
-        private static worms;
-        private _option;
-        private static _id;
-        private _id;
-        constructor(length: number, option: SimpleLightOption);
-        static render(): void;
-        static getWorms(): FigureWorm[];
-        setOption(option: SimpleLightOption): void;
-        readonly option: SimpleLightOption;
-        render(): void;
-        dispose(): void;
-        private renderWith(graphics, color, thickness, offsetX, offsetY);
-    }
     function createWorm(length: number, holder: Holder): HoldableWorm;
+    function setWormClass<T extends HoldableWorm>(wormClass: new (length: number) => T): void;
 }
 declare namespace WF {
     class Figure extends UTILS.ArrayWrapper<Figure, ROUTES.Line> {

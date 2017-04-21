@@ -75,75 +75,16 @@
 	        return HoldableWorm;
 	    }(WORMS.Base));
 	    WF.HoldableWorm = HoldableWorm;
-	    var FigureWorm = (function (_super) {
-	        __extends(FigureWorm, _super);
-	        function FigureWorm(length, option) {
-	            var _this = _super.call(this, length) || this;
-	            _this.setOption(option);
-	            _this._id = FigureWorm._id;
-	            FigureWorm.worms[_this._id] = _this;
-	            FigureWorm._id++;
-	            return _this;
-	        }
-	        FigureWorm.render = function () {
-	            this.graphics.clear();
-	            for (var id in this.worms) {
-	                var worm = this.worms[id];
-	                worm.render();
-	            }
-	        };
-	        FigureWorm.getWorms = function () {
-	            var _this = this;
-	            return Object.keys(this.worms).map(function (key) { return _this.worms[key]; });
-	        };
-	        FigureWorm.prototype.setOption = function (option) {
-	            this._option = option;
-	            option.fillColor = UTILS.def(option.fillColor, 0xff0000);
-	        };
-	        Object.defineProperty(FigureWorm.prototype, "option", {
-	            get: function () {
-	                return this._option;
-	            },
-	            enumerable: true,
-	            configurable: true
-	        });
-	        FigureWorm.prototype.render = function () {
-	            this.renderWith(FigureWorm.graphics, this._option.fillColor, this._option.thickness, 0, 0);
-	        };
-	        FigureWorm.prototype.dispose = function () {
-	            this._option = null;
-	            FigureWorm.worms[this._id] = null;
-	            delete FigureWorm.worms[this._id];
-	        };
-	        FigureWorm.prototype.renderWith = function (graphics, color, thickness, offsetX, offsetY) {
-	            var bbone = this.bone[0];
-	            var ebone = this.bone[this.currentLength - 1];
-	            graphics.beginFill(color);
-	            graphics.drawCircle(bbone.x + offsetX, bbone.y + offsetY, thickness / 2);
-	            graphics.endFill();
-	            graphics.lineStyle(thickness, color);
-	            graphics.moveTo(bbone.x + offsetX, bbone.y + offsetY);
-	            for (var i = 1; i < this.currentLength - 1; i++) {
-	                var nbone = this.bone[i];
-	                graphics.lineTo(nbone.x + offsetX, nbone.y + offsetY);
-	            }
-	            graphics.lineTo(ebone.x + offsetX, ebone.y + offsetY);
-	            graphics.lineStyle();
-	            graphics.beginFill(color);
-	            graphics.drawCircle(ebone.x + offsetX, ebone.y + offsetY, thickness / 2);
-	            graphics.endFill();
-	        };
-	        return FigureWorm;
-	    }(HoldableWorm));
-	    FigureWorm.worms = {};
-	    FigureWorm._id = 0;
-	    WF.FigureWorm = FigureWorm;
 	    function createWorm(length, holder) {
-	        var worm = new FigureWorm(length, { thickness: 30 });
+	        var worm = new WF.WormClass(length);
 	        worm.setHolder(holder, true);
 	        return worm;
 	    }
 	    WF.createWorm = createWorm;
+	    function setWormClass(wormClass) {
+	        WF.WormClass = wormClass;
+	    }
+	    WF.setWormClass = setWormClass;
 	})(WF || (WF = {}));
 	var WF;
 	(function (WF) {
@@ -375,7 +316,7 @@
 	            });
 	            this.autoTweening = false;
 	            this.animating = false;
-	            console.log('all worms:' + WF.FigureWorm.getWorms().length);
+	            // console.log('all worms:' + WF.FigureWorm.getWorms().length);
 	        };
 	        HolderMaster.prototype.autoTween = function (time, delay, complete) {
 	            var _this = this;

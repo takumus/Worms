@@ -135,7 +135,7 @@ namespace WF {
             });
             this.autoTweening = false;
             this.animating = false;
-            console.log('all worms:' + WF.FigureWorm.getWorms().length);
+            // console.log('all worms:' + WF.FigureWorm.getWorms().length);
         }
         public autoTween(time: number, delay: number, complete?: () => void): void {
             if (!this.animating) {
