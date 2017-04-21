@@ -9,7 +9,7 @@ export class Bug extends WORMS.Base {
     constructor(length: number, span: number) {
         super(length);
         this._graphics = new PIXI.Graphics();
-        const scale = 0.4;
+        const scale = 0.6;
         this.lp  = new Leg(this, false, 100 * scale, 100 * scale, span, span * 0.5 , 110 * scale, -Math.PI / 2 + 0.8, 0);
         this.lp2 = new Leg(this, true,  100 * scale, 100 * scale, span, 0          , 110 * scale, Math.PI / 2 - 0.8, 0);
         this.lp3 = new Leg(this, true,  100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);

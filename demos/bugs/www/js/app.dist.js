@@ -146,7 +146,7 @@
 	    function Bug(length, span) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 0.4;
+	        var scale = 0.6;
 	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8, 0);
 	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8, 0);
 	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);
