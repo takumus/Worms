@@ -115,9 +115,10 @@
 	var WF;
 	(function (WF) {
 	    var Holder = (function () {
-	        function Holder() {
+	        function Holder(WormClass) {
 	            this._worms = [];
 	            this._positionOffset = new UTILS.Pos();
+	            this.WormClass = WormClass;
 	        }
 	        Object.defineProperty(Holder.prototype, "worms", {
 	            get: function () { return this._worms; },
@@ -160,7 +161,7 @@
 	            this.dispose();
 	            for (var i = 0; i < this._figure.length; i++) {
 	                var l = this._figure[i];
-	                var w = new WF.WormClass(l.length);
+	                var w = new this.WormClass(l.length);
 	                w.setHolder(this, true);
 	                w.setRoute(l);
 	                this._worms.push(w);
@@ -240,7 +241,7 @@
 	                var prevWormsLength = prevWorms.length;
 	                for (var i = prevWormsLength; i <= lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-	                    var w = new WF.WormClass(pw.currentLength);
+	                    var w = new pw.holder.WormClass(pw.currentLength);
 	                    w.setHolder(pw.holder, true);
 	                    w.setRoute(pw.getCurrentLine());
 	                    worms.push(w);

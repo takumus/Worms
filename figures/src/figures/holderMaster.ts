@@ -64,7 +64,7 @@ namespace WF {
                 const prevWormsLength = prevWorms.length;
                 for (let i = prevWormsLength; i <= lineCount; i ++) {
                     const pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-                    const w = new WF.WormClass(pw.currentLength);
+                    const w = new pw.holder.WormClass(pw.currentLength);
                     w.setHolder(pw.holder, true);
                     w.setRoute(pw.getCurrentLine());
                     worms.push(w);

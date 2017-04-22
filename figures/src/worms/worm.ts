@@ -1,5 +1,4 @@
 namespace WF {
-    export let WormClass: typeof HoldableWorm;
     export class HoldableWorm<T extends WF.Holder> extends WORMS.Base {
         public holder: T;
         public prevHolder: T;

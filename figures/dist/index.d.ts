@@ -1,5 +1,4 @@
 declare namespace WF {
-    let WormClass: typeof HoldableWorm;
     class HoldableWorm<T extends WF.Holder> extends WORMS.Base {
         holder: T;
         prevHolder: T;
@@ -30,7 +29,8 @@ declare namespace WF {
         readonly worms: HoldableWorm<Holder>[];
         readonly figure: Figure;
         animating: boolean;
-        constructor();
+        WormClass: typeof HoldableWorm;
+        constructor(WormClass: typeof HoldableWorm);
         setPositionOffset(pos: UTILS.Pos): void;
         setFigure(figure: Figure): void;
         generate(): void;

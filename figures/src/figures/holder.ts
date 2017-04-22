@@ -8,9 +8,11 @@ namespace WF {
         public get figure(): Figure {return this._figure; }
         public get animating(): boolean {return this._animating; }
         public set animating(val: boolean) {this._animating = val; }
-        constructor() {
+        public WormClass: typeof HoldableWorm;
+        constructor(WormClass: typeof HoldableWorm) {
             this._worms = [];
             this._positionOffset = new UTILS.Pos();
+            this.WormClass = WormClass;
         }
         public setPositionOffset(pos: UTILS.Pos): void {
             if (this._animating) {
@@ -36,7 +38,7 @@ namespace WF {
             this.dispose();
             for (let i = 0; i < this._figure.length; i ++) {
                 const l = this._figure[i];
-                const w = new WF.WormClass(l.length);
+                const w = new this.WormClass(l.length);
                 w.setHolder(this, true);
 
                 w.setRoute(l);
