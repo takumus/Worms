@@ -1,10 +1,10 @@
 namespace WF {
     export class Holder {
-        private _worms: HoldableWorm[];
+        private _worms: HoldableWorm<Holder>[];
         private _figure: Figure;
         private _animating: boolean;
         private _positionOffset: UTILS.Pos;
-        public get worms(): HoldableWorm[] {return this._worms; }
+        public get worms(): HoldableWorm<Holder>[] {return this._worms; }
         public get figure(): Figure {return this._figure; }
         public get animating(): boolean {return this._animating; }
         public set animating(val: boolean) {this._animating = val; }
@@ -36,7 +36,9 @@ namespace WF {
             this.dispose();
             for (let i = 0; i < this._figure.length; i ++) {
                 const l = this._figure[i];
-                const w = createWorm(l.length, this);
+                const w = new WF.WormClass(l.length);
+                w.setHolder(this, true);
+
                 w.setRoute(l);
                 this._worms.push(w);
             }

@@ -75,16 +75,6 @@
 	        return HoldableWorm;
 	    }(WORMS.Base));
 	    WF.HoldableWorm = HoldableWorm;
-	    function createWorm(length, holder) {
-	        var worm = new WF.WormClass(length);
-	        worm.setHolder(holder, true);
-	        return worm;
-	    }
-	    WF.createWorm = createWorm;
-	    function setWormClass(wormClass) {
-	        WF.WormClass = wormClass;
-	    }
-	    WF.setWormClass = setWormClass;
 	})(WF || (WF = {}));
 	var WF;
 	(function (WF) {
@@ -170,7 +160,8 @@
 	            this.dispose();
 	            for (var i = 0; i < this._figure.length; i++) {
 	                var l = this._figure[i];
-	                var w = WF.createWorm(l.length, this);
+	                var w = new WF.WormClass(l.length);
+	                w.setHolder(this, true);
 	                w.setRoute(l);
 	                this._worms.push(w);
 	            }
@@ -249,7 +240,8 @@
 	                var prevWormsLength = prevWorms.length;
 	                for (var i = prevWormsLength; i <= lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-	                    var w = WF.createWorm(pw.currentLength, pw.holder);
+	                    var w = new WF.WormClass(pw.currentLength);
+	                    w.setHolder(pw.holder, true);
 	                    w.setRoute(pw.getCurrentLine());
 	                    worms.push(w);
 	                }
@@ -346,7 +338,6 @@
 	                .start();
 	        };
 	        HolderMaster.prototype.setStep = function (step) {
-	            var _this = this;
 	            if (!this.animating) {
 	                console.error('Cannnot call "HolderMaster.prototype.setStep" after completed animation');
 	                return;
@@ -359,12 +350,10 @@
 	                }
 	                // holder.setStepToAll(step);
 	                holder.worms.forEach(function (worm) {
-	                    _this.setStepToWorm(worm, step, worm.prevHolder, worm.holder);
+	                    // this.setStepToWorm(worm, step, <T>worm.prevHolder, <T>worm.holder);
+	                    worm.setStep(step);
 	                });
 	            });
-	        };
-	        HolderMaster.prototype.setStepToWorm = function (worm, step, prevHolder, nextHolder) {
-	            worm.setStep(step);
 	        };
 	        HolderMaster.prototype.dispose = function () {
 	            this._holders = null;

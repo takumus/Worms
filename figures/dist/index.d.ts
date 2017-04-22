@@ -1,18 +1,12 @@
 declare namespace WF {
     let WormClass: typeof HoldableWorm;
-    class HoldableWorm extends WORMS.Base {
-        holder: WF.Holder;
-        prevHolder: WF.Holder;
+    class HoldableWorm<T extends WF.Holder> extends WORMS.Base {
+        holder: T;
+        prevHolder: T;
         constructor(length: number);
         dispose(): void;
-        setHolder(holder: Holder, def?: boolean): void;
+        setHolder(holder: T, def?: boolean): void;
     }
-    interface SimpleLightOption {
-        fillColor?: number;
-        thickness: number;
-    }
-    function createWorm(length: number, holder: Holder): HoldableWorm;
-    function setWormClass<T extends HoldableWorm>(wormClass: new (length: number) => T): void;
 }
 declare namespace WF {
     class Figure extends UTILS.ArrayWrapper<Figure, ROUTES.Line> {
@@ -33,7 +27,7 @@ declare namespace WF {
         private _figure;
         private _animating;
         private _positionOffset;
-        readonly worms: HoldableWorm[];
+        readonly worms: HoldableWorm<Holder>[];
         readonly figure: Figure;
         animating: boolean;
         constructor();
@@ -71,7 +65,6 @@ declare namespace WF {
         endMovement(): void;
         autoTween(time: number, delay: number, complete?: () => void): void;
         setStep(step: number): void;
-        protected setStepToWorm(worm: WF.HoldableWorm, step: number, prevHolder: T, nextHolder: T): void;
         dispose(): void;
     }
 }

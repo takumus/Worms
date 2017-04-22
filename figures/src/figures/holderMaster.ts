@@ -42,7 +42,7 @@ namespace WF {
             }
             this._holders = to;
             this.step = 0;
-            const worms: HoldableWorm[] = [];
+            const worms: HoldableWorm<Holder>[] = [];
             from.forEach((holder) => {
                 holder.worms.forEach((worm) => {
                     worms.push(worm);
@@ -64,7 +64,8 @@ namespace WF {
                 const prevWormsLength = prevWorms.length;
                 for (let i = prevWormsLength; i <= lineCount; i ++) {
                     const pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
-                    const w = createWorm(pw.currentLength, pw.holder);
+                    const w = new WF.WormClass(pw.currentLength);
+                    w.setHolder(pw.holder, true);
                     w.setRoute(pw.getCurrentLine());
                     worms.push(w);
                 }
@@ -94,7 +95,7 @@ namespace WF {
             this.animating = true;
             return true;
         }
-        private setRoute(worm: HoldableWorm, target: ROUTES.Line, option: TransformOption): void {
+        private setRoute(worm: HoldableWorm<Holder>, target: ROUTES.Line, option: TransformOption): void {
             target = target.clone();
             if (Math.random() < 0.5) worm.reverse();
             if (Math.random() < 0.5) target.reverse();
@@ -175,12 +176,10 @@ namespace WF {
                 }
                 // holder.setStepToAll(step);
                 holder.worms.forEach((worm) => {
-                    this.setStepToWorm(worm, step, <T>worm.prevHolder, <T>worm.holder);
+                    // this.setStepToWorm(worm, step, <T>worm.prevHolder, <T>worm.holder);
+                    worm.setStep(step);
                 });
             });
-        }
-        protected setStepToWorm(worm: WF.HoldableWorm, step: number, prevHolder: T, nextHolder: T): void {
-            worm.setStep(step);
         }
         public dispose(): void {
             this._holders = null;
