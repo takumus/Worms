@@ -62,7 +62,7 @@ namespace WF {
             if (worms.length < lineCount) {
                 const prevWorms = worms.concat();
                 const prevWormsLength = prevWorms.length;
-                for (let i = prevWormsLength; i <= lineCount; i ++) {
+                for (let i = prevWormsLength; i < lineCount; i ++) {
                     const pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
                     const w = new pw.holder.WormClass(pw.currentLength);
                     w.setHolder(pw.holder, true);

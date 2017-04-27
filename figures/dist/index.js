@@ -239,7 +239,7 @@
 	            if (worms.length < lineCount) {
 	                var prevWorms = worms.concat();
 	                var prevWormsLength = prevWorms.length;
-	                for (var i = prevWormsLength; i <= lineCount; i++) {
+	                for (var i = prevWormsLength; i < lineCount; i++) {
 	                    var pw = prevWorms[Math.floor(Math.random() * prevWormsLength)];
 	                    var w = new pw.holder.WormClass(pw.currentLength);
 	                    w.setHolder(pw.holder, true);
