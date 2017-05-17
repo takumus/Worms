@@ -61,7 +61,7 @@
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
 	    for (var i = 0; i < 1; i++) {
-	        var bug = new bugs_1.Bug(40, 20);
+	        var bug = new bugs_1.Bug(40, 30);
 	        bugs.push(bug);
 	        bug.setStep(1);
 	        stage.addChild(bug.graphics);
@@ -77,9 +77,9 @@
 	        bug.addStep(props.speed);
 	        if (bug.step == 1) {
 	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
-	            var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
+	            var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 90, 50 * Math.random() + 90, 5).wave(20, 0.1);
 	            // 仕方ないおまじない
-	            while (route.length % Math.floor(20) != 0) {
+	            while (route.length % Math.floor(30) != 0) {
 	                var p1 = route[route.length - 2];
 	                var p2 = route[route.length - 1].clone();
 	                var d = p1.distance(p2);
@@ -92,7 +92,7 @@
 	            bug.setStep(0);
 	            bug.addStep(props.speed);
 	            guide.clear();
-	            guide.render(newRoute);
+	            // guide.render(newRoute);
 	        }
 	        bug.render();
 	    });
@@ -148,13 +148,13 @@
 	var Bug = (function (_super) {
 	    __extends(Bug, _super);
 	    function Bug(length, span) {
-	        var _this = _super.call(this, length) || this;
+	        var _this = _super.call(this, 40) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 0.4;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8);
+	        var scale = 0.6;
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8, true, 30);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8, false, 30);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, true, 30);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8, false, 30);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -178,8 +178,8 @@
 	            }
 	        }
 	        ;
-	        this.lp.rootIndex = this.lp2.rootIndex = Math.floor(this.currentLength * 0.3);
-	        this.lp.targetIndex = this.lp2.targetIndex = Math.floor(this.currentLength * 0.1);
+	        this.lp.rootIndex = this.lp2.rootIndex = Math.floor(this.currentLength * 0.4);
+	        this.lp.targetIndex = this.lp2.targetIndex = Math.floor(this.currentLength * 0);
 	        this.lp3.rootIndex = this.lp4.rootIndex = Math.floor(this.currentLength * 0.5);
 	        this.lp3.targetIndex = this.lp4.targetIndex = Math.floor(this.currentLength * 0.45);
 	        this.renderP(this.lp.getPos());
@@ -217,17 +217,25 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var legPos_1 = __webpack_require__(3);
 	var Leg = (function () {
-	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, rootIndex, targetIndex) {
+	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, isLeft, distanceFromRoot, rootIndex, targetIndex) {
+	        if (isLeft === void 0) { isLeft = false; }
+	        if (distanceFromRoot === void 0) { distanceFromRoot = 0; }
 	        if (rootIndex === void 0) { rootIndex = 0; }
 	        if (targetIndex === void 0) { targetIndex = 0; }
 	        this._bug = bug;
 	        this._flip = flip;
 	        this._length1 = length1;
 	        this._length2 = length2;
+	        this._distanceFromRoot = distanceFromRoot;
 	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, targetIndex);
+	        this._isLeft = isLeft;
 	    }
 	    Leg.prototype.getPos = function () {
-	        var fromPos = this._bug.bone[this._index];
+	        var fromVecPos = this._bug.bone.getVecPos(this._index);
+	        var fromPos = fromVecPos.pos.clone();
+	        var dr = fromVecPos.r + (this._isLeft ? Math.PI / 2 : -Math.PI / 2);
+	        fromPos.x += Math.cos(dr) * this._distanceFromRoot;
+	        fromPos.y += Math.sin(dr) * this._distanceFromRoot;
 	        var toPos = this._legPos.getPos();
 	        var r = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
 	        var a = fromPos.distance(toPos);

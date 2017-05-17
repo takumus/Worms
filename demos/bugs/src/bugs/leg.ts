@@ -12,6 +12,8 @@ export class Leg {
     private _bug: Bug;
     private _index: number;
     private _flip: boolean;
+    private _distanceFromRoot: number;
+    private _isLeft: boolean;
     constructor(
         bug: Bug,
         flip: boolean,
@@ -21,12 +23,15 @@ export class Leg {
         spanOffset: number,
         radius: number,
         rotationOffset: number,
+        isLeft: boolean = false,
+        distanceFromRoot: number = 0,
         rootIndex: number = 0,
         targetIndex: number = 0) {
             this._bug = bug;
             this._flip = flip;
             this._length1 = length1;
             this._length2 = length2;
+            this._distanceFromRoot = distanceFromRoot;
             this._legPos = new LegPos(
                 bug,
                 span,
@@ -35,9 +40,16 @@ export class Leg {
                 spanOffset,
                 targetIndex
             );
+            this._isLeft = isLeft;
     }
     public getPos(): PosSet {
-        const fromPos = this._bug.bone[this._index];
+        const fromVecPos = this._bug.bone.getVecPos(this._index);
+        const fromPos = fromVecPos.pos.clone();
+
+        const dr = fromVecPos.r + (this._isLeft ? Math.PI / 2 : -Math.PI / 2);
+        fromPos.x += Math.cos(dr) * this._distanceFromRoot;
+        fromPos.y += Math.sin(dr) * this._distanceFromRoot;
+
         const toPos = this._legPos.getPos();
         const r = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x);
         const a = fromPos.distance(toPos);

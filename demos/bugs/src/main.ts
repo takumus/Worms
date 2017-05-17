@@ -14,7 +14,7 @@ function initBugs(): void {
     stage.addChild(guide);
 
     for (let i = 0; i < 1; i ++) {
-        const bug = new Bug(40, 20);
+        const bug = new Bug(40, 30);
         bugs.push(bug);
         bug.setStep(1);
         stage.addChild(bug.graphics);
@@ -33,12 +33,12 @@ function draw(): void {
             const route = ROUTES.RouteGenerator.getMinimumRoute(
                 bug.getHeadVecPos(),
                 nVecPos,
-                50 * Math.random() + 70,
-                50 * Math.random() + 70,
+                50 * Math.random() + 90,
+                50 * Math.random() + 90,
                 5
             ).wave(20, 0.1);
             // 仕方ないおまじない
-            while (route.length % Math.floor(20) != 0) {
+            while (route.length % Math.floor(30) != 0) {
                 const p1 = route[route.length - 2];
                 const p2 = route[route.length - 1].clone();
                 const d = p1.distance(p2);
@@ -51,7 +51,7 @@ function draw(): void {
             bug.setStep(0);
             bug.addStep(props.speed);
             guide.clear();
-            guide.render(newRoute);
+            // guide.render(newRoute);
         }
         bug.render();
     });
