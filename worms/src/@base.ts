@@ -44,6 +44,7 @@ namespace WORMS {
             this.allocLength(UTILS.def<number>(nextLength, this._length));
         }
         public addStep(step: number): boolean {
+            if (!this._route) return false;
             const length = this._route.length - this.prevLength;
             const p = step / length;
             if (p < 0) {

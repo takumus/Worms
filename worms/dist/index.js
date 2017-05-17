@@ -97,6 +97,8 @@
 	            this.allocLength(UTILS.def(nextLength, this._length));
 	        };
 	        Base.prototype.addStep = function (step) {
+	            if (!this._route)
+	                return false;
 	            var length = this._route.length - this.prevLength;
 	            var p = step / length;
 	            if (p < 0) {
