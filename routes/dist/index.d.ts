@@ -17,7 +17,8 @@ declare namespace ROUTES {
         clone(): Line;
         wave(amp: number, freq: number, randomBegin?: boolean): Line;
         toString(): string;
-        private getVecPos(fp, sp);
+        private _getVecPos(fp, sp);
+        getVecPos(id: number): UTILS.VecPos;
     }
 }
 declare namespace ROUTES {

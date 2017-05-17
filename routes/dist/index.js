@@ -112,10 +112,10 @@
 	            return max - min;
 	        };
 	        Line.prototype.getHeadVecPos = function () {
-	            return this.getVecPos(this[0], this[1]);
+	            return this._getVecPos(this[0], this[1]);
 	        };
 	        Line.prototype.getTailVecPos = function () {
-	            return this.getVecPos(this[this.length - 1], this[this.length - 2]);
+	            return this._getVecPos(this[this.length - 1], this[this.length - 2]);
 	        };
 	        Line.prototype.pushLine = function (line) {
 	            var _this = this;
@@ -166,8 +166,17 @@
 	        Line.prototype.toString = function () {
 	            return JSON.stringify(this);
 	        };
-	        Line.prototype.getVecPos = function (fp, sp) {
+	        Line.prototype._getVecPos = function (fp, sp) {
 	            return new UTILS.VecPos(fp.x, fp.y, Math.atan2(sp.y - fp.y, sp.x - fp.x));
+	        };
+	        Line.prototype.getVecPos = function (id) {
+	            var p1 = this[id];
+	            var p2 = this[id + 1];
+	            if (!p2) {
+	                p1 = this[id - 1];
+	                p2 = this[id];
+	            }
+	            return this._getVecPos(p1, p2);
 	        };
 	        return Line;
 	    }(UTILS.ArrayWrapper));

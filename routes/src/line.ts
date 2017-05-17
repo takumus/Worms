@@ -48,13 +48,13 @@ namespace ROUTES {
             return max - min;
         }
         public getHeadVecPos(): UTILS.VecPos {
-            return this.getVecPos(
+            return this._getVecPos(
                 this[0],
                 this[1]
             );
         }
         public getTailVecPos(): UTILS.VecPos {
-            return this.getVecPos(
+            return this._getVecPos(
                 this[this.length - 1],
                 this[this.length - 2]
             );
@@ -103,7 +103,7 @@ namespace ROUTES {
         public toString(): string {
             return JSON.stringify(this);
         }
-        private getVecPos(fp: UTILS.Pos, sp: UTILS.Pos): UTILS.VecPos {
+        private _getVecPos(fp: UTILS.Pos, sp: UTILS.Pos): UTILS.VecPos {
             return new UTILS.VecPos(
                 fp.x,
                 fp.y,
@@ -112,6 +112,15 @@ namespace ROUTES {
                     sp.x - fp.x
                 )
             );
+        }
+        public getVecPos(id: number): UTILS.VecPos {
+            let p1 = this[id];
+            let p2 = this[id + 1];
+            if (!p2) {
+                p1 = this[id - 1];
+                p2 = this[id];
+            }
+            return this._getVecPos(p1, p2);
         }
     }
 }
