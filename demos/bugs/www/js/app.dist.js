@@ -74,8 +74,9 @@
 	function draw() {
 	    requestAnimationFrame(draw);
 	    bugs.forEach(function (bug) {
+	        bug.addStep(props.speed);
 	        if (bug.step == 1) {
-	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 800 - 400, stageHeight / 2 + Math.random() * 800 - 400, Math.PI * 2 * Math.random());
+	            var nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
 	            var route = ROUTES.RouteGenerator.getMinimumRoute(bug.getHeadVecPos(), nVecPos, 50 * Math.random() + 70, 50 * Math.random() + 70, 5).wave(20, 0.1);
 	            // 仕方ないおまじない
 	            while (route.length % Math.floor(20) != 0) {
@@ -86,10 +87,13 @@
 	                p2.y += (p2.y - p1.y) / d * 5;
 	                route.push(p2.clone());
 	            }
-	            bug.setRoute(bug.getCurrentLine().pushLine(route));
+	            var newRoute = bug.getCurrentLine().pushLine(route);
+	            bug.setRoute(newRoute);
 	            bug.setStep(0);
+	            bug.addStep(props.speed);
+	            guide.clear();
+	            guide.render(newRoute);
 	        }
-	        bug.addStep(props.speed);
 	        bug.render();
 	    });
 	    TWEEN.update();
@@ -164,9 +168,9 @@
 	        var g = this._graphics;
 	        g.clear();
 	        g.lineStyle(16, 0x333333);
-	        for (var i = Math.floor(this.currentLength * 0.2); i < Math.floor(this.currentLength * 0.6); i++) {
+	        for (var i = Math.floor(this.currentLength * 0); i < Math.floor(this.currentLength * 1); i++) {
 	            var pos = this.bone[i];
-	            if (i == Math.floor(this.currentLength * 0.2)) {
+	            if (i == Math.floor(this.currentLength * 0)) {
 	                g.moveTo(pos.x, pos.y);
 	            }
 	            else {
@@ -304,7 +308,7 @@
 	        if (nf < nf2) {
 	            this._nextPos = this._getPos(pid + this.span);
 	            var p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
-	            p = Math.pow(p, 3);
+	            p = Math.pow(p, 2.5);
 	            // p = nf / (this.span / 2);
 	            this._prevPos.x += (this._nextPos.x - this._prevPos.x) * p;
 	            this._prevPos.y += (this._nextPos.y - this._prevPos.y) * p;

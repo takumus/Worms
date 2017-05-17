@@ -27,8 +27,9 @@ function initBugs(): void {
 function draw(): void {
     requestAnimationFrame(draw);
     bugs.forEach((bug) => {
+        bug.addStep(props.speed);
         if (bug.step == 1) {
-            const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 800 - 400, stageHeight / 2 + Math.random() * 800 - 400, Math.PI * 2 * Math.random());
+            const nVecPos = new UTILS.VecPos(stageWidth / 2 + Math.random() * 100 - 50, stageHeight / 2 + Math.random() * 100 - 50, Math.PI * 2 * Math.random());
             const route = ROUTES.RouteGenerator.getMinimumRoute(
                 bug.getHeadVecPos(),
                 nVecPos,
@@ -45,10 +46,13 @@ function draw(): void {
                 p2.y += (p2.y - p1.y) / d * 5;
                 route.push(p2.clone());
             }
-            bug.setRoute(bug.getCurrentLine().pushLine(route));
+            const newRoute = bug.getCurrentLine().pushLine(route);
+            bug.setRoute(newRoute);
             bug.setStep(0);
+            bug.addStep(props.speed);
+            guide.clear();
+            guide.render(newRoute);
         }
-        bug.addStep(props.speed);
         bug.render();
     });
 

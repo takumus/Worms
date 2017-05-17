@@ -22,9 +22,9 @@ export class Bug extends WORMS.Base {
         const g = this._graphics;
         g.clear();
         g.lineStyle(16, 0x333333);
-        for (let i = Math.floor(this.currentLength * 0.2); i < Math.floor(this.currentLength * 0.6); i ++) {
+        for (let i = Math.floor(this.currentLength * 0); i < Math.floor(this.currentLength * 1); i ++) {
             const pos = this.bone[i];
-            if (i == Math.floor(this.currentLength * 0.2)) {
+            if (i == Math.floor(this.currentLength * 0)) {
                 g.moveTo(pos.x, pos.y);
             }else {
                 g.lineTo(pos.x, pos.y);

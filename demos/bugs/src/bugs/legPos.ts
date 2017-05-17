@@ -31,7 +31,7 @@ export class LegPos {
         if (nf < nf2) {
             this._nextPos = this._getPos(pid + this.span);
             let p = (Math.cos(nf / (this.span / 2) * Math.PI - Math.PI) + 1) / 2;
-            p = Math.pow(p, 3);
+            p = Math.pow(p, 2.5);
             // p = nf / (this.span / 2);
             this._prevPos.x += (this._nextPos.x - this._prevPos.x) * p;
             this._prevPos.y += (this._nextPos.y - this._prevPos.y) * p;
