@@ -13,7 +13,7 @@ function initBugs(): void {
     guide.setOption(0xCCCCCC, 1, false, false);
     stage.addChild(guide);
 
-    for (let i = 0; i < 5; i ++) {
+    for (let i = 0; i < 1; i ++) {
         const bug = new Bug(40, 20);
         bugs.push(bug);
         bug.setStep(1);

@@ -21,13 +21,20 @@ export class Leg {
         spanOffset: number,
         radius: number,
         rotationOffset: number,
-        index: number) {
+        rootIndex: number = 0,
+        targetIndex: number = 0) {
             this._bug = bug;
             this._flip = flip;
-            this._index = Math.floor(index);
             this._length1 = length1;
             this._length2 = length2;
-            this._legPos = new LegPos(bug, span, radius, rotationOffset, spanOffset, index);
+            this._legPos = new LegPos(
+                bug,
+                span,
+                radius,
+                rotationOffset,
+                spanOffset,
+                targetIndex
+            );
     }
     public getPos(): PosSet {
         const fromPos = this._bug.bone[this._index];
@@ -54,11 +61,11 @@ export class Leg {
             end: toPos
         };
     }
-    public get legPos(): LegPos {
-        return this._legPos;
-    }
-    public set index(value: number) {
-        this._legPos.beginOffset = value;
+    public set rootIndex(value: number) {
+        // this._legPos.beginOffset = value;
         this._index = value;
+    }
+    public set targetIndex(value: number) {
+        this._legPos.beginOffset = value;
     }
 }

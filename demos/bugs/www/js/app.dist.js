@@ -60,7 +60,7 @@
 	function initBugs() {
 	    guide.setOption(0xCCCCCC, 1, false, false);
 	    stage.addChild(guide);
-	    for (var i = 0; i < 5; i++) {
+	    for (var i = 0; i < 1; i++) {
 	        var bug = new bugs_1.Bug(40, 20);
 	        bugs.push(bug);
 	        bug.setStep(1);
@@ -146,11 +146,11 @@
 	    function Bug(length, span) {
 	        var _this = _super.call(this, length) || this;
 	        _this._graphics = new PIXI.Graphics();
-	        var scale = 0.6;
-	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8, 0);
-	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8, 0);
-	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8, 0);
-	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8, 0);
+	        var scale = 0.4;
+	        _this.lp = new leg_1.Leg(_this, false, 100 * scale, 100 * scale, span, span * 0.5, 110 * scale, -Math.PI / 2 + 0.8);
+	        _this.lp2 = new leg_1.Leg(_this, true, 100 * scale, 100 * scale, span, 0, 110 * scale, Math.PI / 2 - 0.8);
+	        _this.lp3 = new leg_1.Leg(_this, true, 100 * scale, 120 * scale, span, span * 0.05, 120 * scale, -Math.PI / 2 - 0.8);
+	        _this.lp4 = new leg_1.Leg(_this, false, 100 * scale, 120 * scale, span, span * 0.55, 120 * scale, Math.PI / 2 + 0.8);
 	        return _this;
 	    }
 	    Object.defineProperty(Bug.prototype, "graphics", {
@@ -174,10 +174,10 @@
 	            }
 	        }
 	        ;
-	        this.lp.index = this.lp2.index = Math.floor(this.currentLength * 0.3);
-	        this.lp.legPos.beginOffset = this.lp2.legPos.beginOffset = Math.floor(this.currentLength * 0.1);
-	        this.lp3.index = this.lp4.index = Math.floor(this.currentLength * 0.5);
-	        this.lp3.legPos.beginOffset = this.lp4.legPos.beginOffset = Math.floor(this.currentLength * 0.45);
+	        this.lp.rootIndex = this.lp2.rootIndex = Math.floor(this.currentLength * 0.3);
+	        this.lp.targetIndex = this.lp2.targetIndex = Math.floor(this.currentLength * 0.1);
+	        this.lp3.rootIndex = this.lp4.rootIndex = Math.floor(this.currentLength * 0.5);
+	        this.lp3.targetIndex = this.lp4.targetIndex = Math.floor(this.currentLength * 0.45);
 	        this.renderP(this.lp.getPos());
 	        this.renderP(this.lp2.getPos());
 	        this.renderP(this.lp3.getPos());
@@ -213,13 +213,14 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var legPos_1 = __webpack_require__(3);
 	var Leg = (function () {
-	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, index) {
+	    function Leg(bug, flip, length1, length2, span, spanOffset, radius, rotationOffset, rootIndex, targetIndex) {
+	        if (rootIndex === void 0) { rootIndex = 0; }
+	        if (targetIndex === void 0) { targetIndex = 0; }
 	        this._bug = bug;
 	        this._flip = flip;
-	        this._index = Math.floor(index);
 	        this._length1 = length1;
 	        this._length2 = length2;
-	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, index);
+	        this._legPos = new legPos_1.LegPos(bug, span, radius, rotationOffset, spanOffset, targetIndex);
 	    }
 	    Leg.prototype.getPos = function () {
 	        var fromPos = this._bug.bone[this._index];
@@ -246,17 +247,17 @@
 	            end: toPos
 	        };
 	    };
-	    Object.defineProperty(Leg.prototype, "legPos", {
-	        get: function () {
-	            return this._legPos;
+	    Object.defineProperty(Leg.prototype, "rootIndex", {
+	        set: function (value) {
+	            // this._legPos.beginOffset = value;
+	            this._index = value;
 	        },
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(Leg.prototype, "index", {
+	    Object.defineProperty(Leg.prototype, "targetIndex", {
 	        set: function (value) {
 	            this._legPos.beginOffset = value;
-	            this._index = value;
 	        },
 	        enumerable: true,
 	        configurable: true
